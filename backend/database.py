@@ -16,10 +16,23 @@ def get_connection():
     return conn
 
 def init_db():
-    """Khởi tạo cấu trúc bảng places"""
+    """Khởi tạo cấu trúc các bảng: users, places, favorites"""
     conn = get_connection()
     cursor = conn.cursor()
 
+    # 1. BẢNG USERS
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        full_name TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT 'user', -- 'admin' hoặc 'user'
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    """)
+
+    # 2. BẢNG PLACES
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS places (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,5 +52,19 @@ def init_db():
         tags TEXT DEFAULT 'nhom_ban'
     );
     """)
+
+    # 3. BẢNG FAVORITES
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS favorites (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        place_id INTEGER NOT NULL,
+        saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE,
+        UNIQUE(user_id, place_id)
+    );
+    """)
+
     conn.commit()
     conn.close()

@@ -80,3 +80,56 @@ def seed_users_if_needed(conn):
             ('user1', '123456', 'Khách Du Lịch Mẫu', 'user')
         """)
         conn.commit()
+
+INITIAL_HERITAGE_PLACES = [
+    {
+        "name": "Chùa Bà Thiên Hậu (Miếu Tuệ Thành)",
+        "category": "di_choi",
+        "address": "710 Đường Nguyễn Trãi, Phường 11, Quận 5",
+        "lat": 10.75338, "lon": 106.65997,
+        "open_time": "06:00", "close_time": "17:30",
+        "min_price": 0, "max_price": 0, "rating": 4.7, "reviews_count": 3420,
+        "image_url": "frontend/images/verified/thien_hau.jpg",
+        "tags": "di_1_minh,gia_dinh"
+    },
+    {
+        "name": "Hội Quán Nghĩa An (Chùa Ông)",
+        "category": "di_choi",
+        "address": "678 Đường Nguyễn Trãi, Phường 11, Quận 5",
+        "lat": 10.75389, "lon": 106.66120,
+        "open_time": "06:30", "close_time": "18:00",
+        "min_price": 0, "max_price": 0, "rating": 4.6, "reviews_count": 1820,
+        "image_url": "frontend/images/verified/nghia_an.jpg",
+        "tags": "di_1_minh,gia_dinh"
+    },
+    {
+        "name": "Chợ Lớn (Chợ Bình Tây)",
+        "category": "di_choi",
+        "address": "57A Tháp Mười, Phường 2, Quận 6",
+        "lat": 10.74853, "lon": 106.65175,
+        "open_time": "06:00", "close_time": "19:00",
+        "min_price": 20000, "max_price": 300000, "rating": 4.5, "reviews_count": 5100,
+        "image_url": "frontend/images/verified/cho_binh_tay.jpg",
+        "tags": "nhom_ban,gia_dinh"
+    },
+    {
+        "name": "Nhà Thờ Cha Tam (Thánh Phanxicô Xaviê)",
+        "category": "di_choi",
+        "address": "25 Học Lạc, Phường 14, Quận 5",
+        "lat": 10.75210, "lon": 106.65580,
+        "open_time": "07:00", "close_time": "18:00",
+        "min_price": 0, "max_price": 0, "rating": 4.6, "reviews_count": 920,
+        "image_url": "frontend/images/verified/nha_tho_cha_tam.jpg",
+        "tags": "hen_ho,di_1_minh"
+    },
+    {
+        "name": "Hội Quán Ôn Lăng (Chùa Quan Âm)",
+        "category": "di_choi",
+        "address": "12 Lão Tử, Phường 11, Quận 5",
+        "lat": 10.75520, "lon": 106.66210,
+        "open_time": "06:30", "close_time": "17:00",
+        "min_price": 0, "max_price": 0, "rating": 4.5, "reviews_count": 640,
+        "image_url": "frontend/images/verified/on_lang.jpg",
+        "tags": "gia_dinh,di_1_minh"
+    }
+]

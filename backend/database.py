@@ -68,3 +68,15 @@ def init_db():
 
     conn.commit()
     conn.close()
+
+def seed_users_if_needed(conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) as count FROM users")
+    if cursor.fetchone()["count"] == 0:
+        cursor.execute("""
+        INSERT INTO users (username, password, full_name, role)
+        VALUES 
+            ('admin', 'admin123', 'Quản Trị Viên SGGo', 'admin'),
+            ('user1', '123456', 'Khách Du Lịch Mẫu', 'user')
+        """)
+        conn.commit()

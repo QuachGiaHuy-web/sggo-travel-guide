@@ -133,3 +133,72 @@ INITIAL_HERITAGE_PLACES = [
         "tags": "gia_dinh,di_1_minh"
     }
 ]
+
+INITIAL_CULINARY_PLACES = [
+    {
+        "name": "Hủ Tiếu Sa Tế Quảng Ký",
+        "category": "an_uong",
+        "address": "117 Triệu Quang Phục, Phường 11, Quận 5",
+        "lat": 10.75480, "lon": 106.66010,
+        "open_time": "16:00", "close_time": "22:00",
+        "min_price": 45000, "max_price": 75000, "rating": 4.6, "reviews_count": 520,
+        "image_url": "frontend/images/places/place_144.jpg",
+        "tags": "nhom_ban,di_1_minh"
+    },
+    {
+        "name": "Sủi Cảo Thiên Thiên (Hà Tôn Quyền)",
+        "category": "an_uong",
+        "address": "191 Hà Tôn Quyền, Phường 4, Quận 11",
+        "lat": 10.75820, "lon": 106.65650,
+        "open_time": "13:30", "close_time": "01:00",
+        "min_price": 50000, "max_price": 90000, "rating": 4.7, "reviews_count": 2150,
+        "image_url": "frontend/images/places/place_145.jpg",
+        "tags": "nhom_ban,hen_ho"
+    },
+    {
+        "name": "Cơm Gà Đông Nguyên",
+        "category": "an_uong",
+        "address": "801 Nguyễn Trãi, Phường 14, Quận 5",
+        "lat": 10.75230, "lon": 106.65780,
+        "open_time": "09:00", "close_time": "20:30",
+        "min_price": 60000, "max_price": 120000, "rating": 4.4, "reviews_count": 1890,
+        "image_url": "frontend/images/places/place_147.jpg",
+        "tags": "gia_dinh,nhom_ban"
+    },
+    {
+        "name": "Chè Nhà Đèn (Hà Ký)",
+        "category": "an_uong",
+        "address": "138 Châu Văn Liêm, Phường 11, Quận 5",
+        "lat": 10.75260, "lon": 106.66280,
+        "open_time": "10:00", "close_time": "22:30",
+        "min_price": 25000, "max_price": 50000, "rating": 4.5, "reviews_count": 1420,
+        "image_url": "frontend/images/places/place_148.jpg",
+        "tags": "hen_ho,nhom_ban"
+    },
+    {
+        "name": "Dimsum Tiến Phát",
+        "category": "an_uong",
+        "address": "18 Ký Hòa, Phường 11, Quận 5",
+        "lat": 10.75410, "lon": 106.66150,
+        "open_time": "06:00", "close_time": "12:30",
+        "min_price": 50000, "max_price": 150000, "rating": 4.6, "reviews_count": 2300,
+        "image_url": "frontend/images/places/place_150.jpg",
+        "tags": "gia_dinh,nhom_ban"
+    }
+]
+
+def seed_places_if_needed(conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) as count FROM places")
+    if cursor.fetchone()["count"] == 0:
+        all_seeds = INITIAL_HERITAGE_PLACES + INITIAL_CULINARY_PLACES
+        for p in all_seeds:
+            cursor.execute("""
+            INSERT INTO places (name, category, address, lat, lon, open_time, close_time, min_price, max_price, rating, reviews_count, image_url, tags)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                p["name"], p["category"], p["address"], p["lat"], p["lon"],
+                p["open_time"], p["close_time"], p["min_price"], p["max_price"],
+                p["rating"], p["reviews_count"], p.get("image_url"), p.get("tags")
+            ))
+        conn.commit()

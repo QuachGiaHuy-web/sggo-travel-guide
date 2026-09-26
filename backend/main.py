@@ -49,3 +49,11 @@ def fetch_places(
         "count": len(places),
         "places": places
     }
+
+@app.get("/api/places/{place_id}")
+def fetch_place_detail(place_id: int):
+    """Trả về thông tin chi tiết một địa điểm theo ID"""
+    place = get_place_by_id(place_id)
+    if not place:
+        raise HTTPException(status_code=404, detail="Không tìm thấy địa điểm yêu cầu")
+    return place

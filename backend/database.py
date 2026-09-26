@@ -224,3 +224,12 @@ def get_all_places(category=None, min_rating=None):
     places = [dict(row) for row in rows]
     conn.close()
     return places
+
+def get_place_by_id(place_id: int):
+    """Truy vấn chi tiết 1 địa điểm theo ID"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM places WHERE id = ?", (place_id,))
+    row = cursor.fetchone()
+    conn.close()
+    return dict(row) if row else None

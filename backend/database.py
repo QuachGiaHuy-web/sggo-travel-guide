@@ -202,3 +202,25 @@ def seed_places_if_needed(conn):
                 p["rating"], p["reviews_count"], p.get("image_url"), p.get("tags")
             ))
         conn.commit()
+
+def get_all_places(category=None, min_rating=None):
+    """Truy vấn danh sách địa điểm theo bộ lọc danh mục và điểm đánh giá"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = "SELECT * FROM places WHERE 1=1"
+    params = []
+
+    if category and category != "all":
+        query += " AND category = ?"
+        params.append(category)
+
+    if min_rating:
+        query += " AND rating >= ?"
+        params.append(float(min_rating))
+
+    query += " ORDER BY rating DESC"
+    cursor.execute(query, params)
+    rows = cursor.fetchall()
+    places = [dict(row) for row in rows]
+    conn.close()
+    return places

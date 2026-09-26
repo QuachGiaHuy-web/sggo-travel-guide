@@ -4,8 +4,13 @@ main.py - BACKEND REST API CHO DỰ ÁN SGGO!
 Môn học: Công nghệ Phần mềm (COMP1044)
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional, List
+from backend.database import init_db, get_all_places, get_place_by_id
+
+# Khởi tạo CSDL SQLite khi server bật
+init_db()
 
 app = FastAPI(
     title="SGGo! Travel Guide API",
@@ -13,7 +18,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Cấu hình CORS cho phép giao tiếp mượt mà từ frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -33,3 +37,15 @@ def root():
 @app.get("/health")
 def health_check():
     return {"status": "healthy", "service": "sggo-backend"}
+
+@app.get("/api/places")
+def fetch_places(
+    category: Optional[str] = Query(None, description="Lọc theo 'an_uong', 'di_choi' hoặc 'all'"),
+    min_rating: Optional[float] = Query(None, description="Điểm đánh giá tối thiểu (VD: 4.5)")
+):
+    """Trả về danh sách địa điểm theo bộ lọc"""
+    places = get_all_places(category=category, min_rating=min_rating)
+    return {
+        "count": len(places),
+        "places": places
+    }

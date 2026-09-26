@@ -15,72 +15,6 @@ def get_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-def init_db():
-    """Khởi tạo cấu trúc các bảng: users, places, favorites"""
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    # 1. BẢNG USERS
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        full_name TEXT NOT NULL,
-        role TEXT NOT NULL DEFAULT 'user', -- 'admin' hoặc 'user'
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-    """)
-
-    # 2. BẢNG PLACES
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS places (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        category TEXT NOT NULL,               -- 'an_uong' hoặc 'di_choi'
-        address TEXT NOT NULL,
-        district TEXT NOT NULL DEFAULT 'Quận 5',
-        lat REAL NOT NULL,
-        lon REAL NOT NULL,
-        open_time TEXT NOT NULL DEFAULT '08:00',
-        close_time TEXT NOT NULL DEFAULT '22:00',
-        min_price INTEGER NOT NULL DEFAULT 30000,
-        max_price INTEGER NOT NULL DEFAULT 100000,
-        rating REAL NOT NULL DEFAULT 4.5,
-        reviews_count INTEGER NOT NULL DEFAULT 100,
-        image_url TEXT,
-        tags TEXT DEFAULT 'nhom_ban'
-    );
-    """)
-
-    # 3. BẢNG FAVORITES
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS favorites (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        place_id INTEGER NOT NULL,
-        saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-        FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE,
-        UNIQUE(user_id, place_id)
-    );
-    """)
-
-    conn.commit()
-    conn.close()
-
-def seed_users_if_needed(conn):
-    cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) as count FROM users")
-    if cursor.fetchone()["count"] == 0:
-        cursor.execute("""
-        INSERT INTO users (username, password, full_name, role)
-        VALUES 
-            ('admin', 'admin123', 'Quản Trị Viên SGGo', 'admin'),
-            ('user1', '123456', 'Khách Du Lịch Mẫu', 'user')
-        """)
-        conn.commit()
-
 INITIAL_HERITAGE_PLACES = [
     {
         "name": "Chùa Bà Thiên Hậu (Miếu Tuệ Thành)",
@@ -187,6 +121,18 @@ INITIAL_CULINARY_PLACES = [
     }
 ]
 
+def seed_users_if_needed(conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) as count FROM users")
+    if cursor.fetchone()["count"] == 0:
+        cursor.execute("""
+        INSERT INTO users (username, password, full_name, role)
+        VALUES 
+            ('admin', 'admin123', 'Quản Trị Viên SGGo', 'admin'),
+            ('user1', '123456', 'Khách Du Lịch Mẫu', 'user')
+        """)
+        conn.commit()
+
 def seed_places_if_needed(conn):
     cursor = conn.cursor()
     cursor.execute("SELECT COUNT(*) as count FROM places")
@@ -203,8 +149,59 @@ def seed_places_if_needed(conn):
             ))
         conn.commit()
 
+def init_db():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        full_name TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT 'user',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS places (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        category TEXT NOT NULL,
+        address TEXT NOT NULL,
+        district TEXT NOT NULL DEFAULT 'Quận 5',
+        lat REAL NOT NULL,
+        lon REAL NOT NULL,
+        open_time TEXT NOT NULL DEFAULT '08:00',
+        close_time TEXT NOT NULL DEFAULT '22:00',
+        min_price INTEGER NOT NULL DEFAULT 30000,
+        max_price INTEGER NOT NULL DEFAULT 100000,
+        rating REAL NOT NULL DEFAULT 4.5,
+        reviews_count INTEGER NOT NULL DEFAULT 100,
+        image_url TEXT,
+        tags TEXT DEFAULT 'nhom_ban'
+    );
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS favorites (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        place_id INTEGER NOT NULL,
+        saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE,
+        UNIQUE(user_id, place_id)
+    );
+    """)
+    conn.commit()
+
+    seed_users_if_needed(conn)
+    seed_places_if_needed(conn)
+    conn.close()
+
 def get_all_places(category=None, min_rating=None):
-    """Truy vấn danh sách địa điểm theo bộ lọc danh mục và điểm đánh giá"""
     conn = get_connection()
     cursor = conn.cursor()
     query = "SELECT * FROM places WHERE 1=1"
@@ -219,17 +216,16 @@ def get_all_places(category=None, min_rating=None):
         params.append(float(min_rating))
 
     query += " ORDER BY rating DESC"
-    cursor.execute(query, params)
+    cursor.execute(query, tuple(params))
     rows = cursor.fetchall()
     places = [dict(row) for row in rows]
     conn.close()
     return places
 
 def get_place_by_id(place_id: int):
-    """Truy vấn chi tiết 1 địa điểm theo ID"""
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM places WHERE id = ?", (place_id,))
+    cursor.execute("SELECT * FROM places WHERE id = ?", (int(place_id),))
     row = cursor.fetchone()
     conn.close()
     return dict(row) if row else None

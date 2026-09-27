@@ -1,0 +1,242 @@
+[
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7824512,
+    "lon": 106.6773049,
+    "street": "Nguyễn Thông"
+  },
+  {
+    "name": "Phở Số 1 Hà Nội",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7848583,
+    "lon": 106.700098,
+    "street": ""
+  },
+  {
+    "name": "Cà Phê Acoustic",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7811643,
+    "lon": 106.6898451,
+    "street": "Ngô Thời Nhiệm"
+  },
+  {
+    "name": "Cà Phê Sỏi Đá",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7809198,
+    "lon": 106.689929,
+    "street": ""
+  },
+  {
+    "name": "Cà Phê Du Miên",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7923386,
+    "lon": 106.6760528,
+    "street": ""
+  },
+  {
+    "name": "Cà Phê Mê Khúc",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7987704,
+    "lon": 106.6865074,
+    "street": ""
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.8032942,
+    "lon": 106.69257,
+    "street": ""
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.780071,
+    "lon": 106.7039377,
+    "street": ""
+  },
+  {
+    "name": "KFC",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.8085023,
+    "lon": 106.6781748,
+    "street": ""
+  },
+  {
+    "name": "KFC",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7669666,
+    "lon": 106.6962301,
+    "street": "Đường Nguyễn Thái Học"
+  },
+  {
+    "name": "KFC",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.780868,
+    "lon": 106.6982351,
+    "street": ""
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7717072,
+    "lon": 106.687498,
+    "street": ""
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7416884,
+    "lon": 106.7299407,
+    "street": ""
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7806494,
+    "lon": 106.6984325,
+    "street": ""
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7815168,
+    "lon": 106.6926088,
+    "street": ""
+  },
+  {
+    "name": "KFC",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7702226,
+    "lon": 106.6938718,
+    "street": ""
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7917715,
+    "lon": 106.6913899,
+    "street": ""
+  },
+  {
+    "name": "KFC",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.8115508,
+    "lon": 106.6958817,
+    "street": ""
+  },
+  {
+    "name": "KFC",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7873569,
+    "lon": 106.6661244,
+    "street": ""
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.8000744,
+    "lon": 106.7110951,
+    "street": ""
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7676493,
+    "lon": 106.6953831,
+    "street": ""
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7559824,
+    "lon": 106.6628075,
+    "street": ""
+  },
+  {
+    "name": "Nhà Hàng BBQ Chicken",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.768208,
+    "lon": 106.6841501,
+    "street": ""
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7777196,
+    "lon": 106.6655017,
+    "street": ""
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7677546,
+    "lon": 106.6666246,
+    "street": ""
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7994166,
+    "lon": 106.696288,
+    "street": ""
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7567799,
+    "lon": 106.6852501,
+    "street": "Đường Trần Hưng Ðạo"
+  },
+  {
+    "name": "KFC",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.8000541,
+    "lon": 106.6962085,
+    "street": ""
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7863467,
+    "lon": 106.7016034,
+    "street": "Nguyễn Thị Minh Khai"
+  },
+  {
+    "name": "KFC",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7886556,
+    "lon": 106.6760753,
+    "street": ""
+  }
+]

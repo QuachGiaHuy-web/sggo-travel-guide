@@ -1,0 +1,147 @@
+/* Custom Pop-Chill Styling */
+.pop-glow-orange {
+  position: absolute;
+  top: -120px;
+  right: 15%;
+  width: 380px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(255, 87, 51, 0.08) 0%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.pop-glow-teal {
+  position: absolute;
+  top: 15%;
+  left: 10%;
+  width: 340px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.06) 0%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Tab Pills */
+.tab-pill {
+  padding: 6px 14px;
+  border-radius: 12px;
+  color: #64748B;
+  transition: all 0.2s ease;
+}
+
+.tab-pill:hover {
+  color: #0F172A;
+}
+
+.tab-pill.active {
+  background-color: #FFFFFF;
+  color: #FF5733;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+/* Step badges & back links */
+.badge-step {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #FF5733;
+}
+
+.back-link {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94A3B8;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: #FF5733;
+}
+
+/* Thẻ lựa chọn Pop-Chill */
+.selection-card {
+  background-color: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 20px;
+  padding: 22px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.selection-card:hover {
+  border-color: #FF5733;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -6px rgba(255, 87, 51, 0.15);
+}
+
+/* Inputs */
+.pop-input {
+  width: 100%;
+  background-color: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #0F172A;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.pop-input:focus {
+  border-color: #FF5733;
+  background-color: #FFFFFF;
+}
+
+/* Hiệu ứng chuyển bước mượt */
+.step-card {
+  animation: stepIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes stepIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Timeline bài trí lộ trình */
+.timeline-item {
+  position: relative;
+  padding-left: 24px;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 8px;
+  bottom: -22px;
+  width: 2px;
+  background-color: #E2E8F0;
+}
+
+.timeline-item:last-child::before {
+  display: none;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: 2px;
+  top: 7px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #FF5733;
+  box-shadow: 0 0 0 3px rgba(255, 87, 51, 0.2);
+}

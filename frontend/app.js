@@ -60,3 +60,33 @@ function renderPlacesCards(places) {
 document.addEventListener('DOMContentLoaded', () => {
   loadPlaces();
 });
+
+function createMarkerIcon(category) {
+  const isFood = category === 'an_uong';
+  const color = isFood ? '#FF5733' : '#0284C7';
+  const iconSymbol = isFood ? '🍜' : '🏛️';
+
+  return L.divIcon({
+    className: 'custom-map-pin',
+    html: `<div class="pin-inner" style="background-color: ${color};">
+             <span class="pin-symbol">${iconSymbol}</span>
+           </div>`,
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -32]
+  });
+}
+
+function renderMapMarkers(places) {
+  // Xóa marker cũ
+  placeMarkers.forEach(m => map.removeLayer(m));
+  placeMarkers = [];
+
+  places.forEach(p => {
+    if (!p.lat || !p.lon) return;
+    const icon = createMarkerIcon(p.category);
+    const marker = L.marker([p.lat, p.lon], { icon: icon }).addTo(map);
+    marker.placeData = p;
+    placeMarkers.push(marker);
+  });
+}

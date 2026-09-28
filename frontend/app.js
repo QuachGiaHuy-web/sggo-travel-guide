@@ -90,3 +90,20 @@ function renderMapMarkers(places) {
     placeMarkers.push(marker);
   });
 }
+
+function bindMarkerPopups() {
+  placeMarkers.forEach(marker => {
+    const p = marker.placeData;
+    const popupContent = `
+      <div class="map-popup-card">
+        <h4>${p.name}</h4>
+        <p class="popup-addr">${p.address}</p>
+        <div class="popup-meta">
+          <span>⭐ ${p.rating.toFixed(1)}</span>
+          <span>🕒 ${p.open_time} - ${p.close_time}</span>
+        </div>
+      </div>
+    `;
+    marker.bindPopup(popupContent);
+  });
+}

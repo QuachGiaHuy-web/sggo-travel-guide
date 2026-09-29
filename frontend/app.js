@@ -107,3 +107,23 @@ function bindMarkerPopups() {
     marker.bindPopup(popupContent);
   });
 }
+
+function openPlaceModal(placeId) {
+  const p = currentPlaces.find(x => x.id === parseInt(placeId));
+  if (!p) return;
+
+  document.getElementById('modalName').textContent = p.name;
+  document.getElementById('modalAddress').textContent = p.address;
+  document.getElementById('modalHours').textContent = `${p.open_time} - ${p.close_time}`;
+  document.getElementById('modalPrice').textContent = p.min_price > 0 ? `${(p.min_price/1000)}k - ${(p.max_price/1000)}k VNĐ` : 'Miễn phí vé vào';
+  document.getElementById('modalRating').textContent = `⭐ ${p.rating.toFixed(1)} (${p.reviews_count} đánh giá)`;
+
+  const cover = document.getElementById('modalCover');
+  cover.style.backgroundImage = `url('${p.image_url || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500'}')`;
+
+  document.getElementById('placeDetailModal').style.display = 'flex';
+}
+
+function closePlaceModal() {
+  document.getElementById('placeDetailModal').style.display = 'none';
+}

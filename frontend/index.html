@@ -45,3 +45,30 @@
   <script src="app.js"></script>
 </body>
 </html>
+
+  <!-- Place Detail Modal -->
+  <div class="modal-overlay" id="placeDetailModal" style="display: none;">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closePlaceModal()">&times;</button>
+      <div class="modal-cover" id="modalCover"></div>
+      <div class="modal-content">
+        <h3 id="modalName">Tên địa điểm</h3>
+        <p class="modal-address" id="modalAddress">Địa chỉ</p>
+        <div class="modal-badges" id="modalBadges"></div>
+        <div class="modal-details">
+          <div class="detail-item">
+            <span class="label">Giờ mở cửa:</span>
+            <span class="val" id="modalHours">08:00 - 22:00</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Mức giá:</span>
+            <span class="val" id="modalPrice">30k - 100k</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Đánh giá:</span>
+            <span class="val" id="modalRating">⭐ 4.5 (120 đánh giá)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

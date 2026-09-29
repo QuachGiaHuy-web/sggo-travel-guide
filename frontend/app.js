@@ -127,3 +127,17 @@ function openPlaceModal(placeId) {
 function closePlaceModal() {
   document.getElementById('placeDetailModal').style.display = 'none';
 }
+
+// Keyboard & Backdrop dismissal for modal
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closePlaceModal();
+  }
+});
+
+document.addEventListener('click', (e) => {
+  const modal = document.getElementById('placeDetailModal');
+  if (e.target === modal) {
+    closePlaceModal();
+  }
+});

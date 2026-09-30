@@ -141,3 +141,13 @@ document.addEventListener('click', (e) => {
     closePlaceModal();
   }
 });
+
+function filterByCategory(category) {
+  let filtered = currentPlaces;
+  if (category && category !== 'all') {
+    filtered = currentPlaces.filter(p => p.category === category);
+  }
+  renderPlacesCards(filtered);
+  renderMapMarkers(filtered);
+  bindMarkerPopups();
+}

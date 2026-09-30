@@ -347,3 +347,12 @@ body {
   font-weight: 700;
   color: var(--text-main);
 }
+
+/* Smooth transitions for filtered elements */
+.places-grid {
+  transition: opacity 0.2s ease-in-out;
+}
+.filter-active {
+  background: var(--primary) !important;
+  color: white !important;
+}

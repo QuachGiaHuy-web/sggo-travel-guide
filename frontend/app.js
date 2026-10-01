@@ -189,3 +189,19 @@ function handleSearch(query) {
   renderMapMarkers(matched);
   bindMarkerPopups();
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', debounce((e) => {
+      const q = e.target.value.trim();
+      if (!q) {
+        renderPlacesCards(currentPlaces);
+        renderMapMarkers(currentPlaces);
+        bindMarkerPopups();
+      } else {
+        handleSearch(q);
+      }
+    }, 200));
+  }
+});

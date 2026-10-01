@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Leaflet Map Library CDN -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
@@ -32,19 +31,26 @@
         <p>Hệ thống hỗ trợ tìm kiếm, lọc theo ngữ cảnh và tối ưu tuyến đường di chuyển thông minh.</p>
       </section>
 
+      <!-- Search & Filters Toolbar -->
+      <div class="toolbar">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Tìm kiếm địa điểm, món ăn, địa chỉ..." />
+        </div>
+        <div class="filter-pills">
+          <button class="pill active" onclick="filterByCategory('all')">Tất cả</button>
+          <button class="pill" onclick="filterByCategory('an_uong')">Ẩm thực</button>
+          <button class="pill" onclick="filterByCategory('di_choi')">Di sản</button>
+        </div>
+      </div>
+
       <!-- Map Container -->
       <div class="map-wrapper">
         <div id="map"></div>
       </div>
 
-      <section class="places-grid" id="placesContainer">
-        <!-- Render cards dynamically -->
-      </section>
+      <section class="places-grid" id="placesContainer"></section>
     </main>
   </div>
-  <script src="app.js"></script>
-</body>
-</html>
 
   <!-- Place Detail Modal -->
   <div class="modal-overlay" id="placeDetailModal" style="display: none;">
@@ -54,7 +60,6 @@
       <div class="modal-content">
         <h3 id="modalName">Tên địa điểm</h3>
         <p class="modal-address" id="modalAddress">Địa chỉ</p>
-        <div class="modal-badges" id="modalBadges"></div>
         <div class="modal-details">
           <div class="detail-item">
             <span class="label">Giờ mở cửa:</span>
@@ -66,11 +71,13 @@
           </div>
           <div class="detail-item">
             <span class="label">Đánh giá:</span>
-            <span class="val" id="modalRating">⭐ 4.5 (120 đánh giá)</span>
+            <span class="val" id="modalRating">⭐ 4.5</span>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Filter Toolbar (Will be placed above cards) -->
+  <script src="app.js"></script>
+</body>
+</html>

@@ -246,3 +246,9 @@ function renderUserLocationPin(loc) {
   userMarker = L.marker([loc.lat, loc.lon], { icon: userIcon }).addTo(map);
   userMarker.bindPopup("<b>Vị trí của bạn</b><br>Điểm xuất phát chuyến đi").openPopup();
 }
+
+function setCustomStartingPoint(lat, lon, label = "Điểm hẹn đã chọn") {
+  userLocation = { lat: parseFloat(lat), lon: parseFloat(lon) };
+  renderUserLocationPin(userLocation);
+  map.setView([userLocation.lat, userLocation.lon], 16);
+}

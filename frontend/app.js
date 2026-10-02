@@ -205,3 +205,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 200));
   }
 });
+
+let userLocation = null;
+let userMarker = null;
+
+function locateUser() {
+  if (!navigator.geolocation) {
+    alert("Trình duyệt của bạn không hỗ trợ định vị GPS.");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      userLocation = {
+        lat: pos.coords.latitude,
+        lon: pos.coords.longitude
+      };
+      renderUserLocationPin(userLocation);
+      map.setView([userLocation.lat, userLocation.lon], 16);
+    },
+    (err) => {
+      console.warn("Không thể lấy vị trí GPS:", err.message);
+      // Fallback mặc định: Chợ An Đông, Quận 5
+      userLocation = { lat: 10.7550, lon: 106.6690 };
+      renderUserLocationPin(userLocation);
+    }
+  );
+}

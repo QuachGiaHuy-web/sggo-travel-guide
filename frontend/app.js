@@ -232,3 +232,17 @@ function locateUser() {
     }
   );
 }
+
+function renderUserLocationPin(loc) {
+  if (userMarker) {
+    map.removeLayer(userMarker);
+  }
+  const userIcon = L.divIcon({
+    className: 'user-gps-pin',
+    html: `<div class="user-gps-pulse"></div><div class="user-gps-core"></div>`,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12]
+  });
+  userMarker = L.marker([loc.lat, loc.lon], { icon: userIcon }).addTo(map);
+  userMarker.bindPopup("<b>Vị trí của bạn</b><br>Điểm xuất phát chuyến đi").openPopup();
+}

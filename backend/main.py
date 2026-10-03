@@ -57,3 +57,14 @@ def fetch_place_detail(place_id: int):
     if not place:
         raise HTTPException(status_code=404, detail="Không tìm thấy địa điểm yêu cầu")
     return place
+
+def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """Tính khoảng cách chim bay theo công thức Haversine (đơn vị: km)"""
+    import math
+    R = 6371.0 # Bán kính Trái Đất (km)
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = (math.sin(dlat / 2) ** 2 +
+         math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return round(R * c, 2)

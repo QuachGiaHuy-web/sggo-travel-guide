@@ -1,0 +1,5105 @@
+[
+  {
+    "name": "Công viên số 1 Lý Thái Tổ",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7651628,
+    "lon": 106.6794023,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà thờ Thánh Jeanne d'Arc",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7570415,
+    "lon": 106.667369,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà thờ Chợ Quán",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7573309,
+    "lon": 106.681733,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách sạn Equatorial",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7633463,
+    "lon": 106.6791927,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lam Sơn Football Field",
+    "category": "di_choi",
+    "osm_type": "sports_centre",
+    "lat": 10.7623553,
+    "lon": 106.6800624,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ An Đông",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7581051,
+    "lon": 106.6721844,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ hoa Hồ Thị Kỷ",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7657014,
+    "lon": 106.6772919,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Hòa Bình",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7605682,
+    "lon": 106.673803,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Văn Lang",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7565933,
+    "lon": 106.6675432,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Dạ Trạch",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7566797,
+    "lon": 106.6668841,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Cửu Long",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7508243,
+    "lon": 106.6538952,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Kim Biên",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7500448,
+    "lon": 106.6559414,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Lê Lợi",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7473738,
+    "lon": 106.6493176,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Võ Văn Kiệt",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7507013,
+    "lon": 106.6684476,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Coopmart Lý Thường Kiệt",
+    "category": "di_choi",
+    "osm_type": "supermarket",
+    "lat": 10.7598115,
+    "lon": 106.6615013,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Phường 2",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7487485,
+    "lon": 106.6836928,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Trung Tâm Mua Sắm Nowzone",
+    "category": "di_choi",
+    "osm_type": "mall",
+    "lat": 10.7643362,
+    "lon": 106.6824608,
+    "street": "Nguyễn Văn Cừ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách sạn Nikko Saigon",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.764313,
+    "lon": 106.6830061,
+    "street": "Nguyễn Văn Cừ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà khách Phương Nam",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7616112,
+    "lon": 106.6852124,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Thiếc",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7598051,
+    "lon": 106.6567232,
+    "street": "Đường Phó Cơ Điều",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Nguyễn Tri Phương",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7644473,
+    "lon": 106.6637169,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hội Thánh Tin Lành Nguyễn Tri Phương",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7658721,
+    "lon": 106.6642777,
+    "street": "Đường Nguyễn Tri Phương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách sạn Phú Thọ",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7623507,
+    "lon": 106.6576695,
+    "street": "Đường 3 Tháng 2",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Văn Phòng Tổng Liên Hội",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7659237,
+    "lon": 106.6644481,
+    "street": "Đường 3 Tháng 2",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Tập luyện TDTT Phú Thọ",
+    "category": "di_choi",
+    "osm_type": "sports_centre",
+    "lat": 10.7676139,
+    "lon": 106.6582537,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà sách Phương Nam - Phú Thọ",
+    "category": "di_choi",
+    "osm_type": "books",
+    "lat": 10.7636523,
+    "lon": 106.6586287,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Phú Thọ",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7626601,
+    "lon": 106.6540696,
+    "street": "Đường Lãnh Binh Thăng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Xóm Củi",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7459362,
+    "lon": 106.661018,
+    "street": "Đường Xóm Củi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà sách Minh Khai",
+    "category": "di_choi",
+    "osm_type": "books",
+    "lat": 10.7666914,
+    "lon": 106.6832179,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Arc en Ciel",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7521341,
+    "lon": 106.6646109,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách sạn Tân Thủ Đô",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7539031,
+    "lon": 106.6582115,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Phạm Thế Hiển",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.74323,
+    "lon": 106.6711226,
+    "street": "Phạm Thế Hiển",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa An Phú",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7474312,
+    "lon": 106.6688012,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Huệ Lâm",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7481999,
+    "lon": 106.6639538,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Ba Đình",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7482358,
+    "lon": 106.6684476,
+    "street": "Bến Ba Đình",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Tín Nghĩa",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7499283,
+    "lon": 106.6564243,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Co.opMart Tuy Lý Vương",
+    "category": "di_choi",
+    "osm_type": "supermarket",
+    "lat": 10.7443983,
+    "lon": 106.6550902,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà thờ Tin Lành Tuy Lý Vương",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7436307,
+    "lon": 106.6548899,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hội quán Nghĩa Nhuận",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7493723,
+    "lon": 106.6543875,
+    "street": "Đường Phan Văn Khỏe",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà thờ Hưng Phú",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7456778,
+    "lon": 106.6720576,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đình Bình Tây",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7507912,
+    "lon": 106.6471255,
+    "street": "Hẻm 219 Mai Xuân Thưởng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đình Vĩnh Hội",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7469516,
+    "lon": 106.6595597,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên nước Đại Thế Giới",
+    "category": "di_choi",
+    "osm_type": "water_park",
+    "lat": 10.7514674,
+    "lon": 106.6687782,
+    "street": "Võ Văn Kiệt",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Lãnh Binh Thăng",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7632268,
+    "lon": 106.649898,
+    "street": "Đường Lãnh Binh Thăng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà thi đấu Lãnh Binh Thăng",
+    "category": "di_choi",
+    "osm_type": "fitness_centre",
+    "lat": 10.7637109,
+    "lon": 106.6486393,
+    "street": "Đường Lãnh Binh Thăng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Long An",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.758162,
+    "lon": 106.6849491,
+    "street": "Nguyễn Văn Cừ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà thờ Tin Lành Chánh Hưng",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7470485,
+    "lon": 106.6736128,
+    "street": "Hưng Phú",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Thờ Thăng Long",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7649513,
+    "lon": 106.6533199,
+    "street": "Tôn Thất Hiệp",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Lê Hồng Phong",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7643514,
+    "lon": 106.6767748,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Nhật Tảo",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7651635,
+    "lon": 106.6698901,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Hưng Phú",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7460324,
+    "lon": 106.6734504,
+    "street": "Nguyễn Duy",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Chợ Quán",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.760465,
+    "lon": 106.6760096,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Ấn Quang",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7658337,
+    "lon": 106.6716779,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Điện máy Gia Thành",
+    "category": "di_choi",
+    "osm_type": "supermarket",
+    "lat": 10.7537613,
+    "lon": 106.6767105,
+    "street": "Trần Hưng Đạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đình Phong Phú",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7453245,
+    "lon": 106.6602425,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nguyên Chất coffee",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.761822,
+    "lon": 106.6750541,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "The Coffee House",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7621963,
+    "lon": 106.6750129,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bãi Cỏ - Trần Nhân Tôn",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7620131,
+    "lon": 106.6750724,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Dương Đình Nghệ",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7625006,
+    "lon": 106.6499735,
+    "street": "Dương Đình Nghệ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "KFC",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.746861,
+    "lon": 106.6601809,
+    "street": "Bến Cần Giuộc",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Popeyes",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7467086,
+    "lon": 106.6609772,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Sách Lý Thái Tổ",
+    "category": "di_choi",
+    "osm_type": "books",
+    "lat": 10.7470153,
+    "lon": 106.6608947,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hội quán Nhị Phủ",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.751397,
+    "lon": 106.6572598,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hội quán Phước An",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7549991,
+    "lon": 106.658867,
+    "street": "Đường Hồng Bàng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Miếu An Hòa",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7475054,
+    "lon": 106.6720917,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hotel Hạo Thành",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7588624,
+    "lon": 106.6532347,
+    "street": "Đường Tạ Uyên",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hotel Thanh Hoa Kiều",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7588193,
+    "lon": 106.6535856,
+    "street": "Đường Tạ Uyên",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hotel 173",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7578346,
+    "lon": 106.6533629,
+    "street": "Đường Tạ Uyên",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách Sạn An Tĩnh",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7640876,
+    "lon": 106.655426,
+    "street": "Đường Lê Đại Hành",
+    "district": "Quận 5"
+  },
+  {
+    "name": "MariO Hotel",
+    "category": "di_choi",
+    "osm_type": "place",
+    "lat": 10.7533872,
+    "lon": 106.6731113,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bánh Bao Đức Ký",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7567772,
+    "lon": 106.6534012,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7559824,
+    "lon": 106.6628075,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Âu Lạc",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7647893,
+    "lon": 106.6808399,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà thiếu nhi Quận 11",
+    "category": "di_choi",
+    "osm_type": "community_centre",
+    "lat": 10.761772,
+    "lon": 106.6497635,
+    "street": "Dương Đình Nghệ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Phố đi bộ đêm Kỳ đài Quang Trung",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7642929,
+    "lon": 106.6629989,
+    "street": "Đường Nguyễn Lâm",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Linh Chưởng",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7668993,
+    "lon": 106.6788897,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Phở, Lẩu, Món Tiềm",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7664138,
+    "lon": 106.6484761,
+    "street": "Bình Thới",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Di tích Khu tạm giam Bệnh viện Chợ Quán",
+    "category": "di_choi",
+    "osm_type": "museum",
+    "lat": 10.7532668,
+    "lon": 106.6792903,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đình Tân Kiểng",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7549656,
+    "lon": 106.6776358,
+    "street": "718 Trần Hưng Đạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đình Tứ Xuân",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7500835,
+    "lon": 106.6813738,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Từ đường Phúc Kiến",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7569527,
+    "lon": 106.6748807,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đình Hưng Phú",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7481646,
+    "lon": 106.6703875,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Căn Tin Ngọc Huệ",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7633405,
+    "lon": 106.6808401,
+    "street": "Nguyễn Văn Cừ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà thờ Tin Lành Bình Tây",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7462497,
+    "lon": 106.6495092,
+    "street": "Cao Văn Lầu",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Ẩn Trúc Lâm",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7451652,
+    "lon": 106.6513058,
+    "street": "Hẻm 21 Bình Tây",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đình Tân Nghĩa",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7560566,
+    "lon": 106.6552736,
+    "street": "Đường Tân Thành",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đình Bình Yên",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7535653,
+    "lon": 106.6832798,
+    "street": "Hẻm 197 Cao Đạt",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tu viện Mến Thánh Giá Chợ Quán",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7562783,
+    "lon": 106.6816288,
+    "street": "Trần Bình Trọng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quan Âm Các",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7573192,
+    "lon": 106.674686,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà thờ An Bình",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7497142,
+    "lon": 106.6736321,
+    "street": "An Bình",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đền thờ Thánh Giuse",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7494696,
+    "lon": 106.6736589,
+    "street": "An Bình",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Chí Thành",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7524612,
+    "lon": 106.6473074,
+    "street": "Hẻm 683/7 Hồng Bàng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Đại Bi",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7521085,
+    "lon": 106.6492475,
+    "street": "Hẻm 101 Phạm Đình Hổ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Chung cư Hòa Bình",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7670215,
+    "lon": 106.66112,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Hủ Tíu Sườn Đông Hưng",
+    "category": "an_uong",
+    "osm_type": "food_court",
+    "lat": 10.7540246,
+    "lon": 106.6512604,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Highlands Coffee",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7478512,
+    "lon": 106.6595734,
+    "street": "Đường Bình Đông",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Thánh thất Chợ Lớn",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7635136,
+    "lon": 106.664778,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Satra Centre Mall",
+    "category": "di_choi",
+    "osm_type": "mall",
+    "lat": 10.7436804,
+    "lon": 106.6483499,
+    "street": "Đường Võ Văn Kiệt",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên 310A Hưng Phú",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7488302,
+    "lon": 106.6761355,
+    "street": "Hưng Phú",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đình Long Vĩnh",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7448797,
+    "lon": 106.6621466,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đình Ưu Long",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7484366,
+    "lon": 106.6627721,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Trung tâm Thương Mại An Đông Plaza",
+    "category": "di_choi",
+    "osm_type": "mall",
+    "lat": 10.7578415,
+    "lon": 106.67331,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Coffee Thúy Vi",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7600528,
+    "lon": 106.6734084,
+    "street": "Hùng Vương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Phong Châu",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.766355,
+    "lon": 106.6827629,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Thánh thất Sài Gòn",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.754548,
+    "lon": 106.6795253,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán ăn 86",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7572016,
+    "lon": 106.6626851,
+    "street": "Đường Bà Triệu",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hoàng Lan",
+    "category": "homestay",
+    "osm_type": "motel",
+    "lat": 10.7571273,
+    "lon": 106.6623261,
+    "street": "Đường Bà Triệu",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hoa Thiện",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7571201,
+    "lon": 106.6622911,
+    "street": "Đường Bà Triệu",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cafe 29",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7573018,
+    "lon": 106.6628108,
+    "street": "Đường Nguyễn Kim",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán 29",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7572329,
+    "lon": 106.6628311,
+    "street": "Đường Nguyễn Kim",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Trà sữa 10",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7571268,
+    "lon": 106.6628539,
+    "street": "Đường Nguyễn Kim",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Giác Thanh",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7588814,
+    "lon": 106.667086,
+    "street": "Đường Ngô Gia Tự",
+    "district": "Quận 5"
+  },
+  {
+    "name": "VAN Coffee",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7574803,
+    "lon": 106.6669431,
+    "street": "Đường Ngô Gia Tự",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Thành Đạt",
+    "category": "di_choi",
+    "osm_type": "car_parts",
+    "lat": 10.7591546,
+    "lon": 106.6663104,
+    "street": "Đường Nguyễn Chí Thanh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Văn Thới",
+    "category": "di_choi",
+    "osm_type": "car_parts",
+    "lat": 10.7591609,
+    "lon": 106.6663635,
+    "street": "Đường Nguyễn Chí Thanh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Ngọc Yến",
+    "category": "an_uong",
+    "osm_type": "food_court",
+    "lat": 10.7592181,
+    "lon": 106.6662367,
+    "street": "Đường Nguyễn Chí Thanh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Pandora",
+    "category": "di_choi",
+    "osm_type": "fitness_centre",
+    "lat": 10.759205,
+    "lon": 106.6665641,
+    "street": "Đường Nguyễn Chí Thanh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Wrap Việt",
+    "category": "di_choi",
+    "osm_type": "car_parts",
+    "lat": 10.7592565,
+    "lon": 106.6666648,
+    "street": "Đường Nguyễn Chí Thanh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Kim Thành",
+    "category": "di_choi",
+    "osm_type": "motorcycle_parts",
+    "lat": 10.7593401,
+    "lon": 106.6670653,
+    "street": "Đường Nguyễn Chí Thanh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khanh Chế Tem Xe",
+    "category": "di_choi",
+    "osm_type": "car_parts",
+    "lat": 10.7593135,
+    "lon": 106.6669377,
+    "street": "Đường Nguyễn Chí Thanh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Ân Decal",
+    "category": "di_choi",
+    "osm_type": "car_parts",
+    "lat": 10.7593705,
+    "lon": 106.6672111,
+    "street": "Đường Nguyễn Chí Thanh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Galaxy Tường Lam",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7589596,
+    "lon": 106.6673751,
+    "street": "Đường Ngô Gia Tự",
+    "district": "Quận 5"
+  },
+  {
+    "name": "The Wall Coffee",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7587752,
+    "lon": 106.6678012,
+    "street": "Đường Ngô Gia Tự",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hồng Cúc",
+    "category": "homestay",
+    "osm_type": "motel",
+    "lat": 10.7588216,
+    "lon": 106.6678357,
+    "street": "Đường Ngô Gia Tự",
+    "district": "Quận 5"
+  },
+  {
+    "name": "VP-Coffee",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7594473,
+    "lon": 106.6675829,
+    "street": "Đường Nguyễn Chí Thanh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà đa năng Lý Phong",
+    "category": "di_choi",
+    "osm_type": "sports_centre",
+    "lat": 10.7577816,
+    "lon": 106.6708886,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Sailor Moon",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7576351,
+    "lon": 106.6628006,
+    "street": "Đường Nguyễn Kim",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Orlaine Paris",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7577505,
+    "lon": 106.662143,
+    "street": "Đường Tăng Bạt Hổ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán 04",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7574613,
+    "lon": 106.6621195,
+    "street": "Đường Lý Thường Kiệt",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tịnh xá Quan Âm",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.757543,
+    "lon": 106.6626912,
+    "street": "Đường Bà Triệu",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Vô Thường",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7578434,
+    "lon": 106.6628147,
+    "street": "Đường Tăng Bạt Hổ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Câu lạc bộ Thể dục Thể thao Trường Trung học phổ thông Hùng Vương",
+    "category": "di_choi",
+    "osm_type": "sports_centre",
+    "lat": 10.7571397,
+    "lon": 106.6636552,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lục Diệp",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.755318,
+    "lon": 106.6690139,
+    "street": "Đường Nguyễn Tri Phương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "4-Q",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7548634,
+    "lon": 106.6689399,
+    "street": "Đường Phước Hưng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "The Great Clinic",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7558058,
+    "lon": 106.6687451,
+    "street": "Đường Phước Hưng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Maika",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7547259,
+    "lon": 106.6692194,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà hàng 544",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7546731,
+    "lon": 106.6689556,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cháo thập cẩm nấu Kỷ Ngon",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7546696,
+    "lon": 106.6689064,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "JuiceTime",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7567788,
+    "lon": 106.6688774,
+    "street": "Đường An Dương Vương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cháo Sò Huyết",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7570661,
+    "lon": 106.6692289,
+    "street": "Đường Nguyễn Tri Phương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Gỗ",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7538354,
+    "lon": 106.6648,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Ngách",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7538423,
+    "lon": 106.6648359,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Golde Silk",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7538562,
+    "lon": 106.6649075,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Yora",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7538632,
+    "lon": 106.6649432,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lắc Kiu",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7539049,
+    "lon": 106.665158,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "The Tching",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7539586,
+    "lon": 106.6654314,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Analog",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7632758,
+    "lon": 106.6778233,
+    "street": "Hùng Vương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Phở Quyên",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7632257,
+    "lon": 106.6777149,
+    "street": "Hồ Thị Kỷ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Thánh Phao Lô",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7634219,
+    "lon": 106.6762982,
+    "street": "Lê Hồng Phong",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bún Bò Huế A. Tuấn",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7645128,
+    "lon": 106.678225,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hủ Tiếu Liên",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7659887,
+    "lon": 106.6764299,
+    "street": "Hẻm 103 Hồ Thị Kỷ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hủ Tiếu Nam Vang Phú Quý",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.766083,
+    "lon": 106.6766847,
+    "street": "Đường Hồ Thị Kỷ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Song Toàn",
+    "category": "workshop",
+    "osm_type": "art",
+    "lat": 10.7573976,
+    "lon": 106.6790322,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bánh bao Thuý Đỗ",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7573614,
+    "lon": 106.6789411,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Gold",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7572574,
+    "lon": 106.6787432,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hồng Trà Tuổi Thơ",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7569886,
+    "lon": 106.6782646,
+    "street": "Đường Lê Hồng Phong",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bốn Mùa",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7569523,
+    "lon": 106.6782765,
+    "street": "Đường Lê Hồng Phong",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Mơ Chiều",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7566498,
+    "lon": 106.6784025,
+    "street": "Đường Lê Hồng Phong",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Juicy Plus",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7564543,
+    "lon": 106.6784708,
+    "street": "Đường Lê Hồng Phong",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Ngon Mê Ly",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7564882,
+    "lon": 106.6784588,
+    "street": "Đường Lê Hồng Phong",
+    "district": "Quận 5"
+  },
+  {
+    "name": "74 Juice",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7563523,
+    "lon": 106.6785068,
+    "street": "Đường Lê Hồng Phong",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Sông",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7557081,
+    "lon": 106.6787749,
+    "street": "Đường Lê Hồng Phong",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Fit Center",
+    "category": "di_choi",
+    "osm_type": "fitness_centre",
+    "lat": 10.7556085,
+    "lon": 106.6788143,
+    "street": "Đường Lê Hồng Phong",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Phố Việt",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7553033,
+    "lon": 106.6788805,
+    "street": "Đường Lê Hồng Phong",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lệ Quỳnh",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7549964,
+    "lon": 106.6791743,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Trà Phê Cháy",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.75512,
+    "lon": 106.6796143,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cháo Bò Viên 568",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7553091,
+    "lon": 106.6803679,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hậu (Chi nhánh 3)",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7554664,
+    "lon": 106.6808272,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Ủa",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7554849,
+    "lon": 106.6808952,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hàn Quốc 3D",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7555126,
+    "lon": 106.6810651,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "La Doma",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7553392,
+    "lon": 106.6802603,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bliss",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7574605,
+    "lon": 106.6797009,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Baas+",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7577936,
+    "lon": 106.6800277,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Long",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7576666,
+    "lon": 106.6797127,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Coffee Take Away",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7570596,
+    "lon": 106.6808025,
+    "street": "Đường Trần Bình Trọng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Sushi Phố Chợ Bàu Sen",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7570281,
+    "lon": 106.6808082,
+    "street": "Đường Trần Bình Trọng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Coffee 161",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7578352,
+    "lon": 106.6806622,
+    "street": "Đường Trần Bình Trọng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "MOI Beauty",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7577816,
+    "lon": 106.680672,
+    "street": "Đường Trần Bình Trọng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "A Mẹt",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7561425,
+    "lon": 106.6810242,
+    "street": "Đường Trần Bình Trọng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Mr. Bisteak",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7563569,
+    "lon": 106.6809361,
+    "street": "Đường Trần Bình Trọng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Là Home Cafe",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7562861,
+    "lon": 106.6809564,
+    "street": "Đường Trần Bình Trọng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Wisely Hotel",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7564674,
+    "lon": 106.680872,
+    "street": "Đường Trần Bình Trọng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Dòng Biển Đức Thiên Phước",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7565804,
+    "lon": 106.6809222,
+    "street": "Đường Trần Bình Trọng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Good Life",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7568121,
+    "lon": 106.6808398,
+    "street": "Đường Trần Bình Trọng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bạn Tôi",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7560424,
+    "lon": 106.6801024,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "An Nhiên Spa",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7558909,
+    "lon": 106.6791133,
+    "street": "Đường Lê Hồng Phong",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bà Xã",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7542637,
+    "lon": 106.6669481,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bàng Kiều",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7542883,
+    "lon": 106.6670755,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bu",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7543368,
+    "lon": 106.667327,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chè Sầu riêng Simi",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7542744,
+    "lon": 106.6670036,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Mai Phương",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7570106,
+    "lon": 106.6797083,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bánh bao Thành Phát 99",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7523365,
+    "lon": 106.6631186,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tuibao",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7523474,
+    "lon": 106.6632331,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "No.1 Muay Club",
+    "category": "di_choi",
+    "osm_type": "fitness_centre",
+    "lat": 10.7523452,
+    "lon": 106.6636803,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Ego Eimi",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7523835,
+    "lon": 106.6640922,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Yumei House",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7523793,
+    "lon": 106.6640515,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hội quán Quỳnh Phủ",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7525951,
+    "lon": 106.6633431,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Thánh đường Hồi giáo Chợ Lớn",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7531278,
+    "lon": 106.6630779,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Xã Tây",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7530137,
+    "lon": 106.6628536,
+    "street": "Đường Phù Đổng Thiên Vương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Q-MaMaMart & Hotpot",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7535433,
+    "lon": 106.6649411,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Thượng Hải",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7537319,
+    "lon": 106.6663869,
+    "street": "Đường Ngô Quyền",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Misa",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7537108,
+    "lon": 106.6660446,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lục Trà",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7538909,
+    "lon": 106.6669419,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "An An",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7538797,
+    "lon": 106.666867,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "OMG",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7538628,
+    "lon": 106.6667547,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lena",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7541187,
+    "lon": 106.6678065,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nam Tiến",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7540997,
+    "lon": 106.6677139,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Trà sữa Hàn Quốc nhà làm",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7540672,
+    "lon": 106.6675617,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nguyên Phát II",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7539568,
+    "lon": 106.6672977,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hello Coffee",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7539476,
+    "lon": 106.6672402,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Mì trộn Tốp mỡ Trứng lòng đào Bãi Sậy",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7545551,
+    "lon": 106.6684006,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lam Kinh",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7545084,
+    "lon": 106.6680908,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Siamcha",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7542889,
+    "lon": 106.6688324,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Laha Café",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7542563,
+    "lon": 106.6686657,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lẩu gà lá é Tao Ngộ",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7543705,
+    "lon": 106.6692506,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "May Beauty",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7543638,
+    "lon": 106.6692153,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hi-End Coffee",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7545296,
+    "lon": 106.6667326,
+    "street": "Đường Ngô Quyền",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Sương Mai 1007",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7526401,
+    "lon": 106.652554,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bửu Sơn Cổ Tự",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7527082,
+    "lon": 106.6519615,
+    "street": "Đường Xóm Vôi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Huê Lý",
+    "category": "di_choi",
+    "osm_type": "car_parts",
+    "lat": 10.7530712,
+    "lon": 106.6509882,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Xôi Châu",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7531236,
+    "lon": 106.6508517,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Ghiền Mía",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7531104,
+    "lon": 106.6509046,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Maryderma Beauty",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7530315,
+    "lon": 106.6508388,
+    "street": "Đường Nguyễn Thị Nhỏ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Mai Spa",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7531025,
+    "lon": 106.6520658,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "T.2004 Nails",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7529251,
+    "lon": 106.6532201,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Thuận Kiều",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7532383,
+    "lon": 106.6533943,
+    "street": "Đường Phú Hữu",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhất Tâm",
+    "category": "di_choi",
+    "osm_type": "massage",
+    "lat": 10.7529235,
+    "lon": 106.6531733,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tịnh xá Sư Trúc Hiên",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7524624,
+    "lon": 106.6532637,
+    "street": "Đường Phú Hữu",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Meggy",
+    "category": "an_uong",
+    "osm_type": "ice_cream",
+    "lat": 10.7525493,
+    "lon": 106.6531094,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà thờ Giáo xứ Thánh Phanxicô Xaviê",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.752034,
+    "lon": 106.6539469,
+    "street": "Đường Học Lạc",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bảo Bình",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7530916,
+    "lon": 106.6543054,
+    "street": "Đường Học Lạc",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lai Ký Mì Gia",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7529664,
+    "lon": 106.6541347,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Góc Phố",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7529762,
+    "lon": 106.6543628,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Xương Thế Kỳ",
+    "category": "workshop",
+    "osm_type": "craft",
+    "lat": 10.7516739,
+    "lon": 106.6542896,
+    "street": "Đường Học Lạc",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lalaba",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7512584,
+    "lon": 106.6647559,
+    "street": "Đường Tản Đà",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nước mía - Nước ép 53",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7515024,
+    "lon": 106.665573,
+    "street": "Đường An Điềm",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Kate",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.751498,
+    "lon": 106.6655392,
+    "street": "Đường An Điềm",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Viễn Đông",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7514874,
+    "lon": 106.6654611,
+    "street": "Đường An Điềm",
+    "district": "Quận 5"
+  },
+  {
+    "name": "08 03",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7514578,
+    "lon": 106.665239,
+    "street": "Đường An Điềm",
+    "district": "Quận 5"
+  },
+  {
+    "name": "May Kitchen",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7514478,
+    "lon": 106.6651648,
+    "street": "Đường An Điềm",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chè Phố Tàu",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.751443,
+    "lon": 106.6651276,
+    "street": "Đường An Điềm",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tường Phong",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7514328,
+    "lon": 106.6650533,
+    "street": "Đường An Điềm",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bếp Bé Ke",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7514082,
+    "lon": 106.6648673,
+    "street": "Đường An Điềm",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cây Me",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7514036,
+    "lon": 106.664743,
+    "street": "Đường Tản Đà",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bôi",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7526478,
+    "lon": 106.654829,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cô Cư Chè quán",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7526499,
+    "lon": 106.6548663,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán phở bò 931B",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7526581,
+    "lon": 106.6550247,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Kang Kang Hao",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7526311,
+    "lon": 106.6545281,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Thuỷ Nguyễn",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7527379,
+    "lon": 106.6559774,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Sao Mai",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7530221,
+    "lon": 106.6558892,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Thuận Phùng Hưng",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7530077,
+    "lon": 106.6555755,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chế Trang",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7530619,
+    "lon": 106.6565634,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Dân Ích",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7531284,
+    "lon": 106.6585186,
+    "street": "Đường Châu Văn Liêm",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hội quán Hà Chương",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7532032,
+    "lon": 106.6579693,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nước ép 883",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.752766,
+    "lon": 106.6563213,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "869 Café",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7527792,
+    "lon": 106.6565519,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cari Việt Ấn",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7527781,
+    "lon": 106.6565193,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Thanh Ngọc",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7527323,
+    "lon": 106.6585503,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lái Ky Sa tế",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7528516,
+    "lon": 106.6579588,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Jhana Yoga",
+    "category": "di_choi",
+    "osm_type": "fitness_centre",
+    "lat": 10.7528491,
+    "lon": 106.6581216,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cơm gà Đông Nguyên",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7528149,
+    "lon": 106.6583471,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Trung tâm Thể dục Thể thao Quận 5",
+    "category": "di_choi",
+    "osm_type": "sports_centre",
+    "lat": 10.7534442,
+    "lon": 106.6597712,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lệ Ái",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.753146,
+    "lon": 106.6590856,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "ST HomeSpa",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.753147,
+    "lon": 106.6591385,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khánh vàng Ngọc Mỹ",
+    "category": "workshop",
+    "osm_type": "craft",
+    "lat": 10.7531451,
+    "lon": 106.6589448,
+    "street": "Đường Châu Văn Liêm",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tuệ Đức",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7531448,
+    "lon": 106.6590327,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bếp Huỳnh's",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7529022,
+    "lon": 106.6594706,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hồng Trà Ngô Gia",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7528935,
+    "lon": 106.6596465,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khâu nhục Ông Làu",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7528946,
+    "lon": 106.6597229,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Home Coffee & Tea",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7528971,
+    "lon": 106.6599255,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bánh hạt dẻ Bongsubi",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7529031,
+    "lon": 106.6594266,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Trung Mai",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7528584,
+    "lon": 106.6591951,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Ăn Mì Ngon",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7528764,
+    "lon": 106.6601238,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hội quán Tuệ Thành",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7535423,
+    "lon": 106.6611898,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hân Nail",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7525992,
+    "lon": 106.6612856,
+    "street": "Đường Triệu Quang Phục",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Phúc Long",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7522471,
+    "lon": 106.6607563,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đình Minh Hương Gia Thạnh",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7523837,
+    "lon": 106.6610674,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Một Lít",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7522465,
+    "lon": 106.6608085,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Toàn",
+    "category": "workshop",
+    "osm_type": "craft",
+    "lat": 10.7522106,
+    "lon": 106.6613705,
+    "street": "Đường Triệu Quang Phục",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tấn Thành",
+    "category": "workshop",
+    "osm_type": "craft",
+    "lat": 10.7521301,
+    "lon": 106.6611854,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cẩm Kỳ",
+    "category": "workshop",
+    "osm_type": "craft",
+    "lat": 10.7525624,
+    "lon": 106.6612865,
+    "street": "Đường Triệu Quang Phục",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Thắng",
+    "category": "workshop",
+    "osm_type": "craft",
+    "lat": 10.7525256,
+    "lon": 106.6612875,
+    "street": "Đường Triệu Quang Phục",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nương Beauty",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7534069,
+    "lon": 106.6626584,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hội quán Nghĩa An",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7536741,
+    "lon": 106.6621207,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhật Xuất",
+    "category": "workshop",
+    "osm_type": "photo",
+    "lat": 10.7533928,
+    "lon": 106.6625844,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Gia Phú",
+    "category": "di_choi",
+    "osm_type": "books",
+    "lat": 10.753231,
+    "lon": 106.6617971,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hải Dương Quán",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.752768,
+    "lon": 106.6615813,
+    "street": "Đường Triệu Quang Phục",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Bún mọc",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7531206,
+    "lon": 106.6626857,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hội quán Tam Sơn",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7525427,
+    "lon": 106.6616809,
+    "street": "Đường Triệu Quang Phục",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chidori",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7529432,
+    "lon": 106.6615491,
+    "street": "Đường Triệu Quang Phục",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hội quán Lệ Châu",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7522608,
+    "lon": 106.6552129,
+    "street": "Đường Trần Hưng Đạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Di tích lưu niệm Chủ tịch Hồ Chí Minh",
+    "category": "di_choi",
+    "osm_type": "museum",
+    "lat": 10.7511496,
+    "lon": 106.6588948,
+    "street": "Đường Châu Văn Liêm",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Hòa Bình",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7520483,
+    "lon": 106.6756482,
+    "street": "Bach Van",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà hát Nghệ thuật Phương Nam",
+    "category": "di_choi",
+    "osm_type": "theatre",
+    "lat": 10.7536417,
+    "lon": 106.668771,
+    "street": "Đường Trần Phú",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Vịt quay Quốc Ký",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7529521,
+    "lon": 106.6688156,
+    "street": "Đường Trần Phú",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đại Phát",
+    "category": "workshop",
+    "osm_type": "place",
+    "lat": 10.7527819,
+    "lon": 106.6684776,
+    "street": "Đường Trần Hưng Đạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Qing Cha",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7528701,
+    "lon": 106.6692681,
+    "street": "Đường Trần Hưng Đạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tròn Beauty",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7530542,
+    "lon": 106.671284,
+    "street": "Đường Trần Hưng Đạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đồng Khánh Hotel",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7532138,
+    "lon": 106.6717211,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Baoz Dimsum",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.753149,
+    "lon": 106.6696797,
+    "street": "Đường Nguyễn Tri Phương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "G-Luxe",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7532508,
+    "lon": 106.6696792,
+    "street": "Đường Nguyễn Tri Phương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bánh bao Thọ Phát",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7530434,
+    "lon": 106.6696811,
+    "street": "Đường Nguyễn Tri Phương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Giò chả Đắc Tô",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.752912,
+    "lon": 106.6697823,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Kelly Pang",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7529066,
+    "lon": 106.6696694,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Vương Hoài Phong",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7529742,
+    "lon": 106.6701843,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lê My 68",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7529663,
+    "lon": 106.6700846,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách Sạn 4 Roses",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7673047,
+    "lon": 106.6790131,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Siêu Thị Mela",
+    "category": "di_choi",
+    "osm_type": "supermarket",
+    "lat": 10.7579255,
+    "lon": 106.6731127,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Phòng Tập California Wow Yoga & Fitness",
+    "category": "di_choi",
+    "osm_type": "sports_centre",
+    "lat": 10.7560367,
+    "lon": 106.6626301,
+    "street": "Lý Thường Kiệt",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cửa Hàng Mua Sắm Citimart",
+    "category": "di_choi",
+    "osm_type": "supermarket",
+    "lat": 10.7559528,
+    "lon": 106.6624963,
+    "street": "Đường Hồng Bàng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Rạp Phim Megastar",
+    "category": "di_choi",
+    "osm_type": "cinema",
+    "lat": 10.7561091,
+    "lon": 106.6628487,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Siêu thị Điện máy Chợ Lớn",
+    "category": "di_choi",
+    "osm_type": "supermarket",
+    "lat": 10.7542055,
+    "lon": 106.6645954,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách Sạn Windsor Plaza Sài Gòn",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.758007,
+    "lon": 106.6732829,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Ăn Hoàng Ký 1",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.755919,
+    "lon": 106.676499,
+    "street": "Đường Huỳnh Mẫn Đạt",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách Sạn Nam Hy",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7557373,
+    "lon": 106.6760578,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Pizza Hut Nguyễn Trãi",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7565057,
+    "lon": 106.6760334,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khánh Vân Nam Viện Đạo Quán",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7573682,
+    "lon": 106.6507522,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách Sạn Đức Minh",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7518784,
+    "lon": 106.6740794,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bún Bò Huế Nhân Trí 1",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7622509,
+    "lon": 106.6762166,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê Rita Võ",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7603644,
+    "lon": 106.6833383,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Bar Tokyo Club",
+    "category": "an_uong",
+    "osm_type": "bar",
+    "lat": 10.7518312,
+    "lon": 106.6743051,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê Paradise",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7557401,
+    "lon": 106.6762805,
+    "street": "Đường Huỳnh Mẫn Đạt",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Rạp Phim Đống Đa",
+    "category": "di_choi",
+    "osm_type": "cinema",
+    "lat": 10.7536969,
+    "lon": 106.6742043,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Xôi vò Thảo Trần",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7628267,
+    "lon": 106.6645622,
+    "street": "Đường Vĩnh Viễn",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cơm Tấm Nguyễn Văn Cừ",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7577795,
+    "lon": 106.6845222,
+    "street": "Nguyễn Văn Cừ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Pizza Hut",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7641929,
+    "lon": 106.6824701,
+    "street": "Nguyễn Văn Cừ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Vạn Phật",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7529925,
+    "lon": 106.675382,
+    "street": "Nghĩa Thục",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Giác Ngộ",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7609548,
+    "lon": 106.6727566,
+    "street": "Đường Nguyễn Chí Thanh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê Three O’clock",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7553326,
+    "lon": 106.6818593,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Campuchia",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7633674,
+    "lon": 106.6776016,
+    "street": "Hồ Thị Kỷ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "마사지",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7537702,
+    "lon": 106.6749999,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tiệm Mì Huê Ký",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7572242,
+    "lon": 106.6583557,
+    "street": "Đường Thuận Kiều",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tượng đài Công Nông Binh",
+    "category": "di_choi",
+    "osm_type": "place",
+    "lat": 10.7676873,
+    "lon": 106.6743947,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê - Trà Joe Coffee",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7478046,
+    "lon": 106.6809361,
+    "street": "Phạm Thế Hiển",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Sách Nguyễn Văn Cừ",
+    "category": "di_choi",
+    "osm_type": "books",
+    "lat": 10.7603888,
+    "lon": 106.6811723,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Phở Lệ",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7553081,
+    "lon": 106.6736944,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Jolliebee Trần Hưng Đạo",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7564895,
+    "lon": 106.6849749,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Trung Tâm Văn Hóa Quận 5",
+    "category": "di_choi",
+    "osm_type": "community_centre",
+    "lat": 10.7521215,
+    "lon": 106.6683676,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cơm Tấm Huỳnh Mẫn Đạt",
+    "category": "an_uong",
+    "osm_type": "food_court",
+    "lat": 10.7585001,
+    "lon": 106.6755344,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lẩu tự chọn Nguyệt Thuỷ",
+    "category": "an_uong",
+    "osm_type": "food_court",
+    "lat": 10.7602317,
+    "lon": 106.6692924,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách Sạn Phương Anh",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.767744,
+    "lon": 106.6711983,
+    "street": "Sư Van Hạnh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách Sạn Huy Lộc 1",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7658141,
+    "lon": 106.6746366,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Đại Quang Minh",
+    "category": "di_choi",
+    "osm_type": "department_store",
+    "lat": 10.7516957,
+    "lon": 106.6587066,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bún Mắm Vy",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7591873,
+    "lon": 106.6741732,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Bún Đậu Nhà Tôi",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7603231,
+    "lon": 106.6689315,
+    "street": "Đường Nguyễn Tri Phương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà hàng Cố Đô",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7589694,
+    "lon": 106.6784957,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cháo Tám Hói",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.755777,
+    "lon": 106.6780371,
+    "street": "Đường Phan Văn Trị",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Phòng Cho Thuê Phương Thanh",
+    "category": "homestay",
+    "osm_type": "motel",
+    "lat": 10.7636462,
+    "lon": 106.6597629,
+    "street": "3 tháng 2",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách sạn Phương Vy",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7629047,
+    "lon": 106.6584279,
+    "street": "3 Tháng 2",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách Sạn Kim Hương",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7592294,
+    "lon": 106.6562423,
+    "street": "Đường Trần Quý",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách sạn Phương Loan",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.763312,
+    "lon": 106.6591468,
+    "street": "3 Tháng 2",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Hàng Út Cà Mau",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7618187,
+    "lon": 106.6808856,
+    "street": "Đường Nguyễn Thị Minh Khai",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách Sạn Hoàng Nam",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7523812,
+    "lon": 106.6670749,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách Sạn Phong Phú",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7639963,
+    "lon": 106.6618047,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tạp Hóa 305",
+    "category": "di_choi",
+    "osm_type": "department_store",
+    "lat": 10.7443857,
+    "lon": 106.6646634,
+    "street": "Dã Tượng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cừa hàng Saigon Hobby",
+    "category": "di_choi",
+    "osm_type": "department_store",
+    "lat": 10.7665202,
+    "lon": 106.6778627,
+    "street": "Lý Thái Tổ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Chim Xanh",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7659514,
+    "lon": 106.6484854,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Phước Hòa",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7660517,
+    "lon": 106.6493879,
+    "street": "Đội Cung",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cơm Tấm 419",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.759614,
+    "lon": 106.6789833,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê Cá Mát Xa",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7432365,
+    "lon": 106.6835587,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Hoa hồng",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.766783,
+    "lon": 106.6597925,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê Gao Trần",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.749857,
+    "lon": 106.6606372,
+    "street": "Đường Lương Nhữ Học",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Lẩu Bàu Sen",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7576984,
+    "lon": 106.678182,
+    "street": "Đường Lê Hồng Phong",
+    "district": "Quận 5"
+  },
+  {
+    "name": "法國麵包",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7566907,
+    "lon": 106.6761001,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Thiêm Huy Mì Gia",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7551247,
+    "lon": 106.6727659,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Really Amazing Duck",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7628938,
+    "lon": 106.664532,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê Bon",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7626193,
+    "lon": 106.6706383,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Hàng KingBBQ",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7658219,
+    "lon": 106.6674187,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Phở Hoàng",
+    "category": "an_uong",
+    "osm_type": "food_court",
+    "lat": 10.7659905,
+    "lon": 106.6676028,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Burger King",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7672988,
+    "lon": 106.667094,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Domino's",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7617812,
+    "lon": 106.6683576,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cầu Đi Bộ Số 7",
+    "category": "di_choi",
+    "osm_type": "attraction",
+    "lat": 10.7458291,
+    "lon": 106.6543332,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Jollibee",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7596013,
+    "lon": 106.6614645,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ vải Soái Kình Lâm",
+    "category": "di_choi",
+    "osm_type": "department_store",
+    "lat": 10.7518368,
+    "lon": 106.6566738,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cửa Hàng Đồ Chay Phước Duyên",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7549721,
+    "lon": 106.6839695,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê Story",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7511619,
+    "lon": 106.6492783,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách Sạn DaBlend",
+    "category": "homestay",
+    "osm_type": "hostel",
+    "lat": 10.7612274,
+    "lon": 106.6667533,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Bàu Sen",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7581159,
+    "lon": 106.6784826,
+    "street": "Hẻm 138 An Dương Vương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cơm Tấm 68",
+    "category": "an_uong",
+    "osm_type": "food_court",
+    "lat": 10.7633003,
+    "lon": 106.6746497,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê Passio",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7655414,
+    "lon": 106.6750252,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê 003",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7628194,
+    "lon": 106.6724449,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bánh Xèo Miền Trung",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7636547,
+    "lon": 106.6723967,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Sườn Trà Singapore",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7664112,
+    "lon": 106.665067,
+    "street": "Đường 3 Tháng 2",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê Simplicity",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7662225,
+    "lon": 106.6647282,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "The Coffee Bean & Tea Leaf",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7642634,
+    "lon": 106.6823171,
+    "street": "Nguyễn Văn Cừ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê Hot",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7460794,
+    "lon": 106.652079,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Cơm Chay Trí Đức",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7566626,
+    "lon": 106.6781801,
+    "street": "Đường Lê Hồng Phong",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Trà Sữa Bocha",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7590965,
+    "lon": 106.6840063,
+    "street": "Nguyễn Văn Cừ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Hàng Sushi MH",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7591014,
+    "lon": 106.6839301,
+    "street": "Nguyễn Văn Cừ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bít tết Lục Nguyên",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7523968,
+    "lon": 106.6671581,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Bar Phoenix",
+    "category": "an_uong",
+    "osm_type": "bar",
+    "lat": 10.7621352,
+    "lon": 106.6749645,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Hàng Món Ăn Italian",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.762322,
+    "lon": 106.674923,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Hàng Denny's",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7620841,
+    "lon": 106.6751703,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cao Ốc - Nguyễn Kim",
+    "category": "homestay",
+    "osm_type": "apartment",
+    "lat": 10.7615168,
+    "lon": 106.6618049,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bò Né Sài Gòn",
+    "category": "an_uong",
+    "osm_type": "food_court",
+    "lat": 10.7541354,
+    "lon": 106.6818795,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Banh Canh Cua 14",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7593678,
+    "lon": 106.6802421,
+    "street": "Đường Trần Bình Trọng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Bà Ngoại",
+    "category": "homestay",
+    "osm_type": "apartment",
+    "lat": 10.7601316,
+    "lon": 106.6690697,
+    "street": "Ngô Gia Tự",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê Thống Nhất",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7665978,
+    "lon": 106.6796218,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Điểm Cung Cấp Dịch Vụ Internet Inthenet",
+    "category": "di_choi",
+    "osm_type": "internet_cafe",
+    "lat": 10.7615602,
+    "lon": 106.6683719,
+    "street": "Đường Nguyễn Tri Phương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Cà Phê Cheo Leo",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7669052,
+    "lon": 106.6798031,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Ốc 379",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7631075,
+    "lon": 106.6651827,
+    "street": "Đường Vĩnh Viễn",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tượng Đài Tượng Niệm - Công Viên Văn Lang",
+    "category": "di_choi",
+    "osm_type": "place",
+    "lat": 10.7563781,
+    "lon": 106.6672711,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Gong Cha",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.75829,
+    "lon": 106.6758914,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tịnh Xá Di Đà",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7574255,
+    "lon": 106.6743461,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Siêu Thị CoopMart Hùng Vương",
+    "category": "di_choi",
+    "osm_type": "supermarket",
+    "lat": 10.7593289,
+    "lon": 106.6715532,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Hàng Phúc An Khang",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7653975,
+    "lon": 106.6820352,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Buddha Chay",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7606123,
+    "lon": 106.6730074,
+    "street": "Đường Nguyễn Chí Thanh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cafe ViEn",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7639372,
+    "lon": 106.6804356,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Co Hoa",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7588745,
+    "lon": 106.6714475,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách Sạn Xena",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.760527,
+    "lon": 106.6727398,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà hàng 241",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7668464,
+    "lon": 106.6839392,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Ăn Hoàng Lan",
+    "category": "an_uong",
+    "osm_type": "food_court",
+    "lat": 10.7634,
+    "lon": 106.6651284,
+    "street": "Hẻm 486 Vĩnh Viễn",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Thiên Thiên Sủi Cảo",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7581063,
+    "lon": 106.6526298,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Hàng Hai Lùn",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7677103,
+    "lon": 106.65255,
+    "street": "Hẻm 433 Lê Đại Hành",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Parkson Hùng Vương",
+    "category": "di_choi",
+    "osm_type": "mall",
+    "lat": 10.7557757,
+    "lon": 106.6629025,
+    "street": "Hùng Vương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Gỏi cuốn Ngon Ngon",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7599404,
+    "lon": 106.6794454,
+    "street": "Đường An Dương Vương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán 98 - Bánh Canh Nui & Hủ Tiếu Mì",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7677746,
+    "lon": 106.6500879,
+    "street": "Đường Bình Thới",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chè 259",
+    "category": "an_uong",
+    "osm_type": "food_court",
+    "lat": 10.759421,
+    "lon": 106.6525597,
+    "street": "Hà Tôn Quyền",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Circle K",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.760328,
+    "lon": 106.6808899,
+    "street": "Đường An Dương Vương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bánh Tằm Bì Đồng Tháp",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7554922,
+    "lon": 106.6735592,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Sasin",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7497705,
+    "lon": 106.6485733,
+    "street": "Đường Hậu Giang",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê Starbucks",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7536876,
+    "lon": 106.6696595,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê VivaStar",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7646007,
+    "lon": 106.6630673,
+    "street": "Đường Bà Hạt",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Internet Khánh Phi",
+    "category": "di_choi",
+    "osm_type": "internet_cafe",
+    "lat": 10.7473695,
+    "lon": 106.6661753,
+    "street": "Đường Bến Ba Đình",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Phòng Tập Spirit Yoga",
+    "category": "di_choi",
+    "osm_type": "fitness_centre",
+    "lat": 10.7646298,
+    "lon": 106.6722483,
+    "street": "Đường Ngô Gia Tự",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Ăn Sủi Cảo Chú Phương",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7587299,
+    "lon": 106.6527205,
+    "street": "Hẻm 235 Tạ Uyên",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chè Thái Lan 280",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7623001,
+    "lon": 106.6684262,
+    "street": "Đường Nguyễn Tri Phương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Phở Hùng - Nguyễn Tri Phương",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7624433,
+    "lon": 106.6684,
+    "street": "Đường Nguyễn Tri Phương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Hàng Chay An Duyên",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7513543,
+    "lon": 106.6695873,
+    "street": "Nguyễn Tri Phương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê Sạch Nguyên Chất",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7547359,
+    "lon": 106.6603957,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Hàng Hotspot Story",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7544659,
+    "lon": 106.6564135,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Highland Coffee",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7557422,
+    "lon": 106.6625646,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cà Phê Hồng",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7582857,
+    "lon": 106.6706942,
+    "street": "Đường Hùng Vương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cơm Tấm - Âu Dương Lân",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7479219,
+    "lon": 106.6820224,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chè Thảo",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7475488,
+    "lon": 106.6820525,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Thẩm Mỹ H2 Nail",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7471525,
+    "lon": 106.6822585,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Hàng Như Ý",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7461511,
+    "lon": 106.6828013,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bách Hóa Xanh",
+    "category": "di_choi",
+    "osm_type": "supermarket",
+    "lat": 10.7459593,
+    "lon": 106.6830717,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chicken Plus Nguyễn Tri Phương",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7613537,
+    "lon": 106.6687167,
+    "street": "Đường Nguyễn Tri Phương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cơm Chay Thuyền Tịnh",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.764674,
+    "lon": 106.6702377,
+    "street": "Đường Nguyễn Duy Dương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Three O'Clock - Nguyễn Thị Minh Khai",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7679645,
+    "lon": 106.683628,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Sách Cá Chép",
+    "category": "di_choi",
+    "osm_type": "books",
+    "lat": 10.7670937,
+    "lon": 106.6835742,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán cà phê Chung Cư Xi Grand Court",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7679828,
+    "lon": 106.6596334,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Hàng Ái Huê",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7520124,
+    "lon": 106.659823,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Đại Hạnh",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7678181,
+    "lon": 106.6764865,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Minh Nguyệt",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7505054,
+    "lon": 106.6567172,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Trung Tâm Mua Sắm Nowzone - Nguyễn Văn Cừ",
+    "category": "di_choi",
+    "osm_type": "mall",
+    "lat": 10.764339,
+    "lon": 106.6824266,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Coop Food - Chung cư Phan Văn Trị",
+    "category": "di_choi",
+    "osm_type": "supermarket",
+    "lat": 10.7564696,
+    "lon": 106.6781767,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Thiện Mỹ",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.754,
+    "lon": 106.6830606,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Hàng Hải Sản Dim Tu Tac",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7528439,
+    "lon": 106.6714295,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Thiên Tôn",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7517854,
+    "lon": 106.6720686,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lotte Department Store",
+    "category": "di_choi",
+    "osm_type": "department_store",
+    "lat": 10.7630157,
+    "lon": 106.6572834,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Manwah Taiwanese Hotpot - An Dương Vương",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7569381,
+    "lon": 106.6716432,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Katinat Saigon Kafe",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7579622,
+    "lon": 106.6733947,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Siêu thị Co.opmart Tuy Lý Vương",
+    "category": "di_choi",
+    "osm_type": "supermarket",
+    "lat": 10.7443048,
+    "lon": 106.6552043,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "777 hai",
+    "category": "an_uong",
+    "osm_type": "bar",
+    "lat": 10.753394,
+    "lon": 106.6769009,
+    "street": "Đường Huỳnh Mẫn Đạt",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên nội bộ chung cư Hòa Bình",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7670592,
+    "lon": 106.6610774,
+    "street": "3 tháng 2",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhất Tỷ, Mì xe đẩy",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7496755,
+    "lon": 106.6492538,
+    "street": "Đường Hậu Giang",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cheese Coffee",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7546442,
+    "lon": 106.6602164,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Manwah Taiwanese Hot Pot",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7568503,
+    "lon": 106.6715768,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "NATURAL HOUSE hostel",
+    "category": "homestay",
+    "osm_type": "hostel",
+    "lat": 10.7633355,
+    "lon": 106.678264,
+    "street": "Đường Hùng Vương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhậu ngon",
+    "category": "an_uong",
+    "osm_type": "pub",
+    "lat": 10.7667439,
+    "lon": 106.6501344,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Dạ Nam",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7489187,
+    "lon": 106.6835781,
+    "street": "Phạm Thế Hiển",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Lộc Dã",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7467864,
+    "lon": 106.670759,
+    "street": "Hưng Phú",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chùa Giác Quang",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7447819,
+    "lon": 106.6662817,
+    "street": "Nguyễn Duy",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nước Mía 160 (Sugarcane Juice)",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7456016,
+    "lon": 106.6832426,
+    "street": "Đường Âu Dương Lân",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hoa Kiều",
+    "category": "di_choi",
+    "osm_type": "massage",
+    "lat": 10.7587997,
+    "lon": 106.6536923,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "1127 KTV",
+    "category": "an_uong",
+    "osm_type": "bar",
+    "lat": 10.7530028,
+    "lon": 106.6730685,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hạnh long 2 HOTEL",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7530744,
+    "lon": 106.6733125,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Canh Tiềm Dinh Dưỡng Minh Ký",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.752898,
+    "lon": 106.6734332,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lò Đất BBQ",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7524125,
+    "lon": 106.6737282,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà Nghỉ Đức Minh",
+    "category": "homestay",
+    "osm_type": "motel",
+    "lat": 10.7521573,
+    "lon": 106.6739078,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "大娘餃子",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7532254,
+    "lon": 106.6726396,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Zen Spa",
+    "category": "di_choi",
+    "osm_type": "massage",
+    "lat": 10.7534145,
+    "lon": 106.6734016,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cafe Trung Nguyên",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.753134,
+    "lon": 106.6736236,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cửa Hàng Vinh Phát",
+    "category": "di_choi",
+    "osm_type": "supermarket",
+    "lat": 10.7532921,
+    "lon": 106.6747077,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "700 FORTUNE",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7545645,
+    "lon": 106.6778146,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Foot Masage Hạnh Long",
+    "category": "di_choi",
+    "osm_type": "massage",
+    "lat": 10.7529634,
+    "lon": 106.6730007,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Don Chicken Lê Đại Hành",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7675775,
+    "lon": 106.6531122,
+    "street": "Đường Lê Đại Hành",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bia Truyền thống Vườn Lài",
+    "category": "di_choi",
+    "osm_type": "place",
+    "lat": 10.7649738,
+    "lon": 106.6727071,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Chay Dì Sáu",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7619659,
+    "lon": 106.663399,
+    "street": "Nguyễn Lâm",
+    "district": "Quận 5"
+  },
+  {
+    "name": "A Bao",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7648756,
+    "lon": 106.6765439,
+    "street": "Hẻm 105 Hồ Thị Kỷ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hồ Thị Kỷ",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7651009,
+    "lon": 106.6764346,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hội quán Phước An Padoga",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7549785,
+    "lon": 106.6589253,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chè Cô Có",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7644666,
+    "lon": 106.6768478,
+    "street": "Hẻm 51 Hồ Thị Kỷ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bánh Canh Cua Châu Lan",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7489165,
+    "lon": 106.6511166,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Buffet Poseidon Võ Văn Kiệt",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7434609,
+    "lon": 106.6483735,
+    "street": "Đường Võ Văn Kiệt",
+    "district": "Quận 5"
+  },
+  {
+    "name": "S'mores Chợ Lớn",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7523446,
+    "lon": 106.6666331,
+    "street": "Trần Hưng Đạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Zerus Caffe",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7481138,
+    "lon": 106.6603301,
+    "street": "Bến Bình Đông",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Út Nhung Xóm Củi",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7465057,
+    "lon": 106.6605679,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "KAI Coffee Hồng Bàng",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7550936,
+    "lon": 106.660206,
+    "street": "Hồng Bàng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hủ tiếu mực",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7644026,
+    "lon": 106.6621337,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "The Thousand Beans",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7669375,
+    "lon": 106.6640859,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bia tưởng niệm Nam Bộ Kháng chiến",
+    "category": "di_choi",
+    "osm_type": "place",
+    "lat": 10.749041,
+    "lon": 106.6834912,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hebe - Healing & Beauty",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7677799,
+    "lon": 106.6814031,
+    "street": "Nguyễn Đình Chiểu",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Pizza Piatto",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7608131,
+    "lon": 106.6617334,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Kem Vĩnh Sanh",
+    "category": "an_uong",
+    "osm_type": "ice_cream",
+    "lat": 10.7604234,
+    "lon": 106.653374,
+    "street": "Đường 3 Tháng 2",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Napoly",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7483028,
+    "lon": 106.6574913,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Pizza 777",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7508107,
+    "lon": 106.6670956,
+    "street": "Đường Ngô Quyền",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Pizza Phú",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7664879,
+    "lon": 106.652917,
+    "street": "Hẻm 377 Lê Đại Hành",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bếp Chay Nhân Duyên",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.761144,
+    "lon": 106.6742486,
+    "street": "Đường Nguyễn Chí Thanh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "A Nan Chay",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7632509,
+    "lon": 106.6470856,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chay Thiện Quang",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7593199,
+    "lon": 106.6611946,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Phúc Nguyên",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7584774,
+    "lon": 106.6658591,
+    "street": "Chung cư Ngô Quyền",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hoa Phong",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7584187,
+    "lon": 106.6658726,
+    "street": "Chung cư Ngô Quyền",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bà Tám",
+    "category": "an_uong",
+    "osm_type": "food_court",
+    "lat": 10.7583431,
+    "lon": 106.6658901,
+    "street": "Chung cư Ngô Quyền",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quyn",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7583091,
+    "lon": 106.6658979,
+    "street": "Chung cư Ngô Quyền",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Shefit",
+    "category": "di_choi",
+    "osm_type": "fitness_centre",
+    "lat": 10.7593221,
+    "lon": 106.6665957,
+    "street": "Đường Nguyễn Chí Thanh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Ẩm Thực Chay Thôi Kệ - Lạc An",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.764443,
+    "lon": 106.6679605,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Chay Trúc Lâm Bồ Đề",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7652672,
+    "lon": 106.6630455,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "157",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7557038,
+    "lon": 106.6694325,
+    "street": "Đường Nguyễn Tri Phương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Mìng Sấm",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7559957,
+    "lon": 106.6694462,
+    "street": "Đường Nguyễn Tri Phương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hân",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7551849,
+    "lon": 106.6694082,
+    "street": "Đường Nguyễn Tri Phương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Beehive",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7567074,
+    "lon": 106.6687743,
+    "street": "Đường An Dương Vương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Trung Nguyên",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7567436,
+    "lon": 106.6690084,
+    "street": "Đường An Dương Vương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hai Lúa",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7538371,
+    "lon": 106.6641951,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bò kho gánh",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7617853,
+    "lon": 106.6729985,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "V&M",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7627722,
+    "lon": 106.6763492,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lẩu gà cơ bắp",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7637659,
+    "lon": 106.6759719,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Phong Phú",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7552304,
+    "lon": 106.6789077,
+    "street": "Đường Lê Hồng Phong",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Sip & Savour",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7677537,
+    "lon": 106.6590237,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhuệ Phong",
+    "category": "di_choi",
+    "osm_type": "books",
+    "lat": 10.7532992,
+    "lon": 106.6634709,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Mỹ Hạnh",
+    "category": "di_choi",
+    "osm_type": "florist",
+    "lat": 10.7532754,
+    "lon": 106.6633458,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tiệm Chay Tường Viên",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7550176,
+    "lon": 106.6766871,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Anh Thư",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.752833,
+    "lon": 106.6521073,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cơm 67",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7528617,
+    "lon": 106.651994,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nắng Cafe",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7528841,
+    "lon": 106.6519056,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Vĩnh Khang",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7528431,
+    "lon": 106.6520677,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Passio",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7531302,
+    "lon": 106.651869,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Pranava Yoga",
+    "category": "di_choi",
+    "osm_type": "fitness_centre",
+    "lat": 10.7528562,
+    "lon": 106.6530995,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khu chợ nhỏ",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.767958,
+    "lon": 106.6637171,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Xôi Bình Tiên",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7670949,
+    "lon": 106.6766746,
+    "street": "Lý Thái Tổ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Oc Dao",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7652142,
+    "lon": 106.6846551,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Duyến Ký",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7517208,
+    "lon": 106.6627352,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Katea",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7526619,
+    "lon": 106.6527589,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hủ Tiếu Chay Chú Quang",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7624821,
+    "lon": 106.655196,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tản Đà Hotel",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7511414,
+    "lon": 106.6647121,
+    "street": "Đường Tản Đà",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Thảo Hút Mụn",
+    "category": "di_choi",
+    "osm_type": "beauty",
+    "lat": 10.7514715,
+    "lon": 106.6649354,
+    "street": "Đường An Điềm",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Thanh Dat",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7657079,
+    "lon": 106.6810554,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bún Riêu Chay",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7679322,
+    "lon": 106.6716847,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hủ tiếu mì Thuận Lợi",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7529552,
+    "lon": 106.6558494,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tân Thành",
+    "category": "workshop",
+    "osm_type": "photo",
+    "lat": 10.7529586,
+    "lon": 106.6559494,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lẩu Chay Diệu Tài",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7497784,
+    "lon": 106.6752706,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bánh mì chay Nguyễn Trãi",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7530131,
+    "lon": 106.6571361,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Gà nướng Bia hơi Hồng Kông",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7530657,
+    "lon": 106.6582278,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cô Nữ",
+    "category": "workshop",
+    "osm_type": "craft",
+    "lat": 10.7530639,
+    "lon": 106.6581658,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tăng",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7530403,
+    "lon": 106.6574822,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đền thờ Họ Lê",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7528088,
+    "lon": 106.657727,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cây cảnh Phong thuỷ",
+    "category": "di_choi",
+    "osm_type": "florist",
+    "lat": 10.7528749,
+    "lon": 106.6577914,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tâm Ký Phá lấu",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7528718,
+    "lon": 106.6576888,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lý Hòa Trân Lạp vị gia",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7528654,
+    "lon": 106.6574836,
+    "street": "Đường Phùng Hưng",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cơm Chay Thanh Lương",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7672264,
+    "lon": 106.6666144,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Pho thang",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.767565,
+    "lon": 106.6847937,
+    "street": "Phạm Viết Chánh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bếp Chay An Xanh",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7672317,
+    "lon": 106.6791296,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Ho Thi Ky Food Street",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7663423,
+    "lon": 106.6759674,
+    "street": "Hẻm 105H Hồ Thị Kỷ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Song Kim",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7527396,
+    "lon": 106.6589957,
+    "street": "Đường Châu Văn Liêm",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cơm Tấm Chay 253",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7588579,
+    "lon": 106.6717884,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cơm Chay Yến Mai",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7666041,
+    "lon": 106.6609185,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bánh cuốn Quảng Đông",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7530683,
+    "lon": 106.662237,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Mát Trà",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7529957,
+    "lon": 106.6619034,
+    "street": "Đường Nguyễn Trãi",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Ginza",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7666089,
+    "lon": 106.6816121,
+    "street": "Đường Nguyễn Thiện Thuật",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Tiệm Chay Thong Thả",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7614217,
+    "lon": 106.6668168,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đồng Khánh Restaurant",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7530064,
+    "lon": 106.6717824,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bạn",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7529119,
+    "lon": 106.6703908,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Huy Ép Biển số",
+    "category": "workshop",
+    "osm_type": "craft",
+    "lat": 10.7529149,
+    "lon": 106.670426,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Đại Thống",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.752953,
+    "lon": 106.670864,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chú Thòn",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7529575,
+    "lon": 106.6709164,
+    "street": "Đường Trần Hưng Ðạo",
+    "district": "Quận 5"
+  }
+]

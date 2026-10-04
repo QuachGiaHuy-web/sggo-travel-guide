@@ -1,0 +1,182 @@
+[
+  {
+    "name": "Nguyên Chất coffee",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.761822,
+    "lon": 106.6750541,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "The Coffee House",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7621963,
+    "lon": 106.6750129,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "KFC",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.746861,
+    "lon": 106.6601809,
+    "street": "Bến Cần Giuộc",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Popeyes",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7467086,
+    "lon": 106.6609772,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Bánh Bao Đức Ký",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7567772,
+    "lon": 106.6534012,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lotteria",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7559824,
+    "lon": 106.6628075,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Phở, Lẩu, Món Tiềm",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7664138,
+    "lon": 106.6484761,
+    "street": "Bình Thới",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Căn Tin Ngọc Huệ",
+    "category": "an_uong",
+    "osm_type": "fast_food",
+    "lat": 10.7633405,
+    "lon": 106.6808401,
+    "street": "Nguyễn Văn Cừ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán Hủ Tíu Sườn Đông Hưng",
+    "category": "an_uong",
+    "osm_type": "food_court",
+    "lat": 10.7540246,
+    "lon": 106.6512604,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Highlands Coffee",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7478512,
+    "lon": 106.6595734,
+    "street": "Đường Bình Đông",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Coffee Thúy Vi",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7600528,
+    "lon": 106.6734084,
+    "street": "Hùng Vương",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán ăn 86",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7572016,
+    "lon": 106.6626851,
+    "street": "Đường Bà Triệu",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Hoa Thiện",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7571201,
+    "lon": 106.6622911,
+    "street": "Đường Bà Triệu",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Cafe 29",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7573018,
+    "lon": 106.6628108,
+    "street": "Đường Nguyễn Kim",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Quán 29",
+    "category": "an_uong",
+    "osm_type": "restaurant",
+    "lat": 10.7572329,
+    "lon": 106.6628311,
+    "street": "Đường Nguyễn Kim",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Trà sữa 10",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7571268,
+    "lon": 106.6628539,
+    "street": "Đường Nguyễn Kim",
+    "district": "Quận 5"
+  },
+  {
+    "name": "VAN Coffee",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7574803,
+    "lon": 106.6669431,
+    "street": "Đường Ngô Gia Tự",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Ngọc Yến",
+    "category": "an_uong",
+    "osm_type": "food_court",
+    "lat": 10.7592181,
+    "lon": 106.6662367,
+    "street": "Đường Nguyễn Chí Thanh",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Galaxy Tường Lam",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7589596,
+    "lon": 106.6673751,
+    "street": "Đường Ngô Gia Tự",
+    "district": "Quận 5"
+  },
+  {
+    "name": "The Wall Coffee",
+    "category": "an_uong",
+    "osm_type": "cafe",
+    "lat": 10.7587752,
+    "lon": 106.6678012,
+    "street": "Đường Ngô Gia Tự",
+    "district": "Quận 5"
+  }
+]

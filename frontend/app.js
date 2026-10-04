@@ -1,5 +1,8 @@
-// app.js - SGGo! Pop-Chill Edition
-const API_BASE = "https://sggo-backend.onrender.com/api";
+// app.js - SGGo! District 5 Edition
+// Tự động nhận diện môi trường Localhost hoặc Production (Render)
+const API_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "http://127.0.0.1:8000/api"
+  : "https://sggo-backend.onrender.com/api";
 
 let userChoices = {
   category: null,
@@ -13,16 +16,17 @@ document.addEventListener("DOMContentLoaded", () => {
   preloadPlaces();
 });
 
-// Tải ngầm 100 địa điểm từ API Backend
+// Tải dữ liệu thực tế từ API Backend
 async function preloadPlaces() {
   try {
     const res = await fetch(`${API_BASE}/places`);
     const data = await res.json();
-    allPlacesCache = data.data;
+    // Tương thích cả trường hợp Backend trả về mảng trực tiếp hoặc bọc trong { data: [...] }
+    allPlacesCache = Array.isArray(data) ? data : (data.data || []);
     const countEl = document.getElementById("totalPlacesCount");
     if (countEl) countEl.innerText = allPlacesCache.length;
   } catch (e) {
-    console.warn("Backend đang offline, hãy kiểm tra cổng 8000.");
+    console.warn("Backend đang khởi động hoặc offline.");
   }
 }
 
@@ -49,7 +53,7 @@ function restartFlow() {
   document.getElementById("step1").classList.remove("hidden");
 }
 
-// Hiển thị 3 kết quả tinh tuyển
+// Hiển thị 3 kết quả tinh tuyển từ dữ liệu thật
 function showFinishResults() {
   document.querySelectorAll(".step-card").forEach(el => el.classList.add("hidden"));
   const finishContainer = document.getElementById("stepFinish");
@@ -58,19 +62,10 @@ function showFinishResults() {
   const resultsBox = document.getElementById("flowResults");
   resultsBox.innerHTML = "";
 
-  // Lọc quán theo đúng tiêu chí người dùng
-  let matched = allPlacesCache.filter(p => 
-    p.category === userChoices.category &&
-    p.context === userChoices.context &&
-    p.price_level == userChoices.price_level
-  );
+  // Lọc quán theo category nếu người dùng chọn
+  let matched = allPlacesCache.filter(p => !userChoices.category || p.category === userChoices.category);
 
-  // Nếu kết quả lọc quá chặt, ưu tiên lấy theo context để luôn có tối thiểu 3 quán
-  if (matched.length < 3) {
-    matched = allPlacesCache.filter(p => p.context === userChoices.context);
-  }
-
-  // Fallback nếu vẫn thiếu
+  // Fallback nếu danh sách kết quả ít hơn 3
   if (matched.length === 0) {
     matched = allPlacesCache;
   }
@@ -78,34 +73,38 @@ function showFinishResults() {
   const selectedThree = matched.slice(0, 3);
 
   selectedThree.forEach((p, idx) => {
+    const displayAddr = p.full_address && p.full_address !== "Đường đi" 
+      ? p.full_address 
+      : `${p.street ? p.street + ', ' : ''}${p.district || 'Quận 5'}, TP.HCM`;
+    const reviews = p.reviews_count ? `(${p.reviews_count} đánh giá)` : '';
+
     resultsBox.innerHTML += `
       <div class="bg-white p-5 rounded-2xl border border-slate-200/80 hover:border-[#FF5733] hover:shadow-md hover:shadow-[#FF5733]/5 transition-all">
         <div class="flex justify-between items-start">
           <div>
             <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#FF5733] bg-[#FF5733]/10 px-2 py-0.5 rounded-md">
-              Gợi ý ${idx + 1} • ${p.district}
+              Gợi ý ${idx + 1} • ${p.district || 'Quận 5'}
             </span>
             <h3 class="font-extrabold text-slate-900 text-lg mt-1.5">${p.name}</h3>
           </div>
           <span class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-xl font-bold">
-            ⭐ ${p.rating}
+            ⭐ ${p.rating || 4.2} <span class="text-[10px] font-normal text-slate-500">${reviews}</span>
           </span>
         </div>
         <p class="text-xs text-slate-500 mt-2 flex items-center gap-1.5">
-          <i class="fa-solid fa-location-dot text-red-400"></i> ${p.address}
+          <i class="fa-solid fa-location-dot text-red-400"></i> ${displayAddr}
         </p>
         <div class="flex items-center gap-3 mt-4 pt-3 border-t border-slate-100 text-xs text-slate-500">
-          <span class="font-bold text-slate-700">Giá: ${'$'.repeat(p.price_level)}</span>
+          <span class="font-bold text-slate-700">Loại hình: ${p.osm_type || 'Ẩm thực'}</span>
           <span>•</span>
-          <span>${p.open_time}</span>
-          <span class="ml-auto font-semibold text-[#FF5733] bg-orange-50 px-2 py-0.5 rounded">${p.tag}</span>
+          <span class="font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Tọa độ: ${p.lat ? p.lat.toFixed(4) : ''}, ${p.lon ? p.lon.toFixed(4) : ''}</span>
         </div>
       </div>
     `;
   });
 }
 
-// Chuyển Tab (Khám Phá / AI / Toàn Bộ)
+// Chuyển Tab
 function switchMode(mode) {
   document.getElementById("viewFlow").classList.toggle("hidden", mode !== "flow");
   document.getElementById("viewAI").classList.toggle("hidden", mode !== "ai");
@@ -124,24 +123,30 @@ function switchMode(mode) {
   if (mode === "all") renderAllPlaces();
 }
 
-// Render toàn bộ quán ở tab "Địa Điểm (100)"
+// Render toàn bộ quán thực tế ở tab "Địa Điểm"
 function renderAllPlaces() {
   const container = document.getElementById("allPlacesGrid");
   container.innerHTML = "";
+
   allPlacesCache.forEach(p => {
     const isEat = p.category === 'an_uong';
+    const displayAddr = p.full_address && p.full_address !== "Đường đi" 
+      ? p.full_address 
+      : `${p.street ? p.street + ', ' : ''}${p.district || 'Quận 5'}, TP.HCM`;
+    const reviews = p.reviews_count ? `(${p.reviews_count})` : '';
+
     container.innerHTML += `
       <div class="p-4 bg-white border border-slate-200/80 rounded-2xl text-xs hover:border-[#FF5733]/50 transition">
         <div class="flex justify-between items-start font-bold text-slate-800">
           <h4 class="text-sm font-extrabold">${p.name}</h4>
-          <span class="text-amber-600 font-bold">⭐ ${p.rating}</span>
+          <span class="text-amber-600 font-bold">⭐ ${p.rating || 4.0} <span class="text-[10px] text-slate-400">${reviews}</span></span>
         </div>
-        <p class="text-slate-500 mt-1">📍 ${p.address}</p>
+        <p class="text-slate-500 mt-1">📍 ${displayAddr}</p>
         <div class="flex justify-between items-center mt-3 pt-2.5 border-t border-slate-100 text-[11px]">
           <span class="px-2 py-0.5 rounded-md ${isEat ? 'bg-orange-50 text-[#FF5733]' : 'bg-sky-50 text-sky-600'} font-semibold">
-            ${isEat ? '🍕 Ăn uống' : '🛹 Đi chơi'} • ${p.district}
+            ${isEat ? '🍕 Ăn uống' : '🛹 Đi chơi'} • ${p.district || 'Quận 5'}
           </span>
-          <span class="font-extrabold text-slate-600">${'$'.repeat(p.price_level)}</span>
+          <span class="font-mono text-slate-400">${p.osm_type || 'quán ăn'}</span>
         </div>
       </div>
     `;
@@ -189,18 +194,17 @@ async function requestAIItinerary() {
       `;
     });
   } catch (err) {
-    container.innerHTML = `<div class="p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-xs">Chưa thể kết nối tới Backend. Hãy chắc chắn server FastAPI đang chạy tại cổng 8000.</div>`;
+    container.innerHTML = `<div class="p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-xs">Chưa thể kết nối tới Backend. Hãy chắc chắn server local hoặc Render đang hoạt động.</div>`;
   } finally {
     btn.innerHTML = `<span>Lên Lộ Trình Ngay</span> <i class="fa-solid fa-arrow-right text-xs"></i>`;
     btn.disabled = false;
   }
 }
 
-// Mock các chức năng mở rộng tương lai (Database / Auth / Admin)
 function triggerAuthPlaceholder() {
   alert("🔐 [Kiến Trúc Giai Đoạn 2]: Chức năng Đăng ký / Đăng nhập tài khoản & Lưu danh sách quán yêu thích vào Database sẽ được hoàn thiện sau khi nhóm duyệt đề tài.");
 }
 
 function triggerAdminPlaceholder() {
-  alert("⚙️ [Kiến Trúc Giai Đoạn 2]: Trang Dashboard Quản trị viên (Thêm, Sửa, Xóa, Duyệt quán vào cơ sở dữ liệu) dành cho Admin.");
+  alert("⚙️️ [Kiến Trúc Giai Đoạn 2]: Trang Dashboard Quản trị viên (Thêm, Sửa, Xóa, Duyệt quán vào cơ sở dữ liệu) dành cho Admin.");
 }

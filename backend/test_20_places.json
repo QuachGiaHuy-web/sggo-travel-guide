@@ -1,0 +1,182 @@
+[
+  {
+    "name": "Công viên số 1 Lý Thái Tổ",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7651628,
+    "lon": 106.6794023,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà thờ Thánh Jeanne d'Arc",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7570415,
+    "lon": 106.667369,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà thờ Chợ Quán",
+    "category": "di_choi",
+    "osm_type": "place_of_worship",
+    "lat": 10.7573309,
+    "lon": 106.681733,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách sạn Equatorial",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7633463,
+    "lon": 106.6791927,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Lam Sơn Football Field",
+    "category": "di_choi",
+    "osm_type": "sports_centre",
+    "lat": 10.7623553,
+    "lon": 106.6800624,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ An Đông",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7581051,
+    "lon": 106.6721844,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ hoa Hồ Thị Kỷ",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7657014,
+    "lon": 106.6772919,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Hòa Bình",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7605682,
+    "lon": 106.673803,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Văn Lang",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7565933,
+    "lon": 106.6675432,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Dạ Trạch",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7566797,
+    "lon": 106.6668841,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Cửu Long",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7508243,
+    "lon": 106.6538952,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Kim Biên",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7500448,
+    "lon": 106.6559414,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Lê Lợi",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7473738,
+    "lon": 106.6493176,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Võ Văn Kiệt",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7507013,
+    "lon": 106.6684476,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Coopmart Lý Thường Kiệt",
+    "category": "di_choi",
+    "osm_type": "supermarket",
+    "lat": 10.7598115,
+    "lon": 106.6615013,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Công viên Phường 2",
+    "category": "di_choi",
+    "osm_type": "park",
+    "lat": 10.7487485,
+    "lon": 106.6836928,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Trung Tâm Mua Sắm Nowzone",
+    "category": "di_choi",
+    "osm_type": "mall",
+    "lat": 10.7643362,
+    "lon": 106.6824608,
+    "street": "Nguyễn Văn Cừ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Khách sạn Nikko Saigon",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.764313,
+    "lon": 106.6830061,
+    "street": "Nguyễn Văn Cừ",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Nhà khách Phương Nam",
+    "category": "homestay",
+    "osm_type": "hotel",
+    "lat": 10.7616112,
+    "lon": 106.6852124,
+    "street": "",
+    "district": "Quận 5"
+  },
+  {
+    "name": "Chợ Thiếc",
+    "category": "di_choi",
+    "osm_type": "marketplace",
+    "lat": 10.7598051,
+    "lon": 106.6567232,
+    "street": "Đường Phó Cơ Điều",
+    "district": "Quận 5"
+  }
+]

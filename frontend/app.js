@@ -272,3 +272,14 @@ function updateDistancesOnCards() {
   });
   renderPlacesCards(currentPlaces);
 }
+
+function sortPlaces(criteria) {
+  if (criteria === 'nearest' && userLocation) {
+    currentPlaces.sort((a, b) => (a.dist_km || 999) - (b.dist_km || 999));
+  } else if (criteria === 'rating') {
+    currentPlaces.sort((a, b) => b.rating - a.rating);
+  } else if (criteria === 'price_asc') {
+    currentPlaces.sort((a, b) => a.min_price - b.min_price);
+  }
+  renderPlacesCards(currentPlaces);
+}

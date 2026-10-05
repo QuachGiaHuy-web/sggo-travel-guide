@@ -81,3 +81,17 @@
   <script src="app.js"></script>
 </body>
 </html>
+
+  <!-- Itinerary Drawer -->
+  <aside class="itinerary-drawer" id="itineraryDrawer">
+    <div class="drawer-header">
+      <h3>Lộ Trình Của Bạn (<span id="itineraryCount">0</span>)</h3>
+      <button class="btn-clear" onclick="clearItinerary()">Xóa hết</button>
+    </div>
+    <div class="itinerary-stops-list" id="itineraryStopsList">
+      <p class="drawer-empty">Chưa có điểm nào trong lịch trình. Hãy bấm "Thêm vào chuyến đi" trên các địa điểm.</p>
+    </div>
+    <div class="drawer-actions">
+      <button class="btn-optimize" onclick="optimizeTripRoute()">🚀 Tối Ưu Lộ Trình Di Chuyển</button>
+    </div>
+  </aside>

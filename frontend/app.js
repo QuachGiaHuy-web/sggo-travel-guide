@@ -283,3 +283,41 @@ function sortPlaces(criteria) {
   }
   renderPlacesCards(currentPlaces);
 }
+
+let selectedItineraryPlaces = [];
+
+function toggleItineraryPlace(placeId) {
+  const p = currentPlaces.find(x => x.id === parseInt(placeId));
+  if (!p) return;
+
+  const idx = selectedItineraryPlaces.findIndex(x => x.id === p.id);
+  if (idx > -1) {
+    selectedItineraryPlaces.splice(idx, 1);
+  } else {
+    selectedItineraryPlaces.push(p);
+  }
+  updateItineraryDrawerUI();
+}
+
+function updateItineraryDrawerUI() {
+  const countSpan = document.getElementById('itineraryCount');
+  const stopsList = document.getElementById('itineraryStopsList');
+  if (countSpan) countSpan.textContent = selectedItineraryPlaces.length;
+
+  if (!stopsList) return;
+  if (selectedItineraryPlaces.length === 0) {
+    stopsList.innerHTML = `<p class="drawer-empty">Chưa có điểm nào trong lịch trình.</p>`;
+    return;
+  }
+
+  stopsList.innerHTML = selectedItineraryPlaces.map((p, i) => `
+    <div class="itinerary-stop-item">
+      <span class="stop-num">${i + 1}</span>
+      <div class="stop-info">
+        <h4>${p.name}</h4>
+        <p>${p.category === 'an_uong' ? '🍜 Ẩm thực' : '🏛️ Di sản'}</p>
+      </div>
+      <button class="btn-remove-stop" onclick="toggleItineraryPlace(${p.id})">&times;</button>
+    </div>
+  `).join('');
+}

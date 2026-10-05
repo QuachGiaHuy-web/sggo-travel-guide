@@ -321,3 +321,12 @@ function updateItineraryDrawerUI() {
     </div>
   `).join('');
 }
+
+function clearItinerary() {
+  selectedItineraryPlaces = [];
+  updateItineraryDrawerUI();
+  if (activeRoutePolyline) {
+    map.removeLayer(activeRoutePolyline);
+    activeRoutePolyline = null;
+  }
+}

@@ -330,3 +330,30 @@ function clearItinerary() {
     activeRoutePolyline = null;
   }
 }
+
+async function optimizeTripRoute() {
+  if (selectedItineraryPlaces.length === 0) {
+    alert("Vui lòng chọn ít nhất 1 địa điểm để tối ưu!");
+    return;
+  }
+  
+  const startLat = userLocation ? userLocation.lat : 10.7550;
+  const startLon = userLocation ? userLocation.lon : 106.6650;
+  const placeIds = selectedItineraryPlaces.map(p => p.id);
+
+  try {
+    const res = await fetch(`${API_BASE}/api/route/optimize`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        start_lat: startLat,
+        start_lon: startLon,
+        place_ids: placeIds
+      })
+    });
+    const data = await res.json();
+    renderOptimizedPolyline(data.ordered_stops, { lat: startLat, lon: startLon });
+  } catch (err) {
+    console.error("Lỗi tối ưu lộ trình:", err);
+  }
+}

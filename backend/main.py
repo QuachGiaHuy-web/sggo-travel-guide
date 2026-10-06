@@ -68,3 +68,33 @@ def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> fl
          math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2)
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return round(R * c, 2)
+
+def solve_tsp_nearest_neighbor(start_coord: dict, places: list) -> list:
+    """
+    Thuật toán tham lam (Greedy Nearest Neighbor) giải bài toán TSP:
+    Bắt đầu từ điểm xuất phát, luôn luôn chọn trạm tiếp theo gần nhất chưa được ghé thăm.
+    """
+    if not places:
+        return []
+    
+    unvisited = places.copy()
+    ordered_route = []
+    current_lat = start_coord["lat"]
+    current_lon = start_coord["lon"]
+
+    while unvisited:
+        nearest_idx = 0
+        min_dist = float('inf')
+        for i, place in enumerate(unvisited):
+            d = haversine_distance(current_lat, current_lon, place["lat"], place["lon"])
+            if d < min_dist:
+                min_dist = d
+                nearest_idx = i
+
+        chosen_place = unvisited.pop(nearest_idx)
+        chosen_place["leg_distance_km"] = min_dist
+        ordered_route.append(chosen_place)
+        current_lat = chosen_place["lat"]
+        current_lon = chosen_place["lon"]
+
+    return ordered_route

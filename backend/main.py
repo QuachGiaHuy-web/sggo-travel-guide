@@ -98,3 +98,32 @@ def solve_tsp_nearest_neighbor(start_coord: dict, places: list) -> list:
         current_lon = chosen_place["lon"]
 
     return ordered_route
+
+from pydantic import BaseModel
+class RouteOptimizeRequest(BaseModel):
+    start_lat: float
+    start_lon: float
+    place_ids: List[int]
+
+@app.post("/api/route/optimize")
+def optimize_route(req: RouteOptimizeRequest):
+    """API tối ưu hóa thứ tự ghé thăm theo thuật toán láng giềng gần nhất"""
+    places_to_visit = []
+    for pid in req.place_ids:
+        p = get_place_by_id(pid)
+        if p:
+            places_to_visit.append(p)
+            
+    if not places_to_visit:
+        raise HTTPException(status_code=400, detail="Danh sách địa điểm rỗng")
+
+    start_coord = {"lat": req.start_lat, "lon": req.start_lon}
+    optimized_stops = solve_tsp_nearest_neighbor(start_coord, places_to_visit)
+    
+    total_km = sum(s.get("leg_distance_km", 0.0) for s in optimized_stops)
+    return {
+        "start": start_coord,
+        "total_distance_km": round(total_km, 2),
+        "stops_count": len(optimized_stops),
+        "ordered_stops": optimized_stops
+    }

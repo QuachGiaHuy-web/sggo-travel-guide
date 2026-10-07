@@ -357,3 +357,26 @@ async function optimizeTripRoute() {
     console.error("Lỗi tối ưu lộ trình:", err);
   }
 }
+
+let activeRoutePolyline = null;
+
+function renderOptimizedPolyline(stops, startCoord) {
+  if (activeRoutePolyline) {
+    map.removeLayer(activeRoutePolyline);
+  }
+
+  const latlngs = [[startCoord.lat, startCoord.lon]];
+  stops.forEach(s => {
+    latlngs.push([s.lat, s.lon]);
+  });
+
+  activeRoutePolyline = L.polyline(latlngs, {
+    color: '#FF5733',
+    weight: 5,
+    opacity: 0.85,
+    dashArray: '8, 8',
+    lineCap: 'round'
+  }).addTo(map);
+
+  map.fitBounds(activeRoutePolyline.getBounds(), { padding: [50, 50] });
+}

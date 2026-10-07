@@ -380,3 +380,11 @@ function renderOptimizedPolyline(stops, startCoord) {
 
   map.fitBounds(activeRoutePolyline.getBounds(), { padding: [50, 50] });
 }
+
+function computeTripDurations(totalKm) {
+  // Đi bộ trung bình 4.5 km/h
+  const walkMinutes = Math.round((totalKm / 4.5) * 60);
+  // Xe máy nội thành 22 km/h
+  const motoMinutes = Math.round((totalKm / 22) * 60);
+  return { walkMinutes, motoMinutes };
+}

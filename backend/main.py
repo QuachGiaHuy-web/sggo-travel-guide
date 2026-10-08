@@ -138,3 +138,27 @@ if GEMINI_KEY:
     except Exception as e:
         print("Không thể khởi tạo Gemini Client:", e)
         ai_client = None
+
+def build_ai_tour_prompt(user_pref: dict, candidate_places: list) -> str:
+    """Xây dựng prompt chi tiết yêu cầu Gemini sinh lịch trình du lịch văn hóa có cấu trúc"""
+    prompt = f"""
+    Bạn là một chuyên gia văn hóa và hướng dẫn viên du lịch bản địa am hiểu sâu sắc Sài Gòn - Chợ Lớn.
+    Người dùng muốn lập chuyến đi:
+    - Thời gian rảnh: {user_pref.get('free_time', '14:00 - 18:00')}
+    - Đi cùng: {user_pref.get('companion', 'bạn bè')}
+    - Mục đích: {user_pref.get('purpose', 'cả hai')}
+    - Ngân sách: {user_pref.get('budget', 'tiết kiệm')}
+    
+    Hãy chọn ra đúng 3 địa điểm thích hợp nhất từ danh sách sau:
+    {json.dumps([{"name": p["name"], "cat": p["category"], "addr": p["address"]} for p in candidate_places[:15]], ensure_ascii=False)}
+
+    Yêu cầu trả về đúng định dạng JSON:
+    {{
+      "trip_title": "Tên chủ đề chuyến đi",
+      "cultural_story": "Lời bình văn hóa tổng quan",
+      "schedule": [
+        {{"time_slot": "14:00 - 15:30", "place_name": "...", "activity": "...", "tip": "..."}}
+      ]
+    }}
+    """
+    return prompt.strip()

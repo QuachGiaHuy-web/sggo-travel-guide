@@ -162,3 +162,15 @@ def build_ai_tour_prompt(user_pref: dict, candidate_places: list) -> str:
     }}
     """
     return prompt.strip()
+
+def filter_candidates_for_context(purpose: str, companion: str) -> list:
+    """Lọc các địa điểm ứng viên phù hợp với mục đích và đối tượng đi cùng"""
+    all_p = get_all_places()
+    candidates = []
+    for p in all_p:
+        if purpose == "an_uong" and p["category"] != "an_uong":
+            continue
+        if purpose == "di_choi" and p["category"] != "di_choi":
+            continue
+        candidates.append(p)
+    return candidates

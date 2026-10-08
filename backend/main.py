@@ -127,3 +127,14 @@ def optimize_route(req: RouteOptimizeRequest):
         "stops_count": len(optimized_stops),
         "ordered_stops": optimized_stops
     }
+
+# Tích hợp Google Gemini AI Client
+GEMINI_KEY = os.getenv("GEMINI_API_KEY")
+ai_client = None
+if GEMINI_KEY:
+    try:
+        from google import genai
+        ai_client = genai.Client(api_key=GEMINI_KEY)
+    except Exception as e:
+        print("Không thể khởi tạo Gemini Client:", e)
+        ai_client = None

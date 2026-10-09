@@ -188,3 +188,11 @@ def parse_gemini_json_response(raw_text: str) -> dict:
         if match:
             return json.loads(match.group(0))
         raise ValueError("Không thể trích xuất JSON hợp lệ từ phản hồi AI")
+
+# Enrich commentary with local insider tips
+AI_CULTURAL_TIPS = {
+    "Chùa Bà Thiên Hậu": "Hãy thắp vòng nhang treo trần để cầu bình an và chiêm ngưỡng gốm men Cây Mai.",
+    "Hội Quán Nghĩa An": "Nổi tiếng với tượng ngựa Xích Thố và nghệ thuật chạm khắc gỗ sơn son thếp vàng.",
+    "Hủ Tiếu Sa Tế Quảng Ký": "Nên gọi tô thập cẩm kèm bánh mì để chấm nước dùng sa tế đậu phộng gia truyền béo ngậy.",
+    "Sủi Cảo Thiên Thiên": "Gọi sủi cảo chiên giòn và sủi cảo mực ngâm tro đặc trưng phố Hà Tôn Quyền."
+}

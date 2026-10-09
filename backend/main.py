@@ -174,3 +174,17 @@ def filter_candidates_for_context(purpose: str, companion: str) -> list:
             continue
         candidates.append(p)
     return candidates
+
+def parse_gemini_json_response(raw_text: str) -> dict:
+    """Bóc tách và parse an toàn chuỗi JSON từ phản hồi markdown của Gemini"""
+    import re
+    cleaned = re.sub(r"^```json\s*", "", raw_text.strip(), flags=re.MULTILINE)
+    cleaned = re.sub(r"^```\s*$", "", cleaned.strip(), flags=re.MULTILINE)
+    try:
+        return json.loads(cleaned)
+    except Exception:
+        # Tìm khối {...} đầu tiên
+        match = re.search(r"\{.*\}", cleaned, re.DOTALL)
+        if match:
+            return json.loads(match.group(0))
+        raise ValueError("Không thể trích xuất JSON hợp lệ từ phản hồi AI")

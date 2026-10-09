@@ -196,3 +196,28 @@ AI_CULTURAL_TIPS = {
     "Hủ Tiếu Sa Tế Quảng Ký": "Nên gọi tô thập cẩm kèm bánh mì để chấm nước dùng sa tế đậu phộng gia truyền béo ngậy.",
     "Sủi Cảo Thiên Thiên": "Gọi sủi cảo chiên giòn và sủi cảo mực ngâm tro đặc trưng phố Hà Tôn Quyền."
 }
+
+class ItineraryGenRequest(BaseModel):
+    free_time: Optional[str] = "14:00 - 18:30"
+    companion: Optional[str] = "ban_be"
+    purpose: Optional[str] = "ca_hai"
+    budget: Optional[str] = "thoai_mai"
+
+@app.post("/api/itinerary/generate")
+def generate_ai_itinerary(req: ItineraryGenRequest):
+    """Endpoint sinh lộ trình thông minh kết hợp Gemini AI và offline fallback"""
+    candidates = filter_candidates_for_context(req.purpose, req.companion)
+    if ai_client:
+        try:
+            prompt = build_ai_tour_prompt(req.dict(), candidates)
+            response = ai_client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=prompt
+            )
+            result = parse_gemini_json_response(response.text)
+            return {"source": "gemini_ai", "itinerary": result}
+        except Exception as e:
+            print("[WARN] Gemini AI call failed, switching to heuristic fallback:", e)
+            
+    # Fallback heuristic generator
+    return {"source": "heuristic_fallback", "itinerary": generate_heuristic_itinerary(req.dict(), candidates)}

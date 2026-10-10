@@ -221,3 +221,38 @@ def generate_ai_itinerary(req: ItineraryGenRequest):
             
     # Fallback heuristic generator
     return {"source": "heuristic_fallback", "itinerary": generate_heuristic_itinerary(req.dict(), candidates)}
+
+def generate_heuristic_itinerary(pref: dict, candidates: list) -> dict:
+    """Bộ máy heuristic thông minh sinh lịch trình 3 trạm chuẩn mực văn hóa Chợ Lớn"""
+    import random
+    heritages = [c for c in candidates if c["category"] == "di_choi"] or candidates[:2]
+    foods = [c for c in candidates if c["category"] == "an_uong"] or candidates[2:4]
+
+    stop1 = heritages[0] if heritages else candidates[0]
+    stop2 = heritages[1] if len(heritages) > 1 else (foods[0] if foods else candidates[1])
+    stop3 = foods[0] if foods else candidates[-1]
+
+    return {
+        "trip_title": "Dạo Bước Di Sản & Ẩm Thực Chợ Lớn Trứ Danh",
+        "cultural_story": "Hành trình kết nối chiều sâu văn hóa tâm linh của các hội quán cổ và tinh hoa ẩm thực ẩm thực người Hoa Quận 5.",
+        "schedule": [
+            {
+                "time_slot": "14:30 - 15:45",
+                "place_name": stop1["name"],
+                "activity": "Tham quan chiêm bái, ngắm kiến trúc phù điêu gốm men Cây Mai",
+                "tip": AI_CULTURAL_TIPS.get(stop1["name"], "Giữ trật tự trang nghiêm khi vào chánh điện.")
+            },
+            {
+                "time_slot": "16:00 - 17:15",
+                "place_name": stop2["name"],
+                "activity": "Check-in kiến trúc cổ và tìm hiểu các câu chuyện lập nghiệp",
+                "tip": AI_CULTURAL_TIPS.get(stop2["name"], "Nên chụp góc nghiêng để lấy toàn cảnh mái ngói âm dương.")
+            },
+            {
+                "time_slot": "17:30 - 19:00",
+                "place_name": stop3["name"],
+                "activity": "Thưởng thức ẩm thực trứ danh buổi chiều tối",
+                "tip": AI_CULTURAL_TIPS.get(stop3["name"], "Hỏi người phục vụ món signature của quán.")
+            }
+        ]
+    }

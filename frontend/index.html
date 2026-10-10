@@ -95,3 +95,32 @@
       <button class="btn-optimize" onclick="optimizeTripRoute()">🚀 Tối Ưu Lộ Trình Di Chuyển</button>
     </div>
   </aside>
+
+  <!-- AI Trip Planner Modal -->
+  <div class="modal-overlay" id="aiPlannerModal" style="display: none;">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closeAiModal()">&times;</button>
+      <div class="modal-content">
+        <h3>Lập Lộ Trình AI Thông Minh ✨</h3>
+        <p class="modal-desc">Trợ lý AI sẽ gợi ý 3 trạm lý tưởng kèm lời bình văn hóa bản địa.</p>
+        <div class="form-group">
+          <label>Thời gian rảnh:</label>
+          <select id="aiFreeTime">
+            <option value="08:00 - 12:00">Buổi sáng (08:00 - 12:00)</option>
+            <option value="14:00 - 18:30" selected>Buổi chiều (14:00 - 18:30)</option>
+            <option value="18:30 - 22:30">Buổi tối (18:30 - 22:30)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Bạn đi cùng ai?</label>
+          <select id="aiCompanion">
+            <option value="di_1_minh">Một mình (Chill/Chụp ảnh)</option>
+            <option value="ban_be" selected>Nhóm bạn thân</option>
+            <option value="nguoi_yeu">Hẹn hò lãng mạn</option>
+            <option value="gia_dinh">Gia đình nhiều thế hệ</option>
+          </select>
+        </div>
+        <button class="btn-generate-ai" onclick="generateAiTrip()">Tạo Lịch Trình Ngay</button>
+      </div>
+    </div>
+  </div>

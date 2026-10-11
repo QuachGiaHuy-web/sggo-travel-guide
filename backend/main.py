@@ -256,3 +256,9 @@ def generate_heuristic_itinerary(pref: dict, candidates: list) -> dict:
             }
         ]
     }
+
+def clean_markdown_tokens(text: str) -> str:
+    """Loại bỏ các ký tự markdown thừa khỏi lời bình của Gemini"""
+    import re
+    cleaned = re.sub(r"[*_#`]", "", text)
+    return cleaned.strip()

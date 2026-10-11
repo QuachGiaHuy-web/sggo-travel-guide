@@ -388,3 +388,22 @@ function computeTripDurations(totalKm) {
   const motoMinutes = Math.round((totalKm / 22) * 60);
   return { walkMinutes, motoMinutes };
 }
+
+function showAiLoadingState(isLoading) {
+  let loader = document.getElementById('aiLoadingOverlay');
+  if (isLoading) {
+    if (!loader) {
+      loader = document.createElement('div');
+      loader.id = 'aiLoadingOverlay';
+      loader.className = 'ai-loading-overlay';
+      loader.innerHTML = `
+        <div class="spinner"></div>
+        <p class="loading-tip">Đang kết nối Gemini AI & phân tích bản đồ Chợ Lớn...</p>
+      `;
+      document.body.appendChild(loader);
+    }
+    loader.style.display = 'flex';
+  } else if (loader) {
+    loader.style.display = 'none';
+  }
+}

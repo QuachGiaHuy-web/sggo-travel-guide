@@ -407,3 +407,33 @@ function showAiLoadingState(isLoading) {
     loader.style.display = 'none';
   }
 }
+
+async function generateAiTrip() {
+  const freeTime = document.getElementById('aiFreeTime')?.value || "14:00 - 18:30";
+  const companion = document.getElementById('aiCompanion')?.value || "ban_be";
+  closeAiModal();
+  showAiLoadingState(true);
+
+  try {
+    const res = await fetch(`${API_BASE}/api/itinerary/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ free_time: freeTime, companion: companion, purpose: "ca_hai" })
+    });
+    const data = await res.json();
+    showAiLoadingState(false);
+    renderAiScheduleResult(data.itinerary);
+  } catch (err) {
+    showAiLoadingState(false);
+    console.error("Lỗi sinh lịch trình AI:", err);
+  }
+}
+
+function renderAiScheduleResult(itin) {
+  alert(`✨ ${itin.trip_title}\n\n${itin.cultural_story}\n\nĐã gợi ý ${itin.schedule.length} trạm trải nghiệm!`);
+}
+
+function closeAiModal() {
+  const m = document.getElementById('aiPlannerModal');
+  if (m) m.style.display = 'none';
+}

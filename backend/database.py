@@ -240,3 +240,45 @@ def hash_password(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Kiểm tra mật khẩu nhập vào khớp với chuỗi băm lưu trữ"""
     return hash_password(plain_password) == hashed_password
+
+def register_user(username, password, full_name):
+    """Đăng ký tài khoản người dùng mới"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM users WHERE username = ?", (username.strip(),))
+    if cursor.fetchone():
+        conn.close()
+        return None, "Tên đăng nhập đã tồn tại"
+
+    hashed = hash_password(password)
+    cursor.execute("""
+    INSERT INTO users (username, password, full_name, role)
+    VALUES (?, ?, ?, 'user')
+    """, (username.strip(), hashed, full_name.strip()))
+    user_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return {"id": user_id, "username": username, "full_name": full_name, "role": "user"}, None
+
+def authenticate_user(username, password):
+    """Xác thực tài khoản và trả về thông tin người dùng"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE username = ?", (username.strip(),))
+    row = cursor.fetchone()
+    conn.close()
+
+    if not row:
+        return None, "Tài khoản không tồn tại"
+
+    user = dict(row)
+    # Hỗ trợ cả mật khẩu băm và mật khẩu cũ của seed
+    if user["password"] == password or verify_password(password, user["password"]):
+        return {
+            "id": user["id"],
+            "username": user["username"],
+            "full_name": user["full_name"],
+            "role": user["role"]
+        }, None
+
+    return None, "Mật khẩu không chính xác"

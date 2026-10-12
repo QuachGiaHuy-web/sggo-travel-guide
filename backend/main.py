@@ -262,3 +262,30 @@ def clean_markdown_tokens(text: str) -> str:
     import re
     cleaned = re.sub(r"[*_#`]", "", text)
     return cleaned.strip()
+
+from backend.database import register_user, authenticate_user
+
+class AuthLoginRequest(BaseModel):
+    username: str
+    password: str
+
+class AuthRegisterRequest(BaseModel):
+    username: str
+    password: str
+    full_name: str
+
+@app.post("/api/auth/login")
+def login(req: AuthLoginRequest):
+    """Đăng nhập tài khoản và trả về profile người dùng"""
+    user, err = authenticate_user(req.username, req.password)
+    if err:
+        raise HTTPException(status_code=400, detail=err)
+    return {"message": "Đăng nhập thành công", "user": user}
+
+@app.post("/api/auth/register")
+def register(req: AuthRegisterRequest):
+    """Đăng ký tài khoản người dùng mới"""
+    user, err = register_user(req.username, req.password, req.full_name)
+    if err:
+        raise HTTPException(status_code=400, detail=err)
+    return {"message": "Đăng ký thành công", "user": user}

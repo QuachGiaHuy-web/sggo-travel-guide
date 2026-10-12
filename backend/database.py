@@ -229,3 +229,14 @@ def get_place_by_id(place_id: int):
     row = cursor.fetchone()
     conn.close()
     return dict(row) if row else None
+
+import hashlib
+
+def hash_password(password: str) -> str:
+    """Băm mật khẩu bằng thuật toán SHA-256 kèm salt"""
+    salt = "sggo_travel_salt_2026"
+    return hashlib.sha256((password + salt).encode('utf-8')).hexdigest()
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Kiểm tra mật khẩu nhập vào khớp với chuỗi băm lưu trữ"""
+    return hash_password(plain_password) == hashed_password

@@ -437,3 +437,38 @@ function closeAiModal() {
   const m = document.getElementById('aiPlannerModal');
   if (m) m.style.display = 'none';
 }
+
+let currentUser = null;
+
+function openAuthModal() {
+  const m = document.getElementById('authModal');
+  if (m) m.style.display = 'flex';
+}
+
+function closeAuthModal() {
+  const m = document.getElementById('authModal');
+  if (m) m.style.display = 'none';
+}
+
+async function submitAuth() {
+  const u = document.getElementById('authUsername')?.value;
+  const p = document.getElementById('authPassword')?.value;
+  if (!u || !p) return alert("Vui lòng nhập đầy đủ thông tin!");
+
+  try {
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: u, password: p })
+    });
+    const data = await res.json();
+    if (!res.ok) return alert(data.detail || "Đăng nhập thất bại");
+
+    currentUser = data.user;
+    localStorage.setItem("sggo_user", JSON.stringify(currentUser));
+    closeAuthModal();
+    alert(`Xin chào, ${currentUser.full_name}!`);
+  } catch (err) {
+    console.error("Lỗi đăng nhập:", err);
+  }
+}

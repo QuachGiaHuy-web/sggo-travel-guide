@@ -294,3 +294,26 @@ def verify_admin_role(user_role: str):
     """Kiểm tra quyền hạn quản trị viên trước khi thực hiện thao tác quản trị"""
     if user_role != "admin":
         raise HTTPException(status_code=403, detail="Chỉ có quản trị viên mới có quyền thao tác")
+
+from backend.database import add_place
+
+class CreatePlaceRequest(BaseModel):
+    name: str
+    category: str
+    address: str
+    district: Optional[str] = "Quận 5"
+    lat: float
+    lon: float
+    open_time: Optional[str] = "08:00"
+    close_time: Optional[str] = "22:00"
+    min_price: Optional[int] = 30000
+    max_price: Optional[int] = 100000
+    rating: Optional[float] = 4.5
+    image_url: Optional[str] = None
+    tags: Optional[str] = "nhom_ban"
+
+@app.post("/api/admin/places")
+def create_place(req: CreatePlaceRequest):
+    """Thêm địa điểm mới (Dành cho Admin)"""
+    new_id = add_place(req.dict())
+    return {"message": "Thêm địa điểm thành công", "place_id": new_id}

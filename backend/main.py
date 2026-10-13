@@ -289,3 +289,8 @@ def register(req: AuthRegisterRequest):
     if err:
         raise HTTPException(status_code=400, detail=err)
     return {"message": "Đăng ký thành công", "user": user}
+
+def verify_admin_role(user_role: str):
+    """Kiểm tra quyền hạn quản trị viên trước khi thực hiện thao tác quản trị"""
+    if user_role != "admin":
+        raise HTTPException(status_code=403, detail="Chỉ có quản trị viên mới có quyền thao tác")

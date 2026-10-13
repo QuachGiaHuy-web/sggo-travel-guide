@@ -282,3 +282,26 @@ def authenticate_user(username, password):
         }, None
 
     return None, "Mật khẩu không chính xác"
+
+def add_place(place_dict):
+    """Thêm địa điểm mới vào CSDL với dữ liệu hợp lệ"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    INSERT INTO places (
+        name, category, address, district, lat, lon, open_time, close_time,
+        min_price, max_price, rating, reviews_count, image_url, tags
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        place_dict["name"], place_dict["category"], place_dict["address"],
+        place_dict.get("district", "Quận 5"),
+        float(place_dict["lat"]), float(place_dict["lon"]),
+        place_dict.get("open_time", "08:00"), place_dict.get("close_time", "22:00"),
+        int(place_dict.get("min_price", 30000)), int(place_dict.get("max_price", 100000)),
+        float(place_dict.get("rating", 4.5)), int(place_dict.get("reviews_count", 50)),
+        place_dict.get("image_url", ""), place_dict.get("tags", "nhom_ban")
+    ))
+    new_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return new_id

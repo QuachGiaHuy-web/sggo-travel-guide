@@ -143,3 +143,26 @@
       </div>
     </div>
   </div>
+
+  <!-- Admin Management View (Hidden by default) -->
+  <section class="admin-view" id="adminView" style="display: none;">
+    <h2>Bảng Quản Trị Địa Điểm SGGo</h2>
+    <div class="admin-actions">
+      <button class="btn-primary" onclick="openAddPlaceModal()">+ Thêm Địa Điểm Mới</button>
+    </div>
+    <div class="admin-table-wrapper">
+      <table class="admin-table" id="adminPlacesTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tên địa điểm</th>
+            <th>Danh mục</th>
+            <th>Địa chỉ</th>
+            <th>Đánh giá</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="adminPlacesTbody"></tbody>
+      </table>
+    </div>
+  </section>

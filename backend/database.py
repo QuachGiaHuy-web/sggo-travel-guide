@@ -305,3 +305,35 @@ def add_place(place_dict):
     conn.commit()
     conn.close()
     return new_id
+
+def update_place(place_id: int, p: dict):
+    """Cập nhật thông tin địa điểm theo ID"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    UPDATE places SET
+        name = ?, category = ?, address = ?, lat = ?, lon = ?,
+        open_time = ?, close_time = ?, min_price = ?, max_price = ?,
+        rating = ?, image_url = ?, tags = ?
+    WHERE id = ?
+    """, (
+        p["name"], p["category"], p["address"], float(p["lat"]), float(p["lon"]),
+        p.get("open_time", "08:00"), p.get("close_time", "22:00"),
+        int(p.get("min_price", 30000)), int(p.get("max_price", 100000)),
+        float(p.get("rating", 4.5)), p.get("image_url", ""),
+        p.get("tags", "nhom_ban"), int(place_id)
+    ))
+    updated = cursor.rowcount > 0
+    conn.commit()
+    conn.close()
+    return updated
+
+def delete_place(place_id: int):
+    """Xóa địa điểm theo ID"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM places WHERE id = ?", (int(place_id),))
+    deleted = cursor.rowcount > 0
+    conn.commit()
+    conn.close()
+    return deleted

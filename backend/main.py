@@ -317,3 +317,21 @@ def create_place(req: CreatePlaceRequest):
     """Thêm địa điểm mới (Dành cho Admin)"""
     new_id = add_place(req.dict())
     return {"message": "Thêm địa điểm thành công", "place_id": new_id}
+
+from backend.database import update_place, delete_place
+
+@app.put("/api/admin/places/{place_id}")
+def edit_place(place_id: int, req: CreatePlaceRequest):
+    """Cập nhật địa điểm theo ID (Dành cho Admin)"""
+    ok = update_place(place_id, req.dict())
+    if not ok:
+        raise HTTPException(status_code=404, detail="Không tìm thấy địa điểm để sửa")
+    return {"message": "Cập nhật thành công"}
+
+@app.delete("/api/admin/places/{place_id}")
+def remove_place(place_id: int):
+    """Xóa địa điểm theo ID (Dành cho Admin)"""
+    ok = delete_place(place_id)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Không tìm thấy địa điểm để xóa")
+    return {"message": "Đã xóa địa điểm thành công"}

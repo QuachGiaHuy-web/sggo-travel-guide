@@ -350,3 +350,14 @@ def extract_coords_from_gmaps_url(url: str):
         return float(match2.group(1)), float(match2.group(2))
         
     return None, None
+
+class GmapsExtractRequest(BaseModel):
+    url: str
+
+@app.post("/api/admin/extract-gmaps")
+def api_extract_gmaps(req: GmapsExtractRequest):
+    """Bóc tách tọa độ tự động từ link Google Maps để điền form nhanh"""
+    lat, lon = extract_coords_from_gmaps_url(req.url)
+    if not lat or not lon:
+        raise HTTPException(status_code=400, detail="Không thể trích xuất tọa độ từ liên kết cung cấp")
+    return {"lat": lat, "lon": lon}

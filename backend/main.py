@@ -335,3 +335,18 @@ def remove_place(place_id: int):
     if not ok:
         raise HTTPException(status_code=404, detail="Không tìm thấy địa điểm để xóa")
     return {"message": "Đã xóa địa điểm thành công"}
+
+def extract_coords_from_gmaps_url(url: str):
+    """Trích xuất tọa độ lat, lon từ liên kết Google Maps dạng share hoặc tìm kiếm"""
+    import re
+    # Kiểu 1: @10.75338,106.65997
+    match = re.search(r"@(-?\d+\.\d+),(-?\d+\.\d+)", url)
+    if match:
+        return float(match.group(1)), float(match.group(2))
+    
+    # Kiểu 2: ?q=10.75338,106.65997 hoặc ll=...
+    match2 = re.search(r"[?&](?:q|ll)=(-?\d+\.\d+),(-?\d+\.\d+)", url)
+    if match2:
+        return float(match2.group(1)), float(match2.group(2))
+        
+    return None, None

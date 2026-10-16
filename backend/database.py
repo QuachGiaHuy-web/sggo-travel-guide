@@ -337,3 +337,18 @@ def delete_place(place_id: int):
     conn.commit()
     conn.close()
     return deleted
+
+def migrate_verification_columns():
+    """Bổ sung cột is_verified và is_verified_review nếu chưa có"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("PRAGMA table_info(places)")
+    cols = [r["name"] for r in cursor.fetchall()]
+    if "is_verified" not in cols:
+        cursor.execute("ALTER TABLE places ADD COLUMN is_verified INTEGER NOT NULL DEFAULT 1")
+    if "is_verified_review" not in cols:
+        cursor.execute("ALTER TABLE places ADD COLUMN is_verified_review INTEGER NOT NULL DEFAULT 1")
+    conn.commit()
+    conn.close()
+
+migrate_verification_columns()

@@ -361,3 +361,21 @@ def api_extract_gmaps(req: GmapsExtractRequest):
     if not lat or not lon:
         raise HTTPException(status_code=400, detail="Không thể trích xuất tọa độ từ liên kết cung cấp")
     return {"lat": lat, "lon": lon}
+
+from backend.database import toggle_favorite, get_user_favorites
+
+class FavoriteToggleRequest(BaseModel):
+    user_id: int
+    place_id: int
+
+@app.post("/api/favorites/toggle")
+def api_toggle_favorite(req: FavoriteToggleRequest):
+    """Bật/tắt trạng thái yêu thích địa điểm của người dùng"""
+    is_saved = toggle_favorite(req.user_id, req.place_id)
+    return {"place_id": req.place_id, "is_saved": is_saved}
+
+@app.get("/api/favorites")
+def api_get_favorites(user_id: int):
+    """Lấy danh sách địa điểm yêu thích theo user_id"""
+    favs = get_user_favorites(user_id)
+    return {"count": len(favs), "favorites": favs}

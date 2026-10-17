@@ -367,3 +367,33 @@ def migrate_two_stream_reviews():
     conn.close()
 
 migrate_two_stream_reviews()
+
+def toggle_favorite(user_id: int, place_id: int) -> bool:
+    """Thêm hoặc xóa địa điểm khỏi danh sách yêu thích của người dùng"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM favorites WHERE user_id = ? AND place_id = ?", (user_id, place_id))
+    row = cursor.fetchone()
+    if row:
+        cursor.execute("DELETE FROM favorites WHERE id = ?", (row["id"],))
+        is_saved = False
+    else:
+        cursor.execute("INSERT INTO favorites (user_id, place_id) VALUES (?, ?)", (user_id, place_id))
+        is_saved = True
+    conn.commit()
+    conn.close()
+    return is_saved
+
+def get_user_favorites(user_id: int) -> list:
+    """Lấy danh sách các địa điểm đã lưu của người dùng"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    SELECT p.* FROM places p
+    INNER JOIN favorites f ON p.id = f.place_id
+    WHERE f.user_id = ?
+    ORDER BY f.saved_at DESC
+    """, (user_id,))
+    places = [dict(r) for r in cursor.fetchall()]
+    conn.close()
+    return places

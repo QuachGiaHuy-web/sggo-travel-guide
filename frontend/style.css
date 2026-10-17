@@ -508,3 +508,29 @@ body {
   border-radius: 999px;
   margin-left: 6px;
 }
+
+/* Two-Stream Reviews */
+.review-stream-box {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.review-card-pro {
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  color: #166534;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.review-card-con {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  color: #92400E;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+}

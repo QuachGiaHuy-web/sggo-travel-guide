@@ -352,3 +352,18 @@ def migrate_verification_columns():
     conn.close()
 
 migrate_verification_columns()
+
+def migrate_two_stream_reviews():
+    """Bổ sung cột best_review và worst_review cho đánh giá 2 luồng"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("PRAGMA table_info(places)")
+    cols = [r["name"] for r in cursor.fetchall()]
+    if "best_review" not in cols:
+        cursor.execute("ALTER TABLE places ADD COLUMN best_review TEXT DEFAULT 'Quán sạch sẽ, đồ ăn ngon, phục vụ nhanh.'")
+    if "worst_review" not in cols:
+        cursor.execute("ALTER TABLE places ADD COLUMN worst_review TEXT DEFAULT 'Giờ cao điểm hơi đông khách, nên đi sớm.'")
+    conn.commit()
+    conn.close()
+
+migrate_two_stream_reviews()

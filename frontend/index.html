@@ -166,3 +166,18 @@
       </table>
     </div>
   </section>
+
+  <!-- CSV Import Modal in Admin View -->
+  <div class="modal-overlay" id="csvImportModal" style="display: none;">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closeCsvModal()">&times;</button>
+      <div class="modal-content">
+        <h3>Import Địa Điểm Từ File CSV</h3>
+        <p>Chọn file .csv theo đúng mẫu hoặc tải file mẫu để xem định dạng.</p>
+        <div class="csv-upload-box">
+          <input type="file" id="csvFileInput" accept=".csv" />
+        </div>
+        <button class="btn-primary" onclick="uploadCsvFile()">Tải Lên & Import</button>
+      </div>
+    </div>
+  </div>

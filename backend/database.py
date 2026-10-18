@@ -430,3 +430,17 @@ def import_csv_data(csv_text: str):
     conn.commit()
     conn.close()
     return inserted_count
+
+def generate_sample_csv() -> str:
+    """Tạo chuỗi CSV mẫu chuẩn cho ban quản trị import dữ liệu"""
+    headers = ["name", "category", "address", "district", "lat", "lon", "open_time", "close_time", "min_price", "max_price", "rating", "reviews_count", "image_url", "tags"]
+    sample_rows = [
+        ["Hội Quán Hà Chương", "di_choi", "802 Nguyễn Trãi, P.14, Quận 5", "Quận 5", "10.7518", "106.6575", "07:00", "17:30", "0", "0", "4.6", "450", "frontend/images/verified/ha_chuong.jpg", "di_1_minh,gia_dinh"],
+        ["Hội Quán Nhị Phủ", "di_choi", "264 Hải Thượng Lãn Ông, P.14, Quận 5", "Quận 5", "10.7505", "106.6542", "06:30", "17:00", "0", "0", "4.5", "380", "frontend/images/verified/nhi_phu.jpg", "di_1_minh,gia_dinh"]
+    ]
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(headers)
+    for r in sample_rows:
+        writer.writerow(r)
+    return output.getvalue()

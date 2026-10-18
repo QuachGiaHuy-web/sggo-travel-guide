@@ -397,3 +397,36 @@ def get_user_favorites(user_id: int) -> list:
     places = [dict(r) for r in cursor.fetchall()]
     conn.close()
     return places
+
+import csv
+import io
+
+def import_csv_data(csv_text: str):
+    """Import hàng loạt địa điểm từ nội dung file CSV"""
+    f = io.StringIO(csv_text.strip())
+    reader = csv.DictReader(f)
+    conn = get_connection()
+    cursor = conn.cursor()
+    inserted_count = 0
+
+    for row in reader:
+        if not row.get("name") or not row.get("lat") or not row.get("lon"):
+            continue
+        cursor.execute("""
+        INSERT INTO places (
+            name, category, address, district, lat, lon, open_time, close_time,
+            min_price, max_price, rating, reviews_count, image_url, tags
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            row["name"], row.get("category", "an_uong"), row.get("address", ""),
+            row.get("district", "Quận 5"), float(row["lat"]), float(row["lon"]),
+            row.get("open_time", "08:00"), row.get("close_time", "22:00"),
+            int(row.get("min_price", 30000)), int(row.get("max_price", 100000)),
+            float(row.get("rating", 4.5)), int(row.get("reviews_count", 50)),
+            row.get("image_url", ""), row.get("tags", "nhom_ban")
+        ))
+        inserted_count += 1
+
+    conn.commit()
+    conn.close()
+    return inserted_count

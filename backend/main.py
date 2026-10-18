@@ -379,3 +379,24 @@ def api_get_favorites(user_id: int):
     """Lấy danh sách địa điểm yêu thích theo user_id"""
     favs = get_user_favorites(user_id)
     return {"count": len(favs), "favorites": favs}
+
+from backend.database import generate_sample_csv, import_csv_data
+
+@app.get("/api/admin/places/sample-csv")
+def download_sample_csv():
+    """Tải về file CSV mẫu để ban quản trị nhập dữ liệu"""
+    csv_content = generate_sample_csv()
+    return Response(
+        content=csv_content,
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=sample_places_sggo.csv"}
+    )
+
+class CsvImportPayload(BaseModel):
+    csv_data: str
+
+@app.post("/api/admin/places/import-csv")
+def api_import_csv(payload: CsvImportPayload):
+    """Import hàng loạt địa điểm từ file CSV"""
+    count = import_csv_data(payload.csv_data)
+    return {"message": f"Đã import thành công {count} địa điểm", "inserted_count": count}

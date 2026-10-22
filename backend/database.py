@@ -2,12 +2,22 @@
 """
 database.py - QUẢN LÝ CƠ SỞ DỮ LIỆU SQLITE CHO DỰ ÁN SGGO!
 Môn học: Công nghệ Phần mềm (COMP1044)
+
+Kiến trúc chuẩn CNPM:
+- Bảng users: Quản lý đăng ký, đăng nhập và phân quyền (Admin / User thường).
+- Bảng places: Quản lý thông tin 40+ địa điểm thực tế tại Quận 5.
+- Bảng favorites: Quản lý danh sách địa điểm yêu thích của từng người dùng.
+- Hỗ trợ đầy đủ các thao tác CRUD và Import/Export file CSV có kiểm tra dữ liệu.
 """
 
 import os
 import sqlite3
+import csv
+import io
+import json
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "sggo.db")
+ENRICHED_JSON_PATH = os.path.join(os.path.dirname(__file__), "enriched_places.json")
 
 def get_connection():
     """Tạo kết nối tới file SQLite, trả về sqlite3.Row để truy xuất dữ liệu theo tên cột"""
@@ -15,160 +25,29 @@ def get_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-INITIAL_HERITAGE_PLACES = [
-    {
-        "name": "Chùa Bà Thiên Hậu (Miếu Tuệ Thành)",
-        "category": "di_choi",
-        "address": "710 Đường Nguyễn Trãi, Phường 11, Quận 5",
-        "lat": 10.75338, "lon": 106.65997,
-        "open_time": "06:00", "close_time": "17:30",
-        "min_price": 0, "max_price": 0, "rating": 4.7, "reviews_count": 3420,
-        "image_url": "frontend/images/verified/thien_hau.jpg",
-        "tags": "di_1_minh,gia_dinh"
-    },
-    {
-        "name": "Hội Quán Nghĩa An (Chùa Ông)",
-        "category": "di_choi",
-        "address": "678 Đường Nguyễn Trãi, Phường 11, Quận 5",
-        "lat": 10.75389, "lon": 106.66120,
-        "open_time": "06:30", "close_time": "18:00",
-        "min_price": 0, "max_price": 0, "rating": 4.6, "reviews_count": 1820,
-        "image_url": "frontend/images/verified/nghia_an.jpg",
-        "tags": "di_1_minh,gia_dinh"
-    },
-    {
-        "name": "Chợ Lớn (Chợ Bình Tây)",
-        "category": "di_choi",
-        "address": "57A Tháp Mười, Phường 2, Quận 6",
-        "lat": 10.74853, "lon": 106.65175,
-        "open_time": "06:00", "close_time": "19:00",
-        "min_price": 20000, "max_price": 300000, "rating": 4.5, "reviews_count": 5100,
-        "image_url": "frontend/images/verified/cho_binh_tay.jpg",
-        "tags": "nhom_ban,gia_dinh"
-    },
-    {
-        "name": "Nhà Thờ Cha Tam (Thánh Phanxicô Xaviê)",
-        "category": "di_choi",
-        "address": "25 Học Lạc, Phường 14, Quận 5",
-        "lat": 10.75210, "lon": 106.65580,
-        "open_time": "07:00", "close_time": "18:00",
-        "min_price": 0, "max_price": 0, "rating": 4.6, "reviews_count": 920,
-        "image_url": "frontend/images/verified/nha_tho_cha_tam.jpg",
-        "tags": "hen_ho,di_1_minh"
-    },
-    {
-        "name": "Hội Quán Ôn Lăng (Chùa Quan Âm)",
-        "category": "di_choi",
-        "address": "12 Lão Tử, Phường 11, Quận 5",
-        "lat": 10.75520, "lon": 106.66210,
-        "open_time": "06:30", "close_time": "17:00",
-        "min_price": 0, "max_price": 0, "rating": 4.5, "reviews_count": 640,
-        "image_url": "frontend/images/verified/on_lang.jpg",
-        "tags": "gia_dinh,di_1_minh"
-    }
-]
-
-INITIAL_CULINARY_PLACES = [
-    {
-        "name": "Hủ Tiếu Sa Tế Quảng Ký",
-        "category": "an_uong",
-        "address": "117 Triệu Quang Phục, Phường 11, Quận 5",
-        "lat": 10.75480, "lon": 106.66010,
-        "open_time": "16:00", "close_time": "22:00",
-        "min_price": 45000, "max_price": 75000, "rating": 4.6, "reviews_count": 520,
-        "image_url": "frontend/images/places/place_144.jpg",
-        "tags": "nhom_ban,di_1_minh"
-    },
-    {
-        "name": "Sủi Cảo Thiên Thiên (Hà Tôn Quyền)",
-        "category": "an_uong",
-        "address": "191 Hà Tôn Quyền, Phường 4, Quận 11",
-        "lat": 10.75820, "lon": 106.65650,
-        "open_time": "13:30", "close_time": "01:00",
-        "min_price": 50000, "max_price": 90000, "rating": 4.7, "reviews_count": 2150,
-        "image_url": "frontend/images/places/place_145.jpg",
-        "tags": "nhom_ban,hen_ho"
-    },
-    {
-        "name": "Cơm Gà Đông Nguyên",
-        "category": "an_uong",
-        "address": "801 Nguyễn Trãi, Phường 14, Quận 5",
-        "lat": 10.75230, "lon": 106.65780,
-        "open_time": "09:00", "close_time": "20:30",
-        "min_price": 60000, "max_price": 120000, "rating": 4.4, "reviews_count": 1890,
-        "image_url": "frontend/images/places/place_147.jpg",
-        "tags": "gia_dinh,nhom_ban"
-    },
-    {
-        "name": "Chè Nhà Đèn (Hà Ký)",
-        "category": "an_uong",
-        "address": "138 Châu Văn Liêm, Phường 11, Quận 5",
-        "lat": 10.75260, "lon": 106.66280,
-        "open_time": "10:00", "close_time": "22:30",
-        "min_price": 25000, "max_price": 50000, "rating": 4.5, "reviews_count": 1420,
-        "image_url": "frontend/images/places/place_148.jpg",
-        "tags": "hen_ho,nhom_ban"
-    },
-    {
-        "name": "Dimsum Tiến Phát",
-        "category": "an_uong",
-        "address": "18 Ký Hòa, Phường 11, Quận 5",
-        "lat": 10.75410, "lon": 106.66150,
-        "open_time": "06:00", "close_time": "12:30",
-        "min_price": 50000, "max_price": 150000, "rating": 4.6, "reviews_count": 2300,
-        "image_url": "frontend/images/places/place_150.jpg",
-        "tags": "gia_dinh,nhom_ban"
-    }
-]
-
-def seed_users_if_needed(conn):
-    cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) as count FROM users")
-    if cursor.fetchone()["count"] == 0:
-        cursor.execute("""
-        INSERT INTO users (username, password, full_name, role)
-        VALUES 
-            ('admin', 'admin123', 'Quản Trị Viên SGGo', 'admin'),
-            ('user1', '123456', 'Khách Du Lịch Mẫu', 'user')
-        """)
-        conn.commit()
-
-def seed_places_if_needed(conn):
-    cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) as count FROM places")
-    if cursor.fetchone()["count"] == 0:
-        all_seeds = INITIAL_HERITAGE_PLACES + INITIAL_CULINARY_PLACES
-        for p in all_seeds:
-            cursor.execute("""
-            INSERT INTO places (name, category, address, lat, lon, open_time, close_time, min_price, max_price, rating, reviews_count, image_url, tags)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                p["name"], p["category"], p["address"], p["lat"], p["lon"],
-                p["open_time"], p["close_time"], p["min_price"], p["max_price"],
-                p["rating"], p["reviews_count"], p.get("image_url"), p.get("tags")
-            ))
-        conn.commit()
-
 def init_db():
+    """Khởi tạo cấu trúc các bảng và nạp dữ liệu mẫu ban đầu"""
     conn = get_connection()
     cursor = conn.cursor()
 
+    # 1. BẢNG USERS (Tài khoản & Phân quyền)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
         full_name TEXT NOT NULL,
-        role TEXT NOT NULL DEFAULT 'user',
+        role TEXT NOT NULL DEFAULT 'user', -- 'admin' hoặc 'user'
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     """)
 
+    # 2. BẢNG PLACES (Thông tin địa điểm thực tế tại Quận 5)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS places (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        category TEXT NOT NULL,
+        category TEXT NOT NULL,               -- 'an_uong' hoặc 'di_choi'
         address TEXT NOT NULL,
         district TEXT NOT NULL DEFAULT 'Quận 5',
         lat REAL NOT NULL,
@@ -179,11 +58,25 @@ def init_db():
         max_price INTEGER NOT NULL DEFAULT 100000,
         rating REAL NOT NULL DEFAULT 4.5,
         reviews_count INTEGER NOT NULL DEFAULT 100,
+        peak_hours TEXT DEFAULT '18:00 - 20:00',
+        best_review TEXT DEFAULT 'Quán sạch sẽ, đồ ăn ngon, phục vụ nhanh.',
+        worst_review TEXT DEFAULT 'Giờ cao điểm hơi đông khách, nên đi sớm.',
         image_url TEXT,
-        tags TEXT DEFAULT 'nhom_ban'
+        tags TEXT DEFAULT 'nhom_ban',          -- Danh sách tag: di_1_minh, hen_ho, nhom_ban, gia_dinh
+        is_verified INTEGER NOT NULL DEFAULT 1, -- 1: Đã xác thực, 0: Chưa duyệt
+        is_verified_review INTEGER NOT NULL DEFAULT 1,
+        is_admin_choice INTEGER NOT NULL DEFAULT 0 -- 1: Quán Admin yêu thích, 0: Thường
     );
     """)
 
+    # Tự động migrate cột is_admin_choice nếu dùng CSDL cũ
+    cursor.execute("PRAGMA table_info(places)")
+    existing_cols = [r["name"] for r in cursor.fetchall()]
+    if "is_admin_choice" not in existing_cols:
+        cursor.execute("ALTER TABLE places ADD COLUMN is_admin_choice INTEGER DEFAULT 0")
+        conn.commit()
+
+    # 3. BẢNG FAVORITES (Địa điểm yêu thích của người dùng)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS favorites (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -195,252 +88,386 @@ def init_db():
         UNIQUE(user_id, place_id)
     );
     """)
+
     conn.commit()
 
+    # Khởi tạo dữ liệu mẫu nếu bảng còn trống
     seed_users_if_needed(conn)
     seed_places_if_needed(conn)
     conn.close()
 
-def get_all_places(category=None, min_rating=None):
+def seed_users_if_needed(conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM users")
+    if cursor.fetchone()[0] == 0:
+        cursor.execute("""
+        INSERT INTO users (username, password, full_name, role) VALUES 
+        ('admin', 'admin123', 'Quản Trị Viên SGGo', 'admin'),
+        ('user1', '123456', 'Nguyễn Văn A', 'user');
+        """)
+        conn.commit()
+
+def seed_places_if_needed(conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM places")
+    if cursor.fetchone()[0] > 0:
+        return
+
+    # Đọc 40 quán thực tế từ enriched_places.json
+    places_to_insert = []
+    if os.path.exists(ENRICHED_JSON_PATH):
+        with open(ENRICHED_JSON_PATH, "r", encoding="utf-8") as f:
+            raw_places = json.load(f)
+            
+            for p in raw_places:
+                name = p.get("name")
+                if not name:
+                    continue
+                category = p.get("category", "an_uong")
+                addr = p.get("address") or p.get("full_address") or "Quận 5, TP.HCM"
+                district = p.get("district", "Quận 5")
+                lat = float(p.get("lat", 10.7550))
+                lon = float(p.get("lon", 106.6650))
+                open_time = p.get("open_time", "08:00")
+                close_time = p.get("close_time", "22:00")
+                min_price = int(p.get("min_price", 30000))
+                max_price = int(p.get("max_price", 100000))
+                rating = float(p.get("rating", 4.5))
+                reviews_count = int(p.get("reviews_count", 100))
+                peak_hours = p.get("peak_hours", "18:00 - 20:00")
+                best_review = p.get("best_review") or ""
+                worst_review = p.get("worst_review") or ""
+                img = p.get("image_url") or None
+                tags = p.get("tags", "nhom_ban,di_1_minh")
+                is_verified = 1
+
+                places_to_insert.append((
+                    name, category, addr, district, lat, lon, open_time, close_time,
+                    min_price, max_price, rating, reviews_count, peak_hours,
+                    best_review, worst_review, img, tags, is_verified
+                ))
+
+    if places_to_insert:
+        cursor.executemany("""
+        INSERT INTO places (
+            name, category, address, district, lat, lon, open_time, close_time,
+            min_price, max_price, rating, reviews_count, peak_hours,
+            best_review, worst_review, image_url, tags, is_verified
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, places_to_insert)
+        conn.commit()
+
+# ==============================================================================
+# THAO TÁC NGƯỜI DÙNG & TÀI KHOẢN (AUTH)
+# ==============================================================================
+
+def authenticate_user(username, password):
+    """Kiểm tra thông tin đăng nhập"""
     conn = get_connection()
     cursor = conn.cursor()
+    cursor.execute("SELECT id, username, full_name, role FROM users WHERE username = ? AND password = ?", (username, password))
+    user = cursor.fetchone()
+    conn.close()
+    if user:
+        return dict(user)
+    return None
+
+def register_user(username, password, full_name):
+    """Đăng ký tài khoản mới"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("INSERT INTO users (username, password, full_name, role) VALUES (?, ?, ?, 'user')", 
+                       (username, password, full_name))
+        conn.commit()
+        user_id = cursor.lastrowid
+        conn.close()
+        return {"id": user_id, "username": username, "full_name": full_name, "role": "user"}
+    except sqlite3.IntegrityError:
+        conn.close()
+        return None
+
+# ==============================================================================
+# THAO TÁC ĐỊA ĐIỂM (PLACES CRUD)
+# ==============================================================================
+
+def get_all_places(category=None, context_tag=None, min_budget=None, max_budget=None, min_rating=None, search=None, only_verified=True):
+    """Lấy danh sách địa điểm theo bộ lọc đa chiều (A đến Z)"""
+    conn = get_connection()
+    cursor = conn.cursor()
+
     query = "SELECT * FROM places WHERE 1=1"
     params = []
+
+    if only_verified:
+        query += " AND is_verified = 1"
 
     if category and category != "all":
         query += " AND category = ?"
         params.append(category)
 
-    if min_rating:
+    if context_tag and context_tag != "all":
+        query += " AND tags LIKE ?"
+        params.append(f"%{context_tag}%")
+
+    if min_budget and int(min_budget) > 0:
+        query += " AND max_price >= ?"
+        params.append(int(min_budget))
+
+    if max_budget and int(max_budget) > 0:
+        query += " AND min_price <= ?"
+        params.append(int(max_budget))
+
+    if min_rating and float(min_rating) > 0:
         query += " AND rating >= ?"
         params.append(float(min_rating))
 
-    query += " ORDER BY rating DESC"
-    cursor.execute(query, tuple(params))
-    rows = cursor.fetchall()
-    places = [dict(row) for row in rows]
-    conn.close()
-    return places
+    if search:
+        query += " AND (name LIKE ? OR address LIKE ?)"
+        params.extend([f"%{search}%", f"%{search}%"])
 
-def get_place_by_id(place_id: int):
+    query += " ORDER BY rating DESC, reviews_count DESC"
+    cursor.execute(query, params)
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+def get_place_by_id(place_id):
+    """Lấy chi tiết 1 địa điểm"""
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM places WHERE id = ?", (int(place_id),))
+    cursor.execute("SELECT * FROM places WHERE id = ?", (place_id,))
     row = cursor.fetchone()
     conn.close()
     return dict(row) if row else None
 
-import hashlib
-
-def hash_password(password: str) -> str:
-    """Băm mật khẩu bằng thuật toán SHA-256 kèm salt"""
-    salt = "sggo_travel_salt_2026"
-    return hashlib.sha256((password + salt).encode('utf-8')).hexdigest()
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Kiểm tra mật khẩu nhập vào khớp với chuỗi băm lưu trữ"""
-    return hash_password(plain_password) == hashed_password
-
-def register_user(username, password, full_name):
-    """Đăng ký tài khoản người dùng mới"""
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT id FROM users WHERE username = ?", (username.strip(),))
-    if cursor.fetchone():
-        conn.close()
-        return None, "Tên đăng nhập đã tồn tại"
-
-    hashed = hash_password(password)
-    cursor.execute("""
-    INSERT INTO users (username, password, full_name, role)
-    VALUES (?, ?, ?, 'user')
-    """, (username.strip(), hashed, full_name.strip()))
-    user_id = cursor.lastrowid
-    conn.commit()
-    conn.close()
-    return {"id": user_id, "username": username, "full_name": full_name, "role": "user"}, None
-
-def authenticate_user(username, password):
-    """Xác thực tài khoản và trả về thông tin người dùng"""
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username = ?", (username.strip(),))
-    row = cursor.fetchone()
-    conn.close()
-
-    if not row:
-        return None, "Tài khoản không tồn tại"
-
-    user = dict(row)
-    # Hỗ trợ cả mật khẩu băm và mật khẩu cũ của seed
-    if user["password"] == password or verify_password(password, user["password"]):
-        return {
-            "id": user["id"],
-            "username": user["username"],
-            "full_name": user["full_name"],
-            "role": user["role"]
-        }, None
-
-    return None, "Mật khẩu không chính xác"
-
-def add_place(place_dict):
-    """Thêm địa điểm mới vào CSDL với dữ liệu hợp lệ"""
+def add_place(data):
+    """Thêm một địa điểm mới vào CSDL"""
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
     INSERT INTO places (
         name, category, address, district, lat, lon, open_time, close_time,
-        min_price, max_price, rating, reviews_count, image_url, tags
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        min_price, max_price, rating, reviews_count, peak_hours,
+        best_review, worst_review, image_url, tags, is_verified, is_verified_review, is_admin_choice
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
-        place_dict["name"], place_dict["category"], place_dict["address"],
-        place_dict.get("district", "Quận 5"),
-        float(place_dict["lat"]), float(place_dict["lon"]),
-        place_dict.get("open_time", "08:00"), place_dict.get("close_time", "22:00"),
-        int(place_dict.get("min_price", 30000)), int(place_dict.get("max_price", 100000)),
-        float(place_dict.get("rating", 4.5)), int(place_dict.get("reviews_count", 50)),
-        place_dict.get("image_url", ""), place_dict.get("tags", "nhom_ban")
+        data.get("name"),
+        data.get("category", "an_uong"),
+        data.get("address", "Quận 5, TP.HCM"),
+        data.get("district", "Quận 5"),
+        float(data.get("lat", 10.7550)),
+        float(data.get("lon", 106.6650)),
+        data.get("open_time", "08:00"),
+        data.get("close_time", "22:00"),
+        int(data.get("min_price", 30000)),
+        int(data.get("max_price", 100000)),
+        float(data.get("rating", 4.5)),
+        int(data.get("reviews_count", 50)),
+        data.get("peak_hours", "18:00 - 20:00"),
+        data.get("best_review") or "",
+        data.get("worst_review") or "",
+        data.get("image_url") or None,
+        data.get("tags", "nhom_ban"),
+        int(data.get("is_verified", 1)),
+        int(data.get("is_verified_review", 1)),
+        int(data.get("is_admin_choice", 0))
     ))
-    new_id = cursor.lastrowid
     conn.commit()
+    new_id = cursor.lastrowid
     conn.close()
-    return new_id
+    return get_place_by_id(new_id)
 
-def update_place(place_id: int, p: dict):
-    """Cập nhật thông tin địa điểm theo ID"""
+def update_place(place_id, data):
+    """Cập nhật thông tin địa điểm đã có trong SQLite"""
+    existing = get_place_by_id(place_id)
+    if not existing:
+        return None
+
+    raw_img = data.get("image_url")
+    img_val = raw_img.strip() if raw_img and str(raw_img).strip() else None
+
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
     UPDATE places SET
-        name = ?, category = ?, address = ?, lat = ?, lon = ?,
-        open_time = ?, close_time = ?, min_price = ?, max_price = ?,
-        rating = ?, image_url = ?, tags = ?
+        name = ?, category = ?, address = ?, district = ?,
+        lat = ?, lon = ?, open_time = ?, close_time = ?,
+        min_price = ?, max_price = ?, rating = ?, reviews_count = ?,
+        peak_hours = ?, best_review = ?, worst_review = ?,
+        image_url = ?, tags = ?, is_verified = ?, is_verified_review = ?,
+        is_admin_choice = ?
     WHERE id = ?
     """, (
-        p["name"], p["category"], p["address"], float(p["lat"]), float(p["lon"]),
-        p.get("open_time", "08:00"), p.get("close_time", "22:00"),
-        int(p.get("min_price", 30000)), int(p.get("max_price", 100000)),
-        float(p.get("rating", 4.5)), p.get("image_url", ""),
-        p.get("tags", "nhom_ban"), int(place_id)
+        data.get("name", existing.get("name")),
+        data.get("category", existing.get("category")),
+        data.get("address", existing.get("address")),
+        data.get("district", existing.get("district", "Quận 5")),
+        float(data.get("lat", existing.get("lat", 10.7550))),
+        float(data.get("lon", existing.get("lon", 106.6650))),
+        data.get("open_time", existing.get("open_time", "08:00")),
+        data.get("close_time", existing.get("close_time", "22:00")),
+        int(data.get("min_price", existing.get("min_price", 30000))),
+        int(data.get("max_price", existing.get("max_price", 100000))),
+        float(data.get("rating", existing.get("rating", 4.5))),
+        int(data.get("reviews_count", existing.get("reviews_count", 100))),
+        data.get("peak_hours", existing.get("peak_hours", "18:00 - 20:00")),
+        data.get("best_review", existing.get("best_review", "")) or "",
+        data.get("worst_review", existing.get("worst_review", "")) or "",
+        img_val,
+        data.get("tags", existing.get("tags", "nhom_ban")),
+        int(data.get("is_verified", existing.get("is_verified", 1))),
+        int(data.get("is_verified_review", existing.get("is_verified_review", 1))),
+        int(data.get("is_admin_choice", existing.get("is_admin_choice", 0))),
+        place_id
     ))
-    updated = cursor.rowcount > 0
     conn.commit()
     conn.close()
-    return updated
+    return get_place_by_id(place_id)
 
-def delete_place(place_id: int):
-    """Xóa địa điểm theo ID"""
+def delete_place(place_id):
+    """Xóa một địa điểm"""
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM places WHERE id = ?", (int(place_id),))
-    deleted = cursor.rowcount > 0
+    cursor.execute("DELETE FROM places WHERE id = ?", (place_id,))
     conn.commit()
     conn.close()
-    return deleted
+    return True
 
-def migrate_verification_columns():
-    """Bổ sung cột is_verified và is_verified_review nếu chưa có"""
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("PRAGMA table_info(places)")
-    cols = [r["name"] for r in cursor.fetchall()]
-    if "is_verified" not in cols:
-        cursor.execute("ALTER TABLE places ADD COLUMN is_verified INTEGER NOT NULL DEFAULT 1")
-    if "is_verified_review" not in cols:
-        cursor.execute("ALTER TABLE places ADD COLUMN is_verified_review INTEGER NOT NULL DEFAULT 1")
-    conn.commit()
-    conn.close()
+# ==============================================================================
+# THAO TÁC ĐỊA ĐIỂM YÊU THÍCH (FAVORITES)
+# ==============================================================================
 
-migrate_verification_columns()
-
-def migrate_two_stream_reviews():
-    """Bổ sung cột best_review và worst_review cho đánh giá 2 luồng"""
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("PRAGMA table_info(places)")
-    cols = [r["name"] for r in cursor.fetchall()]
-    if "best_review" not in cols:
-        cursor.execute("ALTER TABLE places ADD COLUMN best_review TEXT DEFAULT 'Quán sạch sẽ, đồ ăn ngon, phục vụ nhanh.'")
-    if "worst_review" not in cols:
-        cursor.execute("ALTER TABLE places ADD COLUMN worst_review TEXT DEFAULT 'Giờ cao điểm hơi đông khách, nên đi sớm.'")
-    conn.commit()
-    conn.close()
-
-migrate_two_stream_reviews()
-
-def toggle_favorite(user_id: int, place_id: int) -> bool:
-    """Thêm hoặc xóa địa điểm khỏi danh sách yêu thích của người dùng"""
+def toggle_favorite(user_id, place_id):
+    """Thêm hoặc hủy lưu địa điểm yêu thích"""
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT id FROM favorites WHERE user_id = ? AND place_id = ?", (user_id, place_id))
-    row = cursor.fetchone()
-    if row:
-        cursor.execute("DELETE FROM favorites WHERE id = ?", (row["id"],))
-        is_saved = False
+    fav = cursor.fetchone()
+    if fav:
+        cursor.execute("DELETE FROM favorites WHERE id = ?", (fav["id"],))
+        action = "removed"
     else:
         cursor.execute("INSERT INTO favorites (user_id, place_id) VALUES (?, ?)", (user_id, place_id))
-        is_saved = True
+        action = "added"
     conn.commit()
     conn.close()
-    return is_saved
+    return action
 
-def get_user_favorites(user_id: int) -> list:
-    """Lấy danh sách các địa điểm đã lưu của người dùng"""
+def get_user_favorites(user_id):
+    """Lấy danh sách các địa điểm yêu thích của người dùng"""
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
     SELECT p.* FROM places p
-    INNER JOIN favorites f ON p.id = f.place_id
+    JOIN favorites f ON p.id = f.place_id
     WHERE f.user_id = ?
     ORDER BY f.saved_at DESC
     """, (user_id,))
-    places = [dict(r) for r in cursor.fetchall()]
+    rows = cursor.fetchall()
     conn.close()
-    return places
+    return [dict(r) for r in rows]
 
-import csv
-import io
+# ==============================================================================
+# NHẬP XUẤT CSV (IMPORT / EXPORT)
+# ==============================================================================
 
-def import_csv_data(csv_text: str):
-    """Import hàng loạt địa điểm từ nội dung file CSV"""
-    f = io.StringIO(csv_text.strip())
+def generate_sample_csv():
+    """Tạo nội dung file CSV mẫu chuẩn cho Admin tải về điền (an toàn tuyệt đối với mọi dấu phẩy)"""
+    output = io.StringIO()
+    writer = csv.writer(output, quoting=csv.QUOTE_ALL)
+    writer.writerow([
+        "name", "category", "address", "open_time", "close_time", 
+        "min_price", "max_price", "rating", "reviews_count", "peak_hours",
+        "best_review", "worst_review", "tags", "lat", "lon"
+    ])
+    writer.writerow([
+        "Hủ Tiếu Nam Vang Triều Châu", "an_uong", "85 Trần Bình Trọng, Phường 1, Quận 5", "06:30", "22:00",
+        40000, 75000, 4.6, 820, "18:00 - 19:30",
+        "Nước dùng ngọt xương tự nhiên, sườn mềm tôm tươi", "Quán giờ tan tầm hơi đông", "nhom_ban,di_1_minh", 10.7570, 106.6780
+    ])
+    writer.writerow([
+        "Cà Phê Trầm Chợ Lớn", "di_choi", "142 Triệu Quang Phục, Phường 11, Quận 5", "08:00", "22:30",
+        35000, 65000, 4.5, 430, "15:00 - 17:00",
+        "Không gian hoài cổ, nhạc nhẹ, rất hợp học bài và hẹn hò", "Hẻm hơi nhỏ", "hen_ho,di_1_minh", 10.7540, 106.6610
+    ])
+    return output.getvalue()
+
+def import_csv_data(csv_text):
+    """Đọc dữ liệu từ file CSV tải lên và nạp vào CSDL với khả năng tự phục hồi lỗi kiểu dữ liệu"""
+    f = io.StringIO(csv_text)
     reader = csv.DictReader(f)
     conn = get_connection()
     cursor = conn.cursor()
-    inserted_count = 0
-
+    
+    count = 0
     for row in reader:
-        if not row.get("name") or not row.get("lat") or not row.get("lon"):
+        name = row.get("name")
+        if not name:
             continue
+
+        try:
+            lat = float(row.get("lat") or 10.7550)
+        except (ValueError, TypeError):
+            lat = 10.7550
+
+        try:
+            lon = float(row.get("lon") or 106.6650)
+        except (ValueError, TypeError):
+            lon = 106.6650
+
+        try:
+            min_price = int(float(row.get("min_price") or 30000))
+        except (ValueError, TypeError):
+            min_price = 30000
+
+        try:
+            max_price = int(float(row.get("max_price") or 80000))
+        except (ValueError, TypeError):
+            max_price = 80000
+
+        try:
+            rating = float(row.get("rating") or 4.5)
+        except (ValueError, TypeError):
+            rating = 4.5
+
+        try:
+            reviews_count = int(float(row.get("reviews_count") or 50))
+        except (ValueError, TypeError):
+            reviews_count = 50
+
+        category = row.get("category", "an_uong")
+        if category not in ["an_uong", "di_choi"]:
+            category = "an_uong"
+
         cursor.execute("""
         INSERT INTO places (
             name, category, address, district, lat, lon, open_time, close_time,
-            min_price, max_price, rating, reviews_count, image_url, tags
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            min_price, max_price, rating, reviews_count, peak_hours,
+            best_review, worst_review, image_url, tags, is_verified
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
-            row["name"], row.get("category", "an_uong"), row.get("address", ""),
-            row.get("district", "Quận 5"), float(row["lat"]), float(row["lon"]),
-            row.get("open_time", "08:00"), row.get("close_time", "22:00"),
-            int(row.get("min_price", 30000)), int(row.get("max_price", 100000)),
-            float(row.get("rating", 4.5)), int(row.get("reviews_count", 50)),
-            row.get("image_url", ""), row.get("tags", "nhom_ban")
+            name.strip(),
+            category,
+            row.get("address", "Quận 5, TP.HCM"),
+            "Quận 5",
+            lat,
+            lon,
+            row.get("open_time", "08:00"),
+            row.get("close_time", "22:00"),
+            min_price,
+            max_price,
+            rating,
+            reviews_count,
+            row.get("peak_hours", "18:00 - 20:00"),
+            row.get("best_review") or "",
+            row.get("worst_review") or "",
+            row.get("image_url") or None,
+            row.get("tags", "nhom_ban"),
+            1
         ))
-        inserted_count += 1
+        count += 1
 
     conn.commit()
     conn.close()
-    return inserted_count
-
-def generate_sample_csv() -> str:
-    """Tạo chuỗi CSV mẫu chuẩn cho ban quản trị import dữ liệu"""
-    headers = ["name", "category", "address", "district", "lat", "lon", "open_time", "close_time", "min_price", "max_price", "rating", "reviews_count", "image_url", "tags"]
-    sample_rows = [
-        ["Hội Quán Hà Chương", "di_choi", "802 Nguyễn Trãi, P.14, Quận 5", "Quận 5", "10.7518", "106.6575", "07:00", "17:30", "0", "0", "4.6", "450", "frontend/images/verified/ha_chuong.jpg", "di_1_minh,gia_dinh"],
-        ["Hội Quán Nhị Phủ", "di_choi", "264 Hải Thượng Lãn Ông, P.14, Quận 5", "Quận 5", "10.7505", "106.6542", "06:30", "17:00", "0", "0", "4.5", "380", "frontend/images/verified/nhi_phu.jpg", "di_1_minh,gia_dinh"]
-    ]
-    output = io.StringIO()
-    writer = csv.writer(output)
-    writer.writerow(headers)
-    for r in sample_rows:
-        writer.writerow(r)
-    return output.getvalue()
+    return count

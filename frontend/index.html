@@ -3,181 +3,1136 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SGGo! — Cẩm Nang Du Lịch & Lộ Trình Sài Gòn</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="referrer" content="no-referrer" />
+  <title>SGGo! — Cẩm Nang Du Lịch & Lịch Trình Thông Minh Quận 5</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=2.2" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Leaflet Map Library CDN -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
-<body>
-  <div class="app-container">
-    <header class="app-header">
-      <div class="logo-box">
-        <h1>SG<span>Go!</span></h1>
-        <span class="badge">Sài Gòn Pilot</span>
+<body class="bg-[#F8FAFC] text-[#0F172A] font-['Plus_Jakarta_Sans',sans-serif] min-h-screen antialiased flex flex-col justify-between">
+
+  <div class="pop-glow-orange"></div>
+  <div class="pop-glow-teal"></div>
+
+  <div class="w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 md:py-8 relative z-10">
+    
+    <!-- HEADER -->
+    <header class="flex flex-col md:flex-row justify-between items-center pb-5 mb-6 border-b border-slate-200/80 gap-4">
+      <!-- Logo -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchMode('flow')">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#FF5733] to-[#FF8C42] flex items-center justify-center text-white shadow-md shadow-[#FF5733]/25">
+          <i class="fa-solid fa-location-arrow text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-2xl font-black tracking-tight text-[#0F172A]">
+              SG<span class="text-[#FF5733]">Go!</span>
+            </h1>
+            <span class="text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#FF5733]/10 text-[#FF5733]">
+              Sài Gòn • Pilot Phase
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">Cẩm nang & Lập lộ trình du lịch thông minh Sài Gòn (TP.HCM)</p>
+        </div>
       </div>
-      <nav class="nav-links">
-        <button class="nav-btn active">Khám Phá Nhanh</button>
-        <button class="nav-btn">Tất Cả Địa Điểm</button>
-        <button class="nav-btn">Lộ Trình AI</button>
-      </nav>
+
+      <!-- Navigation & Auth -->
+      <div class="flex flex-wrap sm:flex-nowrap items-center justify-center gap-2 sm:gap-3">
+        <nav class="flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200/80 text-xs font-semibold overflow-x-auto max-w-full">
+          <button onclick="switchMode('flow')" id="navFlow" class="tab-pill active whitespace-nowrap">Khám Phá Nhanh</button>
+          <button onclick="switchMode('all')" id="navAll" class="tab-pill whitespace-nowrap">Tự Chọn (<span id="totalPlacesCount">40</span>)</button>
+          <button onclick="switchMode('ai')" id="navAI" class="tab-pill whitespace-nowrap">Lộ Trình AI ✨</button>
+          <button onclick="switchMode('admin')" id="navAdmin" class="tab-pill hidden text-rose-600 font-bold whitespace-nowrap" style="display: none !important;">
+            <i class="fa-solid fa-shield-halved mr-1"></i> Quản Trị Admin
+          </button>
+        </nav>
+
+        <!-- Nút Tài Khoản (Được bảo vệ không bao giờ bị rớt dòng) -->
+        <div id="authContainer" class="flex-shrink-0 flex items-center whitespace-nowrap">
+          <button onclick="openAuthModal()" id="btnAuth" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 shadow-sm transition flex items-center gap-1.5 whitespace-nowrap">
+            <i class="fa-regular fa-user text-slate-400"></i>
+            <span id="authButtonText">Đăng nhập</span>
+          </button>
+        </div>
+      </div>
     </header>
 
-    <main class="main-content">
-      <section class="hero-section">
-        <h2>Khám phá 40+ địa điểm di sản & ẩm thực Chợ Lớn</h2>
-        <p>Hệ thống hỗ trợ tìm kiếm, lọc theo ngữ cảnh và tối ưu tuyến đường di chuyển thông minh.</p>
-      </section>
+    <!-- 1. FLOW TRẮC NGHIỆM GỢI Ý (THIẾT KẾ DÀNH RIÊNG CHO NGƯỜI LƯỜI - ÍT CHỮ, RA QUÁN NGAY) -->
+    <main id="viewFlow" class="max-w-xl mx-auto py-2">
 
-      <!-- Search & Filters Toolbar -->
-      <div class="toolbar">
-        <div class="search-box">
-          <input type="text" id="searchInput" placeholder="Tìm kiếm địa điểm, món ăn, địa chỉ..." />
+      <!-- THANH TÓM TẮT ĐANG CHỌN (STEPPER 3 CỘT CÂN ĐỐI) -->
+      <div id="flowSelectionSummary" class="bg-white border border-slate-200/90 rounded-2xl p-2 sm:p-2.5 mb-5 shadow-sm flex items-center gap-1.5 sm:gap-2">
+        <div class="flex-1 grid grid-cols-3 gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold">
+          <!-- Bước 1 -->
+          <div id="summaryCategory" onclick="goBackStep(1)" class="cursor-pointer py-1.5 px-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 hover:border-orange-300 hover:bg-orange-50/50 transition flex items-center justify-center gap-1 text-center truncate" title="Bấm để chọn lại Mục đích">
+            <span class="truncate">1. Mục đích</span>
+          </div>
+
+          <!-- Bước 2 -->
+          <div id="summaryContext" onclick="goBackStep(2)" class="cursor-pointer py-1.5 px-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 hover:border-teal-300 hover:bg-teal-50/50 transition flex items-center justify-center gap-1 text-center truncate" title="Bấm để chọn lại Đi cùng">
+            <span class="truncate">2. Đi cùng</span>
+          </div>
+
+          <!-- Bước 3 -->
+          <div id="summaryBudget" onclick="goBackStep(3)" class="cursor-pointer py-1.5 px-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 hover:border-indigo-300 hover:bg-indigo-50/50 transition flex items-center justify-center gap-1 text-center truncate" title="Bấm để chọn lại Ngân sách">
+            <span class="truncate">3. Ngân sách</span>
+          </div>
         </div>
-        <div class="filter-pills">
-          <button class="pill active" onclick="filterByCategory('all')">Tất cả</button>
-          <button class="pill" onclick="filterByCategory('an_uong')">Ẩm thực</button>
-          <button class="pill" onclick="filterByCategory('di_choi')">Di sản</button>
+
+        <!-- Nút Đặt Lại -->
+        <button onclick="restartFlow()" title="Đặt lại từ đầu" class="w-8 h-8 flex-shrink-0 rounded-xl bg-slate-50 hover:bg-orange-50 text-slate-400 hover:text-[#FF5733] border border-slate-200 flex items-center justify-center transition">
+          <i class="fa-solid fa-rotate-right text-xs"></i>
+        </button>
+      </div>
+
+      <!-- Bước 1 -->
+      <div id="step1" class="step-card">
+        <div class="text-center mb-6">
+          <span class="badge-step">BƯỚC 1/3 • MỤC ĐÍCH HÔM NAY</span>
+          <h2 class="text-xl md:text-2xl font-black text-slate-900 mt-2 tracking-tight">
+            Bạn muốn ra đường để...
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div onclick="selectAnswer('category', 'an_uong', 2)" class="selection-card group p-5 text-center">
+            <div class="w-12 h-12 rounded-2xl bg-orange-50 text-[#FF5733] flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
+              🍜
+            </div>
+            <h3 class="font-extrabold text-base text-slate-900 group-hover:text-[#FF5733] transition-colors">Ăn uống no nê</h3>
+            <p class="text-xs text-slate-500 mt-1 font-medium">Sủi cảo, hủ tiếu, dimsum, chè Tàu</p>
+          </div>
+
+          <div onclick="selectAnswer('category', 'di_choi', 2)" class="selection-card group p-5 text-center">
+            <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center text-2xl mx-auto mb-3 group-hover:scale-110 transition-transform">
+              📸
+            </div>
+            <h3 class="font-extrabold text-base text-slate-900 group-hover:text-[#FF5733] transition-colors">Đi chơi & Cà phê</h3>
+            <p class="text-xs text-slate-500 mt-1 font-medium">Chùa cổ, di tích, phố lồng đèn, quán trà</p>
+          </div>
         </div>
       </div>
 
-      <!-- Map Container -->
-      <div class="map-wrapper">
-        <div id="map"></div>
+      <!-- Bước 2 -->
+      <div id="step2" class="step-card hidden">
+        <div class="text-center mb-6">
+          <button onclick="goBackStep(1)" class="back-link">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i> Quay lại
+          </button>
+          <span class="badge-step block mt-2">BƯỚC 2/3 • ĐỒNG HÀNH</span>
+          <h2 class="text-xl md:text-2xl font-black text-slate-900 mt-2 tracking-tight">
+            Đi cùng với ai?
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div onclick="selectAnswer('context', 'di_1_minh', 3)" class="selection-card group p-3.5 text-center">
+            <div class="text-2xl mb-1 group-hover:scale-110 transition-transform">🎧</div>
+            <h3 class="font-bold text-sm text-slate-800 group-hover:text-[#FF5733]">Đi một mình</h3>
+            <p class="text-[10px] text-slate-400 mt-0.5">Yên tĩnh, chill phố</p>
+          </div>
+
+          <div onclick="selectAnswer('context', 'nguoi_yeu', 3)" class="selection-card group p-3.5 text-center">
+            <div class="text-2xl mb-1 group-hover:scale-110 transition-transform">💑</div>
+            <h3 class="font-bold text-sm text-slate-800 group-hover:text-[#FF5733]">Hẹn hò cặp đôi</h3>
+            <p class="text-[10px] text-slate-400 mt-0.5">Lãng mạn, ấm cúng</p>
+          </div>
+
+          <div onclick="selectAnswer('context', 'ban_be', 3)" class="selection-card group p-3.5 text-center">
+            <div class="text-2xl mb-1 group-hover:scale-110 transition-transform">🎉</div>
+            <h3 class="font-bold text-sm text-slate-800 group-hover:text-[#FF5733]">Nhóm bạn</h3>
+            <p class="text-[10px] text-slate-400 mt-0.5">Rôm rả, ăn uống</p>
+          </div>
+
+          <div onclick="selectAnswer('context', 'gia_dinh', 3)" class="selection-card group p-3.5 text-center">
+            <div class="text-2xl mb-1 group-hover:scale-110 transition-transform">👨‍👩‍👧‍👦</div>
+            <h3 class="font-bold text-sm text-slate-800 group-hover:text-[#FF5733]">Gia đình</h3>
+            <p class="text-[10px] text-slate-400 mt-0.5">Rộng rãi, lịch sự</p>
+          </div>
+        </div>
       </div>
 
-      <section class="places-grid" id="placesContainer"></section>
+      <!-- Bước 3 -->
+      <div id="step3" class="step-card hidden">
+        <div class="text-center mb-5">
+          <button onclick="goBackStep(2)" class="back-link">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i> Quay lại
+          </button>
+          <span class="badge-step block mt-2">BƯỚC 3/3 • NGÂN SÁCH</span>
+          <h2 class="text-xl md:text-2xl font-black text-slate-900 mt-2 tracking-tight">
+            Ngân sách mỗi người?
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5 mb-3">
+          <div onclick="selectAnswer('price_level', 'under_50k', 'finish')" class="selection-card group p-3">
+            <div class="flex items-center gap-2.5">
+              <span class="text-xl">🪙</span>
+              <div>
+                <h3 class="font-bold text-xs text-slate-800 group-hover:text-[#FF5733]">Dưới 50k</h3>
+                <p class="text-[10px] text-slate-400">Ăn vặt, trà đá</p>
+              </div>
+            </div>
+          </div>
+
+          <div onclick="selectAnswer('price_level', '50k_100k', 'finish')" class="selection-card group p-3">
+            <div class="flex items-center gap-2.5">
+              <span class="text-xl">🍜</span>
+              <div>
+                <h3 class="font-bold text-xs text-slate-800 group-hover:text-[#FF5733]">50k – 100k</h3>
+                <p class="text-[10px] text-slate-400">Bình dân no nê</p>
+              </div>
+            </div>
+          </div>
+
+          <div onclick="selectAnswer('price_level', '100k_250k', 'finish')" class="selection-card group p-3">
+            <div class="flex items-center gap-2.5">
+              <span class="text-xl">🍱</span>
+              <div>
+                <h3 class="font-bold text-xs text-slate-800 group-hover:text-[#FF5733]">100k – 250k</h3>
+                <p class="text-[10px] text-slate-400">Thoải mái ăn ngon</p>
+              </div>
+            </div>
+          </div>
+
+          <div onclick="selectAnswer('price_level', 'above_250k', 'finish')" class="selection-card group p-3">
+            <div class="flex items-center gap-2.5">
+              <span class="text-xl">👑</span>
+              <div>
+                <h3 class="font-bold text-xs text-slate-800 group-hover:text-[#FF5733]">Trên 250k</h3>
+                <p class="text-[10px] text-slate-400">Sang chảnh thả ga</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tùy chọn nhanh: Tùy duyên -->
+        <div class="mb-3">
+          <button onclick="selectAnswer('price_level', 'all', 'finish')" class="w-full py-2 px-3 bg-slate-100 hover:bg-orange-50 hover:text-[#FF5733] border border-slate-200 rounded-xl text-xs font-bold text-slate-600 transition flex items-center justify-center gap-1.5">
+            <span>⚡ Tùy Duyên (Mức giá nào cũng được)</span>
+          </button>
+        </div>
+
+        <!-- Tùy chọn: Tự nhập số tiền -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-3 transition shadow-sm">
+          <label class="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
+            <span>✏️</span> <span>Hoặc tự nhập số tiền bạn có:</span>
+          </label>
+          <div class="flex gap-2">
+            <div class="relative flex-1">
+              <input type="number" id="customBudgetInput" placeholder="VD: 75000" class="pop-input pr-12 text-xs font-bold text-[#FF5733]" />
+              <span class="absolute right-3 top-2 text-xs font-bold text-slate-400">VNĐ</span>
+            </div>
+            <button onclick="handleCustomBudgetSubmit()" class="px-4 py-2 bg-[#FF5733] hover:bg-[#E04826] text-white rounded-xl text-xs font-bold transition whitespace-nowrap shadow-sm">
+              Xem Ngay
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kết quả hoàn tất (Finish) -->
+      <div id="stepFinish" class="step-card hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-200">
+          <div>
+            <div id="finishCriteriaBadge" class="text-[11px] font-extrabold text-[#FF5733] uppercase tracking-wider flex items-center gap-1.5">
+              <span>🎯 KẾT QUẢ GỢI Ý PHÙ HỢP NHẤT</span>
+            </div>
+            <h2 class="text-xl font-black text-slate-900 mt-1">3 Gợi Ý Tinh Tuyển Dành Cho Bạn</h2>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="rotateFlowResults()" title="Xem 3 quán khác cùng tiêu chí này" class="text-xs font-bold text-[#FF5733] hover:text-white bg-orange-50 hover:bg-[#FF5733] border border-orange-200 px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-rotate text-[11px]"></i> <span>Đổi 3 quán khác</span>
+            </button>
+            <button onclick="restartFlow()" title="Chọn lại từ đầu" class="text-xs font-bold text-slate-500 hover:text-slate-800 bg-white border border-slate-200 px-3 py-2 rounded-xl transition flex items-center gap-1 shadow-sm">
+              <i class="fa-solid fa-arrow-rotate-left text-[10px]"></i> <span>Chọn lại</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="flowResults" class="space-y-4">
+          <!-- Render động từ JS -->
+        <div class="mt-8 text-center bg-orange-50/70 border border-orange-200/80 p-4 rounded-2xl">
+          <p class="text-xs text-slate-700 font-semibold">Muốn kết hợp cả 3 quán thành một lộ trình hoàn chỉnh không ngược đường?</p>
+          <button onclick="switchMode('ai')" class="mt-2.5 px-4 py-2 bg-[#FF5733] hover:bg-[#E04826] text-white rounded-xl text-xs font-bold transition shadow-sm">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Lập Lộ Trình Bằng AI Ngay
+          </button>
+        </div>
+      </div>
     </main>
+
+    <!-- 2. TỰ CHỌN ĐỊA ĐIỂM (TAB 2: 40 QUÁN VỚI ẢNH CHUẨN, GIỜ MỞ CỬA & ĐÁNH GIÁ THỰC TẾ) -->
+    <main id="viewAll" class="max-w-4xl mx-auto py-2 hidden">
+      <!-- Khối Định Vị GPS & Lọc Theo Bán Kính -->
+      <div class="bg-gradient-to-r from-orange-50/90 via-white to-amber-50/90 border border-orange-200/80 rounded-2xl p-4 mb-4 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-orange-100/80">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#FF5733] to-[#FF8C42] text-white flex items-center justify-center text-xs shadow-xs flex-shrink-0">
+              <i class="fa-solid fa-location-crosshairs text-sm"></i>
+            </div>
+            <div>
+              <h3 class="text-xs font-black text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
+                <span>Định Vị Vị Trí Của Bạn & Lọc Theo Bán Kính</span>
+              </h3>
+              <p class="text-[11px] text-slate-500 font-medium">Bổ sung vị trí để tìm quán ăn, điểm vui chơi gần bạn nhất (tính theo bán kính mét/km)</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button type="button" onclick="getExploreGPSLocation()" id="btnExploreGPS" class="px-3.5 py-2 bg-gradient-to-r from-[#FF5733] to-[#FF8C42] hover:opacity-95 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer whitespace-nowrap">
+              <i class="fa-solid fa-crosshairs"></i>
+              <span>Dùng GPS hiện tại</span>
+            </button>
+            <button type="button" onclick="clearExploreLocation()" id="btnClearExploreLoc" class="hidden px-2.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition cursor-pointer" title="Hủy định vị để xem tất cả">
+              <i class="fa-solid fa-xmark mr-1"></i><span>Hủy vị trí</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3 mt-3 items-center">
+          <!-- 1. Ô điền địa chỉ hoặc điểm xuất phát -->
+          <div class="md:col-span-7">
+            <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
+              <span>📍 Vị trí hoặc địa chỉ của bạn:</span>
+              <span id="exploreGpsStatusBadge" class="hidden text-[10px] font-bold text-emerald-700 bg-emerald-100/90 px-2 py-0.5 rounded-full">
+                <i class="fa-solid fa-circle-check text-emerald-600"></i> Đã nhận tọa độ
+              </span>
+            </label>
+            <div class="relative">
+              <input type="text" id="exploreLocationInput" onchange="onExploreLocationInputChange()" onkeyup="if(event.key==='Enter') onExploreLocationInputChange()" placeholder="Điền địa chỉ (VD: 280 An Dương Vương, Chợ An Đông, Thuận Kiều...)" class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-[#FF5733] shadow-inner" />
+              <i class="fa-solid fa-map-pin absolute left-3 top-1/2 -translate-y-1/2 text-rose-500 text-xs"></i>
+              <button type="button" onclick="onExploreLocationInputChange()" title="Xác nhận địa chỉ" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#FF5733] text-xs font-bold px-1.5 py-0.5 cursor-pointer">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. Bộ lọc bán kính khoảng cách -->
+          <div class="md:col-span-5">
+            <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
+              <span>📏 Giới hạn bán kính:</span>
+              <span id="exploreRadiusInfo" class="text-[10px] text-slate-400 font-medium">Tất cả khoảng cách</span>
+            </label>
+            <select id="allRadiusFilter" onchange="onRadiusFilterChange()" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-[#FF5733] shadow-xs cursor-pointer">
+              <option value="all">🌐 Tất cả bán kính (Không giới hạn)</option>
+              <option value="500">🚶 Dưới 500 mét (Đi bộ ~5-7 phút)</option>
+              <option value="1000">🛵 Dưới 1 km (~2-3 phút xe máy)</option>
+              <option value="2000">🛵 Dưới 2 km (~5 phút xe máy)</option>
+              <option value="3000">🛵 Dưới 3 km (~8 phút xe máy)</option>
+              <option value="5000">🛵 Dưới 5 km (Toàn bộ Quận 5 & lân cận)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Các mốc địa danh gợi ý nhanh tại Quận 5 -->
+        <div class="flex items-center gap-1.5 mt-2.5 flex-wrap text-[11px]">
+          <span class="text-slate-400 font-bold text-[10px] uppercase">Gợi ý mốc nhanh:</span>
+          <button type="button" onclick="setExploreLocationPreset('280 An Dương Vương, Quận 5', 10.7601, 106.6823)" class="px-2.5 py-0.5 rounded-lg bg-white border border-slate-200/90 text-slate-700 hover:border-orange-400 hover:text-[#FF5733] transition text-[10px] font-semibold shadow-2xs cursor-pointer">🏫 ĐH Sư Phạm</button>
+          <button type="button" onclick="setExploreLocationPreset('Chợ An Đông, Quận 5', 10.7573, 106.6713)" class="px-2.5 py-0.5 rounded-lg bg-white border border-slate-200/90 text-slate-700 hover:border-orange-400 hover:text-[#FF5733] transition text-[10px] font-semibold shadow-2xs cursor-pointer">🏮 Chợ An Đông</button>
+          <button type="button" onclick="setExploreLocationPreset('Thuận Kiều Plaza (190 Hồng Bàng)', 10.7554, 106.6577)" class="px-2.5 py-0.5 rounded-lg bg-white border border-slate-200/90 text-slate-700 hover:border-orange-400 hover:text-[#FF5733] transition text-[10px] font-semibold shadow-2xs cursor-pointer">🏢 Thuận Kiều Plaza</button>
+          <button type="button" onclick="setExploreLocationPreset('Chợ Bình Tây (Chợ Lớn)', 10.7497, 106.6515)" class="px-2.5 py-0.5 rounded-lg bg-white border border-slate-200/90 text-slate-700 hover:border-orange-400 hover:text-[#FF5733] transition text-[10px] font-semibold shadow-2xs cursor-pointer">⛩️ Chợ Lớn (Bình Tây)</button>
+          <button type="button" onclick="setExploreLocationPreset('Bệnh viện Chợ Rẫy (Nguyễn Chí Thanh)', 10.7577, 106.6596)" class="px-2.5 py-0.5 rounded-lg bg-white border border-slate-200/90 text-slate-700 hover:border-orange-400 hover:text-[#FF5733] transition text-[10px] font-semibold shadow-2xs cursor-pointer">🏥 BV Chợ Rẫy</button>
+          <button type="button" onclick="setExploreLocationPreset('ĐH Y Dược TP.HCM', 10.7562, 106.6589)" class="px-2.5 py-0.5 rounded-lg bg-white border border-slate-200/90 text-slate-700 hover:border-orange-400 hover:text-[#FF5733] transition text-[10px] font-semibold shadow-2xs cursor-pointer">🎓 ĐH Y Dược</button>
+        </div>
+      </div>
+
+      <!-- Bộ lọc đa chiều cho người dùng tự chọn -->
+      <div class="bg-white border border-slate-200/80 rounded-2xl p-4 mb-4 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
+        <div class="relative w-full md:w-64">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+          <input type="text" id="allSearchInput" onkeyup="filterAllPlaces()" placeholder="Tìm tên quán hoặc đường..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:border-[#FF5733]" />
+        </div>
+
+        <div class="flex flex-wrap gap-2 w-full md:w-auto">
+          <!-- Lọc Thể loại -->
+          <select id="allCategoryFilter" onchange="filterAllPlaces()" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none cursor-pointer">
+            <option value="all">Tất cả thể loại</option>
+            <option value="an_uong">🍜 Ăn uống</option>
+            <option value="di_choi">📸 Đi chơi & Cà phê</option>
+          </select>
+
+          <!-- Lọc Bối cảnh -->
+          <select id="allTagFilter" onchange="filterAllPlaces()" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none cursor-pointer">
+            <option value="all">Mọi bối cảnh</option>
+            <option value="di_1_minh">🎧 Đi 1 mình</option>
+            <option value="hen_ho">💑 Hẹn hò cặp đôi</option>
+            <option value="nhom_ban">🎉 Nhóm bạn đông</option>
+            <option value="gia_dinh">👨‍👩‍👧‍👦 Gia đình</option>
+          </select>
+
+          <!-- Lọc Mức giá -->
+          <select id="allPriceFilter" onchange="filterAllPlaces()" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none cursor-pointer">
+            <option value="all">Mọi mức giá</option>
+            <option value="50000">Dưới 50k</option>
+            <option value="100000">Dưới 100k</option>
+            <option value="250000">Dưới 250k</option>
+          </select>
+
+          <!-- Sắp xếp theo số sao & Quán Admin yêu thích & Khoảng cách -->
+          <select id="allSortFilter" onchange="filterAllPlaces()" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none cursor-pointer">
+            <option value="default">Sắp xếp: Mặc định</option>
+            <option value="distance_asc">📍 Khoảng cách: Gần nhất trước</option>
+            <option value="rating_desc">⭐ Đánh giá: Cao đến Thấp</option>
+            <option value="rating_asc">⭐ Đánh giá: Thấp đến Cao</option>
+            <option value="admin_pick">👑 Quán Admin yêu thích</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Thanh đếm kết quả & Thông báo bán kính -->
+      <div id="allPlacesCountBar" class="flex items-center justify-between px-2 mb-3 text-xs text-slate-500 font-medium">
+        <div>Hiển thị <span id="filteredPlacesCount" class="font-black text-[#FF5733]">40</span> địa điểm</div>
+        <div id="activeRadiusNotice" class="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full font-semibold hidden"></div>
+      </div>
+
+      <!-- Danh sách thẻ quán -->
+      <div id="allPlacesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Render động từ JS -->
+      </div>
+    </main>
+
+    <!-- 3. LỘ TRÌNH THÔNG MINH BẰNG AI (TAB 3: CHỌN MODEL AI, GIỜ RẢNH TÙY CHỌN, BẢN ĐỒ LEAFLET & GMAPS MULTI-STOP) -->
+    <main id="viewAI" class="max-w-3xl mx-auto py-2 hidden">
+      <div class="bg-white border border-slate-200/80 rounded-3xl p-6 md:p-8 shadow-sm">
+        <div class="mb-5">
+          <span class="badge-step">ĐỊNH TUYẾN THÔNG MINH GPS & GOOGLE GEMINI AI</span>
+          <h2 class="text-2xl font-black text-slate-900 mt-1">Lập Kế Hoạch 3 Trạm Dừng Theo Đúng Giờ Rảnh & Mong Muốn</h2>
+          <p class="text-xs text-slate-500 mt-1">Gemini AI trực tiếp phân tích mong muốn thực tế, chọn quán đang mở cửa và tối ưu lộ trình liên hoàn.</p>
+        </div>
+
+        <!-- FORM LẬP LỘ TRÌNH DẠNG 1 CỘT (MỖI Ô XUỐNG 1 DÒNG GỌN GÀNG, KHÔNG RỐI MẮT) -->
+        <div class="space-y-4">
+          <!-- 1. Điểm xuất phát -->
+          <div class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/80">
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-xs font-bold text-slate-800">1. Điểm xuất phát của bạn</label>
+              <button type="button" onclick="getCurrentGPSLocation()" id="btnGetGPS" class="text-[11px] font-bold text-[#FF5733] hover:text-[#EA580C] flex items-center gap-1 transition">
+                <i class="fa-solid fa-location-crosshairs"></i> <span>Dùng GPS hiện tại</span>
+              </button>
+            </div>
+            <div class="relative">
+              <input type="text" id="aiStartLoc" value="280 An Dương Vương, Quận 5" placeholder="VD: ĐH Sư Phạm TP.HCM, Chợ An Đông..." class="pop-input pr-8 bg-white" />
+              <span id="gpsStatusIcon" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-emerald-500 text-xs font-bold" title="Tọa độ GPS chính xác"><i class="fa-solid fa-circle-check"></i></span>
+            </div>
+            <div class="flex gap-1.5 mt-2 flex-wrap text-[11px]">
+              <span class="text-slate-400">Gợi ý nhanh:</span>
+              <button type="button" onclick="setStartLocation('280 An Dương Vương, Quận 5')" class="text-[#FF5733] underline">ĐH Sư Phạm</button>
+              <button type="button" onclick="setStartLocation('Thuận Kiều Plaza, Quận 5')" class="text-[#FF5733] underline">Thuận Kiều</button>
+              <button type="button" onclick="setStartLocation('Chợ An Đông, Quận 5')" class="text-[#FF5733] underline">Chợ An Đông</button>
+              <button type="button" onclick="setStartLocation('Chợ Lớn (Bình Tây), Quận 5')" class="text-[#FF5733] underline">Chợ Lớn</button>
+            </div>
+          </div>
+
+          <!-- 2. Giờ rảnh của bạn -->
+          <div class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/80">
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-xs font-bold text-slate-800">2. Khung giờ rảnh của bạn</label>
+              <span class="text-[10px] text-slate-400">Tự nhập giờ hoặc bấm chọn mẫu</span>
+            </div>
+            <input type="text" id="aiTime" value="14:00 - 18:30" placeholder="VD: 14:00 - 18:30 hoặc 19h đến 22h..." class="pop-input font-bold text-slate-800 bg-white" />
+            <div class="flex gap-1.5 mt-2 flex-wrap text-[11px]">
+              <button type="button" onclick="setFreeTimePreset('14:00 - 18:30')" class="px-2.5 py-1 rounded-xl bg-orange-50 text-orange-700 border border-orange-200 hover:bg-orange-100 transition font-semibold">Chiều nay (14h - 18h30)</button>
+              <button type="button" onclick="setFreeTimePreset('18:30 - 22:30')" class="px-2.5 py-1 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 transition font-semibold">Tối nay (18h30 - 22h30)</button>
+              <button type="button" onclick="setFreeTimePreset('08:00 - 12:30')" class="px-2.5 py-1 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition font-semibold">Sáng mai (8h - 12h30)</button>
+            </div>
+          </div>
+
+          <!-- 3. Bạn đi chơi với ai? (Đồng hành) -->
+          <div class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/80">
+            <label class="block text-xs font-bold text-slate-800 mb-2">3. Bạn đi chơi với ai? (Để Gemini chọn không gian phù hợp)</label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <button type="button" onclick="selectAICompanion('di_1_minh')" id="comp_di_1_minh" class="companion-chip py-2 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-orange-300 transition flex items-center justify-center gap-1.5">
+                <span>🎧 Đi một mình</span>
+              </button>
+              <button type="button" onclick="selectAICompanion('nguoi_yeu')" id="comp_nguoi_yeu" class="companion-chip py-2 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-rose-300 transition flex items-center justify-center gap-1.5">
+                <span>💑 Cặp đôi</span>
+              </button>
+              <button type="button" onclick="selectAICompanion('ban_be')" id="comp_ban_be" class="companion-chip active py-2 px-3 rounded-xl border border-[#FF5733] bg-orange-50 font-bold text-[#FF5733] shadow-xs transition flex items-center justify-center gap-1.5">
+                <span>🎉 Nhóm bạn</span>
+              </button>
+              <button type="button" onclick="selectAICompanion('gia_dinh')" id="comp_gia_dinh" class="companion-chip py-2 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-emerald-300 transition flex items-center justify-center gap-1.5">
+                <span>👨‍👩‍👧 Gia đình</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4. Mục đích chuyến đi: Chỉ đi ăn, Chỉ đi chơi, hay Cả hai -->
+          <div class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/80">
+            <label class="block text-xs font-bold text-slate-800 mb-2">4. Bạn muốn đi đâu hôm nay? (Mục đích chuyến đi)</label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+              <button type="button" onclick="selectAIPurpose('an_uong')" id="purp_an_uong" class="purpose-chip py-2.5 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-orange-300 transition flex items-center justify-center gap-1.5 text-center">
+                <span>🍜 Chỉ đi Ăn uống</span>
+              </button>
+              <button type="button" onclick="selectAIPurpose('di_choi')" id="purp_di_choi" class="purpose-chip py-2.5 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-sky-300 transition flex items-center justify-center gap-1.5 text-center">
+                <span>📸 Chỉ đi Vui chơi (Không ăn no)</span>
+              </button>
+              <button type="button" onclick="selectAIPurpose('ca_hai')" id="purp_ca_hai" class="purpose-chip active py-2.5 px-3 rounded-xl border border-[#FF5733] bg-orange-50 font-bold text-[#FF5733] shadow-xs transition flex items-center justify-center gap-1.5 text-center">
+                <span>✨ Cả hai (Vừa ăn vừa chơi)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 5. Ghi chú & Yêu cầu riêng (Take note) -->
+          <div class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/80">
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-xs font-bold text-slate-800">5. Ghi chú & Yêu cầu riêng (Take note)</label>
+              <span class="text-[10px] text-emerald-600 font-bold"><i class="fa-solid fa-wand-magic-sparkles mr-0.5"></i> AI tự động loại trừ</span>
+            </div>
+            <input type="text" id="aiTakeNote" value="" placeholder="VD: Chán Chùa Bà rồi nên loại ra; Không ăn cay; Thích chỗ mát mẻ có máy lạnh..." class="pop-input bg-white" />
+            <div class="flex gap-1.5 mt-2 flex-wrap text-[11px]">
+              <span class="text-slate-400">Gợi ý mẫu:</span>
+              <button type="button" onclick="appendTakeNote('Chán Chùa Bà Thiên Hậu rồi, loại ra')" class="px-2 py-0.5 rounded-lg bg-white hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200 transition font-medium">🚫 Chán Chùa Bà, loại ra</button>
+              <button type="button" onclick="appendTakeNote('Ưu tiên chỗ có máy lạnh mát mẻ')" class="px-2 py-0.5 rounded-lg bg-white hover:bg-sky-50 text-slate-600 hover:text-sky-600 border border-slate-200 transition font-medium">❄️ Ưu tiên có máy lạnh</button>
+              <button type="button" onclick="appendTakeNote('Không ăn cay / Không ăn dầu mỡ')" class="px-2 py-0.5 rounded-lg bg-white hover:bg-amber-50 text-slate-600 hover:text-amber-700 border border-slate-200 transition font-medium">🌶️ Không ăn cay</button>
+              <button type="button" onclick="appendTakeNote('Quán có chỗ gửi xe máy thuận tiện')" class="px-2 py-0.5 rounded-lg bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 border border-slate-200 transition font-medium">🛵 Dễ gửi xe máy</button>
+            </div>
+          </div>
+
+          <!-- 6. Chọn Mô hình Gemini AI -->
+          <div class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/80">
+            <label class="block text-xs font-bold text-slate-800 mb-1.5 flex items-center justify-between">
+              <span>6. Chọn Mô Hình Google Gemini AI</span>
+              <span class="text-[10px] text-emerald-600 font-bold"><i class="fa-solid fa-bolt mr-0.5"></i> Google Gemini Official API</span>
+            </label>
+            <select id="aiModelSelect" class="pop-input font-bold text-slate-800 bg-white">
+              <option value="gemini-3.8-flash" selected>Google Gemini 3.8 Flash (Mới nhất, siêu nhanh & thông minh)</option>
+              <option value="gemini-3.5-flash">Google Gemini 3.5 Flash (Phân tích chi tiết)</option>
+              <option value="gemini-3-flash-preview">Google Gemini 3 Flash Preview (Tối ưu lộ trình)</option>
+              <option value="gemini-flash-latest">Google Gemini Flash Latest (Bản cập nhật động)</option>
+            </select>
+          </div>
+        </div>
+
+        <button onclick="requestAIItinerary()" id="btnSubmitAI" class="w-full mt-6 py-3.5 bg-gradient-to-r from-[#FF5733] to-[#FF8C42] hover:opacity-95 text-white rounded-2xl text-xs font-extrabold tracking-wide uppercase transition shadow-md shadow-[#FF5733]/25 flex items-center justify-center gap-2">
+          <span>Lên Lộ Trình Tối Ưu Bằng Gemini AI ✨</span>
+          <i class="fa-solid fa-arrow-right text-xs"></i>
+        </button>
+
+        <!-- Kết quả Timeline & Bản đồ & Nút Google Maps -->
+        <div id="aiResultArea" class="mt-8 pt-6 border-t border-slate-100 hidden">
+          
+          <!-- Nút Mở Google Maps Multi-stop Dẫn Đường Xe Máy 3 Trạm -->
+          <div class="mb-6">
+            <a id="btnGmapsMultiRoute" target="_blank" href="#" class="w-full py-4 px-5 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-600 text-white rounded-2xl text-xs md:text-sm font-black tracking-wide transition shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2.5 text-center cursor-pointer">
+              <i class="fa-solid fa-diamond-turn-right text-lg animate-pulse"></i>
+              <span>MỞ TOÀN BỘ LỘ TRÌNH 3 TRẠM TRÊN GOOGLE MAPS (CHẾ ĐỘ DẪN ĐƯỜNG XE MÁY)</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-xs ml-1"></i>
+            </a>
+            <p class="text-[11px] text-center text-slate-500 mt-2 font-medium">
+              💡 Bấm nút trên: Ứng dụng Google Maps tự động lên tuyến đường 3 trạm liên hoàn thuận đường nhất, bạn chỉ cần bấm <strong>"Bắt đầu"</strong> là đi xe máy thẳng một mạch!
+            </p>
+          </div>
+
+          <!-- Bản Đồ Tương Tác Leaflet (Google Maps & OSM - Hoàn Toàn Không Cần API Key) -->
+          <div class="mb-6 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+            <div class="flex items-center justify-between mb-2 px-1">
+              <div>
+                <h4 class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                  <i class="fa-solid fa-map-location-dot text-[#FF5733]"></i> Bản Đồ Trực Quan Tuyến Đường 3 Trạm
+                </h4>
+                <p class="text-[10px] text-slate-500 font-medium">Bản đồ số trực quan độ nét cao (Google Maps / OpenStreetMap — 100% không bị lỗi API key)</p>
+              </div>
+              <button type="button" onclick="toggleItineraryMap()" id="btnToggleMap" class="text-[11px] font-bold px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-[#FF5733] transition flex items-center gap-1 shadow-2xs cursor-pointer">
+                <i class="fa-regular fa-eye-slash text-xs"></i> <span>Thu gọn bản đồ</span>
+              </button>
+            </div>
+            <div id="itineraryMapWrapper">
+              <div id="itineraryMap" class="w-full h-80 rounded-xl border border-slate-200 shadow-inner bg-slate-100 relative z-0"></div>
+            </div>
+          </div>
+
+          <!-- Lời khuyên của Gemini AI -->
+          <div class="bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200/70 p-4 rounded-2xl mb-6 shadow-xs">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 text-xs font-bold text-[#FF5733] uppercase">
+                <i class="fa-solid fa-sparkles"></i> Phân Tích & Lời Khuyên Của Google Gemini AI
+              </div>
+              <span id="aiModelBadgeDisplay" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white text-indigo-700 border border-indigo-200 shadow-sm">
+                🤖 Gemini 3.8
+              </span>
+            </div>
+            <p id="aiSummary" class="text-xs text-slate-700 mt-2.5 leading-relaxed font-medium">
+              Đang tối ưu lịch trình...
+            </p>
+          </div>
+
+          <h3 class="text-sm font-extrabold text-slate-900 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-route text-[#FF5733]"></i> Dòng Thời Gian Hành Trình (Timeline 3 Chặng)
+          </h3>
+
+          <div id="aiTimeline" class="space-y-4">
+            <!-- Timeline render động -->
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 4. TRANG QUẢN TRỊ ADMIN (BỘ LỌC A-Z, TRÍCH XUẤT GOOGLE MAPS, CRUD & CSV) -->
+    <main id="viewAdmin" class="max-w-4xl mx-auto py-2 hidden">
+      <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm mb-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-5 border-b border-slate-200">
+          <div>
+            <span class="text-[11px] font-extrabold uppercase tracking-wider text-rose-600 bg-rose-50 px-2.5 py-1 rounded-lg">
+              <i class="fa-solid fa-lock"></i> Khu Vực Quản Trị Hệ Thống (Admin Panel)
+            </span>
+            <h2 class="text-2xl font-black text-slate-900 mt-2">Quản Lý Cơ Sở Dữ Liệu SQLite</h2>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="downloadCSVTemplate()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+              <i class="fa-solid fa-file-csv text-emerald-600"></i> Tải File CSV Mẫu
+            </button>
+            <button onclick="openImportModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+              <i class="fa-solid fa-upload"></i> Nhập Từ CSV
+            </button>
+            <button onclick="openAddPlaceModal()" class="px-3.5 py-2 bg-[#FF5733] hover:bg-[#E04826] text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+              <i class="fa-solid fa-plus"></i> Thêm Quán Mới
+            </button>
+          </div>
+        </div>
+
+        <!-- Thống kê CSDL -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
+          <div class="bg-slate-50 border border-slate-200/70 p-4 rounded-2xl">
+            <div class="text-xs text-slate-500 font-semibold">Tổng địa điểm</div>
+            <div id="statTotalPlaces" class="text-2xl font-black text-slate-900 mt-1">40</div>
+          </div>
+          <div class="bg-emerald-50/60 border border-emerald-200/70 p-4 rounded-2xl">
+            <div class="text-xs text-emerald-700 font-semibold">Đã xác thực (Verified)</div>
+            <div id="statVerifiedPlaces" class="text-2xl font-black text-emerald-700 mt-1">40</div>
+          </div>
+          <div class="bg-sky-50/60 border border-sky-200/70 p-4 rounded-2xl">
+            <div class="text-xs text-sky-700 font-semibold">Tài khoản thành viên</div>
+            <div id="statTotalUsers" class="text-2xl font-black text-sky-700 mt-1">2</div>
+          </div>
+          <div class="bg-amber-50/60 border border-amber-200/70 p-4 rounded-2xl">
+            <div class="text-xs text-amber-700 font-semibold">Tổng lượt yêu thích</div>
+            <div id="statTotalFavorites" class="text-2xl font-black text-amber-700 mt-1">0</div>
+          </div>
+        </div>
+
+
+        <!-- BỘ LỌC TỪ A ĐẾN Z CHO ADMIN -->
+        <div class="mt-6 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+              <i class="fa-solid fa-filter text-[#FF5733]"></i> Tìm Kiếm & Lọc Quán Đã Thêm
+            </h3>
+            <span id="adminFilteredCount" class="text-[11px] text-slate-500 font-semibold">Hiển thị 40 địa điểm</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
+            <input type="text" id="adminSearchInput" onkeyup="filterAdminTable()" placeholder="Gõ tên quán hoặc đường để lọc..." class="pop-input py-1.5 bg-white font-medium" />
+            
+            <select id="adminCategoryFilter" onchange="filterAdminTable()" class="pop-input py-1.5 bg-white font-semibold">
+              <option value="all">Tất cả thể loại</option>
+              <option value="an_uong">🍜 Ăn uống</option>
+              <option value="di_choi">📸 Đi chơi</option>
+            </select>
+
+            <select id="adminRatingFilter" onchange="filterAdminTable()" class="pop-input py-1.5 bg-white font-semibold">
+              <option value="all">Mọi số sao</option>
+              <option value="4.5">⭐ Từ 4.5 sao trở lên</option>
+              <option value="4.0">⭐ Từ 4.0 sao trở lên</option>
+            </select>
+
+            <select id="adminPriceFilter" onchange="filterAdminTable()" class="pop-input py-1.5 bg-white font-semibold">
+              <option value="all">Mọi mức giá</option>
+              <option value="50000">Dưới 50k</option>
+              <option value="100000">Dưới 100k</option>
+              <option value="above_100k">Trên 100k</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Bảng danh sách địa điểm cho Admin -->
+        <div class="mt-4">
+          <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-sm">
+            <table class="w-full min-w-[760px] text-left text-xs text-slate-600">
+              <thead class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider text-[10px]">
+                <tr>
+                  <th class="p-3 whitespace-nowrap">ID</th>
+                  <th class="p-3 whitespace-nowrap">Ảnh</th>
+                  <th class="p-3">Tên quán & Địa chỉ</th>
+                  <th class="p-3 whitespace-nowrap">Thể loại</th>
+                  <th class="p-3 whitespace-nowrap">Khoảng giá</th>
+                  <th class="p-3 whitespace-nowrap">Sao & Giờ</th>
+                  <th class="p-3 text-center whitespace-nowrap bg-blue-50/60 text-blue-900 border-l border-blue-200/80">Thao tác Admin</th>
+                </tr>
+              </thead>
+              <tbody id="adminPlacesTable" class="divide-y divide-slate-100">
+                <!-- Render từ JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-12 pt-6 border-t border-slate-200/70 text-center text-xs text-slate-400 font-medium">
+      <p>Đồ án Công nghệ Phần mềm (COMP1044) • SGGo! Travel Guide & Smart Itinerary</p>
+      <p class="mt-1 text-[11px] text-slate-400">Dữ liệu thực tế Quận 5, TP.HCM • Thuật toán Nearest Neighbor & Google Gemini AI</p>
+    </footer>
+
   </div>
 
-  <!-- Place Detail Modal -->
-  <div class="modal-overlay" id="placeDetailModal" style="display: none;">
-    <div class="modal-dialog">
-      <button class="modal-close" onclick="closePlaceModal()">&times;</button>
-      <div class="modal-cover" id="modalCover"></div>
-      <div class="modal-content">
-        <h3 id="modalName">Tên địa điểm</h3>
-        <p class="modal-address" id="modalAddress">Địa chỉ</p>
-        <div class="modal-details">
-          <div class="detail-item">
-            <span class="label">Giờ mở cửa:</span>
-            <span class="val" id="modalHours">08:00 - 22:00</span>
-          </div>
-          <div class="detail-item">
-            <span class="label">Mức giá:</span>
-            <span class="val" id="modalPrice">30k - 100k</span>
-          </div>
-          <div class="detail-item">
-            <span class="label">Đánh giá:</span>
-            <span class="val" id="modalRating">⭐ 4.5</span>
-          </div>
+  <!-- ==================== CÁC MODAL HỆ THỐNG ==================== -->
+
+  <!-- 1. MODAL ĐĂNG NHẬP / ĐĂNG KÝ -->
+  <div id="modalAuth" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 relative animate-in fade-in zoom-in duration-200">
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full flex items-center justify-center bg-slate-50">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex border-b border-slate-200 mb-5">
+        <button onclick="setAuthTab('login')" id="tabLogin" class="flex-1 pb-3 text-xs font-bold border-b-2 border-[#FF5733] text-[#FF5733]">Đăng Nhập</button>
+        <button onclick="setAuthTab('register')" id="tabRegister" class="flex-1 pb-3 text-xs font-bold text-slate-400">Đăng Ký</button>
+      </div>
+
+      <!-- Form Đăng nhập -->
+      <form id="formLogin" onsubmit="handleLogin(event)" class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Tên đăng nhập</label>
+          <input type="text" id="loginUsername" required placeholder="Nhập username" class="pop-input" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Mật khẩu</label>
+          <input type="password" id="loginPassword" required placeholder="Nhập mật khẩu" class="pop-input" />
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-[#FF5733] hover:bg-[#E04826] text-white rounded-xl text-xs font-bold transition shadow-sm mt-2">
+          Đăng Nhập
+        </button>
+      </form>
+
+      <!-- Form Đăng ký -->
+      <form id="formRegister" onsubmit="handleRegister(event)" class="space-y-3 hidden">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Họ và tên</label>
+          <input type="text" id="regFullName" required placeholder="VD: Nguyễn Văn A" class="pop-input" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Tên đăng nhập</label>
+          <input type="text" id="regUsername" required placeholder="Chọn username" class="pop-input" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Mật khẩu</label>
+          <input type="password" id="regPassword" required placeholder="Tạo mật khẩu" class="pop-input" />
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-sm mt-2">
+          Tạo Tài Khoản
+        </button>
+      </form>
+
+      <!-- Phím tắt nhanh để thuyết trình / bảo vệ đồ án -->
+      <div class="mt-5 pt-4 border-t border-slate-100 text-center">
+        <p class="text-[10px] text-slate-400 font-semibold mb-2">PHÂN QUYỀN ĐỂ BẢO VỆ ĐỒ ÁN:</p>
+        <div class="grid grid-cols-2 gap-2 text-left">
+          <button type="button" onclick="fillDemoAccount('user1', '123456')" class="p-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition">
+            <span class="text-[11px] font-bold text-slate-700 block">👤 Người dùng (user1)</span>
+            <span class="text-[10px] text-slate-400 block mt-0.5">Không hiện tab Admin</span>
+          </button>
+          <button type="button" onclick="fillDemoAccount('admin', 'admin123')" class="p-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition">
+            <span class="text-[11px] font-bold text-rose-600 block">🛡️ Quản trị viên (admin)</span>
+            <span class="text-[10px] text-rose-400 block mt-0.5">Hiện đầy đủ tab Admin</span>
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="app.js"></script>
-</body>
-</html>
+  <!-- 2. MODAL THÊM / SỬA ĐỊA ĐIỂM (CÓ BÓC TÁCH LINK GOOGLE MAPS & CHỈNH ẢNH) -->
+  <div id="modalPlaceForm" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closePlaceFormModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full flex items-center justify-center bg-slate-50">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
 
-  <!-- Itinerary Drawer -->
-  <aside class="itinerary-drawer" id="itineraryDrawer">
-    <div class="drawer-header">
-      <h3>Lộ Trình Của Bạn (<span id="itineraryCount">0</span>)</h3>
-      <button class="btn-clear" onclick="clearItinerary()">Xóa hết</button>
+      <h3 id="placeFormTitle" class="text-lg font-black text-slate-900">Thêm Địa Điểm Mới</h3>
+      <p id="placeFormSubtitle" class="text-[11px] text-slate-500 mb-3">Nhập dữ liệu địa điểm tại Quận 5 vào CSDL SQLite</p>
+
+      <!-- HỘP BÓC TÁCH TỰ ĐỘNG TỪ GOOGLE MAPS -->
+      <div id="gmapsExtractorBox" class="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200/90 rounded-2xl p-3 mb-4">
+        <label class="block text-[11px] font-extrabold text-orange-800 mb-1 flex items-center gap-1.5">
+          <i class="fa-brands fa-google text-rose-500"></i> Bóc tách nhanh từ link Google Maps hoặc Tên quán:
+        </label>
+        <div class="flex gap-2">
+          <input type="text" id="gmapsExtractInput" placeholder="Dán link Google Maps hoặc tên quán..." class="pop-input flex-1 py-1.5 text-xs bg-white" />
+          <button type="button" onclick="handleExtractGmaps()" id="btnExtractGmaps" class="px-3.5 py-1.5 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl text-xs transition flex items-center gap-1 whitespace-nowrap shadow-sm">
+            <i class="fa-solid fa-bolt"></i> Tự Động Điền
+          </button>
+        </div>
+        <p class="text-[10px] text-orange-700/80 mt-1 italic">* Hệ thống sẽ tự động bóc tách tên, tọa độ, địa chỉ, giờ mở cửa và gợi ý thông tin vào form bên dưới.</p>
+      </div>
+
+      <form id="placeAdminForm" onsubmit="handleSavePlace(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="formPlaceId" value="" />
+        
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Tên địa điểm / Quán</label>
+          <input type="text" id="formName" required class="pop-input" placeholder="VD: Sủi Cảo Thiên Thiên" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Thể loại</label>
+            <select id="formCategory" class="pop-input font-medium">
+              <option value="an_uong">Ăn uống</option>
+              <option value="di_choi">Đi chơi & Cà phê</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Quận</label>
+            <input type="text" id="formDistrict" value="Quận 5" class="pop-input" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Địa chỉ cụ thể</label>
+          <input type="text" id="formAddress" required class="pop-input" placeholder="VD: 197 Hà Tôn Quyền, Phường 4, Quận 5" />
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Vĩ độ (Lat)</label>
+            <input type="number" step="0.0001" id="formLat" value="10.7550" class="pop-input" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Kinh độ (Lon)</label>
+            <input type="number" step="0.0001" id="formLon" value="106.6650" class="pop-input" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Lượt review</label>
+            <input type="number" id="formReviewsCount" value="100" class="pop-input" />
+          </div>
+        </div>
+
+        <!-- Chỉnh sửa Link Ảnh với xem trước trực tiếp -->
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Link ảnh (Để trống nếu chưa có ảnh thật)</label>
+          <input type="text" id="formImageUrl" oninput="updateImagePreview(this.value)" class="pop-input" placeholder="Dán link ảnh thật hoặc để trống nếu chưa có ảnh" />
+          <div class="mt-2 flex items-center gap-3">
+            <div id="formImagePreviewWrapper" class="w-16 h-14 rounded-xl overflow-hidden border border-slate-200 shadow-sm flex-shrink-0 bg-slate-100 flex items-center justify-center">
+              <img id="formImagePreview" src="" class="w-full h-full object-cover hidden" />
+              <span id="formImageNoPreview" class="text-[10px] text-slate-400 font-bold flex flex-col items-center"><i class="fa-solid fa-camera text-slate-300 mb-0.5"></i> Chưa có ảnh</span>
+            </div>
+            <span class="text-[11px] text-slate-500">Xem trước ảnh thật (Nếu để trống hoặc ảnh lỗi, hệ thống sẽ hiển thị "Chưa có ảnh" - cấm dùng ảnh stock/ảo)</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Giờ mở cửa</label>
+            <input type="text" id="formOpenTime" value="08:00" class="pop-input" placeholder="08:00" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Giờ đóng cửa</label>
+            <input type="text" id="formCloseTime" value="22:30" class="pop-input" placeholder="22:30" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Giá tối thiểu (VNĐ)</label>
+            <input type="number" id="formMinPrice" value="30000" class="pop-input" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Giá tối đa (VNĐ)</label>
+            <input type="number" id="formMaxPrice" value="85000" class="pop-input" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Số sao (1 - 5)</label>
+            <input type="number" step="0.1" id="formRating" value="4.5" class="pop-input" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Giờ cao điểm</label>
+            <input type="text" id="formPeakHours" value="18:30 - 20:30" class="pop-input" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Bối cảnh phù hợp (tags cách nhau bằng dấu phẩy)</label>
+          <input type="text" id="formTags" value="nhom_ban,di_1_minh,hen_ho" class="pop-input" placeholder="di_1_minh,hen_ho,nhom_ban,gia_dinh" />
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Đánh giá tiêu biểu nhất (5 sao)</label>
+          <textarea id="formBestReview" rows="2" class="pop-input" placeholder="Nhận xét 5 sao thực tế (để trống nếu chưa có)..."></textarea>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Lưu ý / Góp ý (Giờ đông khách, xếp hàng)</label>
+          <textarea id="formWorstReview" rows="2" class="pop-input" placeholder="Lưu ý thực tế (để trống nếu chưa có)..."></textarea>
+        </div>
+
+        <div class="bg-emerald-50/80 border border-emerald-200/80 p-3 rounded-xl flex items-center justify-between">
+          <div>
+            <span class="block text-xs font-bold text-slate-800">Xác nhận thông tin & đánh giá</span>
+            <span class="text-[10px] text-slate-500">Thông tin địa điểm và đánh giá thực tế từ người dùng địa phương Quận 5</span>
+          </div>
+          <label class="cursor-pointer flex items-center gap-1.5 flex-shrink-0">
+            <input type="checkbox" id="formIsVerifiedReview" class="w-4 h-4 accent-emerald-600 rounded" checked />
+            <span class="text-xs font-bold text-emerald-800">Đã kiểm chứng</span>
+          </label>
+        </div>
+
+        <div class="bg-amber-50/80 border border-amber-200/80 p-3 rounded-xl flex items-center justify-between">
+          <div>
+            <span class="block text-xs font-bold text-amber-900 flex items-center gap-1.5">
+              <span>👑 Quán Admin Yêu Thích</span>
+              <span class="text-[10px] bg-amber-200 text-amber-800 font-extrabold px-1.5 py-0.5 rounded">Nổi bật</span>
+            </span>
+            <span class="text-[10px] text-amber-700">Đánh dấu quán được Admin đề xuất đặc biệt, hiển thị huy hiệu trên thẻ quán</span>
+          </div>
+          <label class="cursor-pointer flex items-center gap-1.5 flex-shrink-0">
+            <input type="checkbox" id="formIsAdminChoice" class="w-4 h-4 accent-amber-600 rounded" />
+            <span class="text-xs font-bold text-amber-900">Yêu thích</span>
+          </label>
+        </div>
+
+        <div class="pt-3">
+          <button type="submit" id="btnSubmitPlaceForm" class="w-full py-3 bg-[#FF5733] hover:bg-[#E04826] text-white rounded-xl font-bold transition shadow-sm">
+            Lưu Vào Cơ Sở Dữ Liệu SQLite
+          </button>
+        </div>
+      </form>
     </div>
-    <div class="itinerary-stops-list" id="itineraryStopsList">
-      <p class="drawer-empty">Chưa có điểm nào trong lịch trình. Hãy bấm "Thêm vào chuyến đi" trên các địa điểm.</p>
+  </div>
+
+  <!-- 3. MODAL NHẬP CSV (IMPORT CSV) -->
+  <div id="modalImportCSV" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 relative">
+      <button onclick="closeImportModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full flex items-center justify-center bg-slate-50">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <h3 class="text-base font-black text-slate-900 mb-2">Nhập Dữ Liệu Từ File CSV</h3>
+      <p class="text-xs text-slate-500 mb-4">Chọn file CSV có cấu trúc chuẩn theo mẫu để nạp hàng loạt địa điểm vào CSDL SQLite.</p>
+
+      <div class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-[#FF5733] transition cursor-pointer mb-4" onclick="document.getElementById('csvFileInput').click()">
+        <i class="fa-solid fa-file-arrow-up text-3xl text-[#FF5733] mb-2"></i>
+        <p class="text-xs font-bold text-slate-700">Bấm vào đây để chọn file .CSV</p>
+        <p id="csvFileName" class="text-[11px] text-slate-400 mt-1">Chưa chọn file nào</p>
+        <input type="file" id="csvFileInput" accept=".csv" onchange="handleCSVFileSelected(event)" class="hidden" />
+      </div>
+
+      <button onclick="submitCSVImport()" id="btnUploadCSV" disabled class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white rounded-xl text-xs font-bold transition">
+        Tiến Hành Nạp Dữ Liệu
+      </button>
     </div>
-    <div class="drawer-actions">
-      <button class="btn-optimize" onclick="optimizeTripRoute()">🚀 Tối Ưu Lộ Trình Di Chuyển</button>
+  </div>
+
+  <!-- 4. SIDE DRAWER: XEM CHI TIẾT ĐỊA ĐIỂM CHUẨN GOOGLE MAPS (ẢNH, THÔNG TIN, COMMENT, BẢN ĐỒ) -->
+  <div id="placeDetailBackdrop" onclick="closePlaceDetail()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-50 hidden transition-opacity"></div>
+  
+  <aside id="placeDetailDrawer" class="fixed top-0 right-0 bottom-0 w-full sm:w-[500px] md:w-[560px] bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col border-l border-slate-200">
+    <!-- Header Drawer -->
+    <div class="p-3.5 px-4 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
+      <div class="flex items-center gap-2 min-w-0 pr-2">
+        <span id="detailCategoryBadge" class="text-xs font-black uppercase text-[#FF5733] bg-orange-50 px-2.5 py-1 rounded-lg flex items-center gap-1.5 whitespace-nowrap flex-shrink-0">
+          <i class="fa-solid fa-store"></i> <span id="detailCategoryLabel">Ẩm thực</span>
+        </span>
+        <span id="detailAdminChoiceBadge" class="hidden text-[10px] bg-amber-100 text-amber-900 font-extrabold px-2 py-0.5 rounded-md border border-amber-300 items-center gap-1 whitespace-nowrap">
+          <i class="fa-solid fa-crown text-amber-600"></i> Quán Admin Yêu Thích
+        </span>
+      </div>
+      <div class="flex items-center gap-1.5 flex-shrink-0">
+        <button id="btnDetailFav" onclick="toggleDetailFav()" title="Lưu yêu thích" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-500 border border-slate-200 flex items-center justify-center text-xs transition cursor-pointer">
+          <i id="iconDetailFav" class="fa-regular fa-heart"></i>
+        </button>
+        <button onclick="copyDetailAddress()" title="Sao chép địa chỉ" class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-600 flex items-center justify-center text-xs transition cursor-pointer">
+          <i class="fa-regular fa-copy"></i>
+        </button>
+        <button onclick="closePlaceDetail()" title="Đóng bảng chi tiết" class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-200 hover:bg-rose-50 hover:text-rose-600 text-slate-500 flex items-center justify-center text-sm transition cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Scrollable Body -->
+    <div class="flex-1 overflow-y-auto">
+      <!-- 1. Hero Image / Banner -->
+      <div id="detailImageWrapper" class="relative w-full h-56 bg-slate-100 overflow-hidden">
+        <!-- Render ảnh thật hoặc placeholder Chưa có ảnh -->
+      </div>
+
+      <div class="p-5 space-y-5">
+        <!-- 2. Tên & Đánh giá tổng quan -->
+        <div>
+          <div class="flex items-start justify-between gap-3">
+            <h2 id="detailTitle" class="text-xl font-black text-slate-900 leading-snug">Tên quán ăn</h2>
+            <span id="detailRatingBadge" class="text-sm font-extrabold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-xl whitespace-nowrap flex items-center gap-1 shadow-xs flex-shrink-0">
+              ⭐ 4.6
+            </span>
+          </div>
+          
+          <div class="flex items-center gap-2 mt-1.5 text-xs text-slate-500 flex-wrap">
+            <div id="detailStarIcons" class="flex text-amber-400 text-xs">
+              <!-- Sao -->
+            </div>
+            <span id="detailReviewsCount" class="font-bold text-slate-700">120 bài đánh giá</span>
+            <span>•</span>
+            <span id="detailPriceRange" class="font-semibold text-slate-800">30.000đ - 85.000đ</span>
+          </div>
+        </div>
+
+        <!-- NÚT MỞ TRANG GOOGLE MAPS THỰC TẾ CỦA QUÁN (REVIEW, ẢNH, SAO THẬT) -->
+        <a id="detailGmapsRealPageBtn" href="#" target="_blank" class="w-full p-3.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:opacity-95 text-white rounded-2xl flex items-center justify-between shadow-md shadow-emerald-700/20 transition-all group">
+          <div class="flex items-center gap-3 min-w-0 pr-2">
+            <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-lg flex-shrink-0">
+              <i class="fa-brands fa-google text-white"></i>
+            </div>
+            <div class="text-left min-w-0">
+              <div class="font-black text-xs sm:text-sm flex items-center gap-1.5 truncate">
+                <span>Mở Google Maps Thực Tế</span>
+                <span class="text-[9px] bg-white text-emerald-800 font-black px-1.5 py-0.5 rounded-full uppercase">100% Thực tế</span>
+              </div>
+              <p class="text-[11px] text-emerald-100 font-medium truncate mt-0.5">Xem tất cả ảnh chụp, comment & số sao trên Google</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-arrow-up-right-from-square text-sm text-emerald-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform flex-shrink-0"></i>
+        </a>
+
+        <!-- 3. Hàng nút thao tác -->
+        <div class="grid grid-cols-2 gap-2 text-center text-xs">
+          <button onclick="copyDetailAddress()" class="p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold rounded-2xl flex items-center justify-center gap-2 transition shadow-xs cursor-pointer">
+            <i class="fa-regular fa-copy text-sm text-slate-600"></i>
+            <span class="text-[11px]">Sao chép địa chỉ</span>
+          </button>
+          <button id="btnDetailToggleFavMain" onclick="toggleDetailFav()" class="p-2.5 bg-slate-50 hover:bg-rose-50 border border-slate-200 text-slate-700 font-bold rounded-2xl flex items-center justify-center gap-2 transition shadow-xs cursor-pointer">
+            <i id="iconDetailFavMain" class="fa-regular fa-heart text-sm text-rose-500"></i>
+            <span class="text-[11px]">Lưu quán này</span>
+          </button>
+        </div>
+
+        <!-- 4. Danh sách thông tin chi tiết -->
+        <div class="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-4 space-y-3 text-xs">
+          <div class="flex items-start gap-3">
+            <i class="fa-solid fa-location-dot text-rose-500 text-sm mt-0.5 w-4 text-center flex-shrink-0"></i>
+            <div class="flex-1">
+              <span class="text-slate-400 block text-[10px] font-semibold uppercase">Địa chỉ cụ thể</span>
+              <p id="detailAddress" class="font-bold text-slate-800 mt-0.5">197 Hà Tôn Quyền, Phường 4, Quận 5, TP.HCM</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3 pt-2.5 border-t border-slate-200/60">
+            <i class="fa-solid fa-clock text-emerald-600 text-sm mt-0.5 w-4 text-center flex-shrink-0"></i>
+            <div class="flex-1">
+              <span class="text-slate-400 block text-[10px] font-semibold uppercase">Thời gian hoạt động</span>
+              <div class="flex items-center gap-2 mt-0.5 flex-wrap">
+                <span id="detailStatusBadge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">🟢 Đang mở cửa</span>
+                <span id="detailOpenHours" class="font-bold text-slate-700">08:00 - 22:30</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3 pt-2.5 border-t border-slate-200/60">
+            <i class="fa-solid fa-clock-rotate-left text-amber-600 text-sm mt-0.5 w-4 text-center flex-shrink-0"></i>
+            <div class="flex-1">
+              <span class="text-slate-400 block text-[10px] font-semibold uppercase">Giờ cao điểm đông khách</span>
+              <p id="detailPeakHours" class="font-bold text-amber-800 mt-0.5">18:30 - 20:30 (Nên đến sớm tránh đợi lâu)</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3 pt-2.5 border-t border-slate-200/60">
+            <i class="fa-solid fa-tags text-indigo-500 text-sm mt-0.5 w-4 text-center flex-shrink-0"></i>
+            <div class="flex-1">
+              <span class="text-slate-400 block text-[10px] font-semibold uppercase">Bối cảnh phù hợp</span>
+              <div id="detailTagsList" class="flex flex-wrap gap-1.5 mt-1">
+                <!-- Tag chips -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Bình luận & Đánh giá chi tiết (Google Maps Style) -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-black text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-comments text-[#FF5733]"></i> Đánh Giá & Nhận Xét Của Khách Hàng
+            </h3>
+            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full flex items-center gap-1">
+              <i class="fa-solid fa-circle-check text-emerald-500"></i> Đã kiểm chứng
+            </span>
+          </div>
+
+          <!-- Bình luận 5 sao tiêu biểu -->
+          <div class="bg-gradient-to-br from-emerald-50/70 to-teal-50/50 border border-emerald-200/80 rounded-2xl p-4 mb-3 shadow-xs">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-full bg-emerald-600 text-white font-black text-xs flex items-center justify-center shadow-xs">
+                  5⭐
+                </div>
+                <div>
+                  <h4 class="font-black text-slate-800 text-xs">Đánh giá 5 sao tiêu biểu</h4>
+                  <div class="flex text-amber-400 text-[10px] mt-0.5">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </div>
+                </div>
+              </div>
+              <span class="text-[10px] text-slate-400 font-medium">Khách địa phương</span>
+            </div>
+            <p id="detailBestReview" class="text-xs text-slate-700 italic leading-relaxed pl-2 border-l-2 border-emerald-400">
+              "Món ăn rất tươi ngon, gia vị chuẩn vị người Hoa Chợ Lớn."
+            </p>
+          </div>
+
+          <!-- Lưu ý / Góp ý thực tế -->
+          <div class="bg-gradient-to-br from-rose-50/70 to-amber-50/50 border border-rose-200/80 rounded-2xl p-4 shadow-xs">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-full bg-rose-500 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                  <h4 class="font-black text-slate-800 text-xs">Lưu ý & Kinh nghiệm đi</h4>
+                  <span class="text-[10px] text-slate-400">Góp ý từ thực khách</span>
+                </div>
+              </div>
+            </div>
+            <p id="detailWorstReview" class="text-xs text-slate-700 italic leading-relaxed pl-2 border-l-2 border-rose-400">
+              "Giờ tan tầm đông khách, chỗ để xe hơi nhỏ, nên gửi xe phía trước hẻm."
+            </p>
+          </div>
+        </div>
+
+        <!-- 6. Vị trí trên Bản Đồ Trực Quan (Leaflet OSM / Google Maps Không Bị Chặn) -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-sm font-black text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-map-location-dot text-blue-600"></i> Bản Đồ Vị Trí Trực Quan
+            </h3>
+            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+              🟢 100% Không cần API key
+            </span>
+          </div>
+          <div id="drawerLeafletMap" class="w-full h-52 rounded-2xl overflow-hidden border border-slate-200 shadow-xs relative bg-slate-100 z-0"></div>
+          <a id="detailExternalMapLink" href="#" target="_blank" class="w-full mt-2.5 py-2.5 px-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition">
+            <i class="fa-solid fa-location-arrow text-[11px]"></i>
+            <span>Mở chỉ đường trên ứng dụng Google Maps</span>
+            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer Drawer -->
+    <div class="p-3 px-5 bg-white border-t border-slate-100 flex items-center justify-between text-xs sticky bottom-0 z-10">
+      <div id="detailFooterAdminEditBtn"></div>
+      <button onclick="closePlaceDetail()" class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition cursor-pointer">
+        Đóng chi tiết
+      </button>
     </div>
   </aside>
 
-  <!-- AI Trip Planner Modal -->
-  <div class="modal-overlay" id="aiPlannerModal" style="display: none;">
-    <div class="modal-dialog">
-      <button class="modal-close" onclick="closeAiModal()">&times;</button>
-      <div class="modal-content">
-        <h3>Lập Lộ Trình AI Thông Minh ✨</h3>
-        <p class="modal-desc">Trợ lý AI sẽ gợi ý 3 trạm lý tưởng kèm lời bình văn hóa bản địa.</p>
-        <div class="form-group">
-          <label>Thời gian rảnh:</label>
-          <select id="aiFreeTime">
-            <option value="08:00 - 12:00">Buổi sáng (08:00 - 12:00)</option>
-            <option value="14:00 - 18:30" selected>Buổi chiều (14:00 - 18:30)</option>
-            <option value="18:30 - 22:30">Buổi tối (18:30 - 22:30)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Bạn đi cùng ai?</label>
-          <select id="aiCompanion">
-            <option value="di_1_minh">Một mình (Chill/Chụp ảnh)</option>
-            <option value="ban_be" selected>Nhóm bạn thân</option>
-            <option value="nguoi_yeu">Hẹn hò lãng mạn</option>
-            <option value="gia_dinh">Gia đình nhiều thế hệ</option>
-          </select>
-        </div>
-        <button class="btn-generate-ai" onclick="generateAiTrip()">Tạo Lịch Trình Ngay</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Auth Modal -->
-  <div class="modal-overlay" id="authModal" style="display: none;">
-    <div class="modal-dialog">
-      <button class="modal-close" onclick="closeAuthModal()">&times;</button>
-      <div class="modal-content">
-        <h3 id="authModalTitle">Đăng Nhập SGGo</h3>
-        <div class="form-group">
-          <label>Tên đăng nhập:</label>
-          <input type="text" id="authUsername" placeholder="Nhập username" />
-        </div>
-        <div class="form-group">
-          <label>Mật khẩu:</label>
-          <input type="password" id="authPassword" placeholder="Nhập mật khẩu" />
-        </div>
-        <button class="btn-submit-auth" onclick="submitAuth()">Xác Nhận</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Admin Management View (Hidden by default) -->
-  <section class="admin-view" id="adminView" style="display: none;">
-    <h2>Bảng Quản Trị Địa Điểm SGGo</h2>
-    <div class="admin-actions">
-      <button class="btn-primary" onclick="openAddPlaceModal()">+ Thêm Địa Điểm Mới</button>
-    </div>
-    <div class="admin-table-wrapper">
-      <table class="admin-table" id="adminPlacesTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Tên địa điểm</th>
-            <th>Danh mục</th>
-            <th>Địa chỉ</th>
-            <th>Đánh giá</th>
-            <th>Thao tác</th>
-          </tr>
-        </thead>
-        <tbody id="adminPlacesTbody"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- CSV Import Modal in Admin View -->
-  <div class="modal-overlay" id="csvImportModal" style="display: none;">
-    <div class="modal-dialog">
-      <button class="modal-close" onclick="closeCsvModal()">&times;</button>
-      <div class="modal-content">
-        <h3>Import Địa Điểm Từ File CSV</h3>
-        <p>Chọn file .csv theo đúng mẫu hoặc tải file mẫu để xem định dạng.</p>
-        <div class="csv-upload-box">
-          <input type="file" id="csvFileInput" accept=".csv" />
-        </div>
-        <button class="btn-primary" onclick="uploadCsvFile()">Tải Lên & Import</button>
-      </div>
-    </div>
-  </div>
+  <script src="app.js?v=2.5"></script>
+</body>
+</html>

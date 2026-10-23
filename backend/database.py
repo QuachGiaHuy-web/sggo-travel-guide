@@ -157,6 +157,20 @@ def seed_places_if_needed(conn):
         """, places_to_insert)
         conn.commit()
 
+def sync_db_to_json():
+    """Tự động đồng bộ toàn bộ địa điểm từ SQLite ra file JSON để mang sang máy khác không bị mất"""
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM places ORDER BY id ASC")
+        rows = [dict(r) for r in cur.fetchall()]
+        conn.close()
+        with open(ENRICHED_JSON_PATH, "w", encoding="utf-8") as f:
+            json.dump(rows, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print("[WARN] sync_db_to_json error:", e)
+
+
 # ==============================================================================
 # THAO TÁC NGƯỜI DÙNG & TÀI KHOẢN (AUTH)
 # ==============================================================================
@@ -186,6 +200,63 @@ def register_user(username, password, full_name):
     except sqlite3.IntegrityError:
         conn.close()
         return None
+
+def get_all_users():
+    """Lấy danh sách tất cả người dùng trong hệ thống (dành cho Admin)"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, username, full_name, role, created_at FROM users ORDER BY id ASC")
+    rows = [dict(r) for r in cursor.fetchall()]
+    conn.close()
+    return rows
+
+def update_user_role(user_id, new_role):
+    """Cập nhật vai trò (admin/user) của người dùng"""
+    if new_role not in ['admin', 'user']:
+        return False, "Vai trò không hợp lệ (chỉ chấp nhận 'admin' hoặc 'user')"
+    
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    # Kiểm tra xem có phải hạ quyền của admin duy nhất không
+    if new_role == 'user':
+        cursor.execute("SELECT COUNT(*) FROM users WHERE role = 'admin'")
+        admin_count = cursor.fetchone()[0]
+        cursor.execute("SELECT role FROM users WHERE id = ?", (user_id,))
+        curr = cursor.fetchone()
+        if curr and curr['role'] == 'admin' and admin_count <= 1:
+            conn.close()
+            return False, "Không thể chuyển admin cuối cùng thành user (cần giữ ít nhất 1 admin)"
+            
+    cursor.execute("UPDATE users SET role = ? WHERE id = ?", (new_role, user_id))
+    conn.commit()
+    conn.close()
+    return True, "Cập nhật vai trò thành công"
+
+def delete_user(user_id):
+    """Xóa tài khoản người dùng"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    # Không cho phép xóa admin duy nhất
+    cursor.execute("SELECT role FROM users WHERE id = ?", (user_id,))
+    target = cursor.fetchone()
+    if not target:
+        conn.close()
+        return False, "Tài khoản không tồn tại"
+        
+    if target['role'] == 'admin':
+        cursor.execute("SELECT COUNT(*) FROM users WHERE role = 'admin'")
+        admin_count = cursor.fetchone()[0]
+        if admin_count <= 1:
+            conn.close()
+            return False, "Không thể xóa admin cuối cùng của hệ thống"
+            
+    cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    cursor.execute("DELETE FROM favorites WHERE user_id = ?", (user_id,))
+    conn.commit()
+    conn.close()
+    return True, "Xóa tài khoản thành công"
 
 # ==============================================================================
 # THAO TÁC ĐỊA ĐIỂM (PLACES CRUD)
@@ -276,6 +347,7 @@ def add_place(data):
     conn.commit()
     new_id = cursor.lastrowid
     conn.close()
+    sync_db_to_json()
     return get_place_by_id(new_id)
 
 def update_place(place_id, data):
@@ -323,6 +395,7 @@ def update_place(place_id, data):
     ))
     conn.commit()
     conn.close()
+    sync_db_to_json()
     return get_place_by_id(place_id)
 
 def delete_place(place_id):
@@ -332,6 +405,7 @@ def delete_place(place_id):
     cursor.execute("DELETE FROM places WHERE id = ?", (place_id,))
     conn.commit()
     conn.close()
+    sync_db_to_json()
     return True
 
 # ==============================================================================
@@ -470,4 +544,5 @@ def import_csv_data(csv_text):
 
     conn.commit()
     conn.close()
+    sync_db_to_json()
     return count

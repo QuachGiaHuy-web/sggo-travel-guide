@@ -19,9 +19,9 @@ const API_BASE = window.location.protocol === "file:"
 let currentUser = null;
 let currentFlowOffset = 0;
 let userChoices = { 
-  category: "all", 
-  context: "all", 
-  price_level: "all",
+  category: null, 
+  context: null, 
+  price_level: null,
   custom_budget: null 
 };
 let allPlacesCache = [];
@@ -81,9 +81,9 @@ function updateAuthUI() {
   } else if (currentUser) {
     // NGƯỜI DÙNG THƯỜNG -> ẨN TUYỆT ĐỐI NÚT ADMIN
     authContainer.innerHTML = `
-      <div class="flex items-center gap-1.5 bg-orange-50 border border-orange-200 px-2.5 py-1 rounded-xl shadow-sm whitespace-nowrap">
+      <div class="flex items-center gap-1.5 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-xl shadow-sm whitespace-nowrap">
         <span class="text-xs font-bold text-slate-800 truncate max-w-[90px]">👤 ${currentUser.username || 'User'}</span>
-        <button onclick="handleLogout()" title="Đăng xuất" class="ml-1 text-[11px] font-bold px-2 py-0.5 rounded-lg bg-orange-100 hover:bg-orange-200 text-[#FF5733] transition flex items-center gap-1">
+        <button onclick="handleLogout()" title="Đăng xuất" class="ml-1 text-[11px] font-bold px-2 py-0.5 rounded-lg bg-white hover:bg-rose-50 text-slate-600 hover:text-[#E11D48] border border-slate-200 transition flex items-center gap-1">
           <i class="fa-solid fa-arrow-right-from-bracket text-[10px]"></i> Thoát
         </button>
       </div>
@@ -138,7 +138,7 @@ function setAuthTab(tab) {
   if (tab === "login") {
     formLogin.classList.remove("hidden");
     formRegister.classList.add("hidden");
-    tabLogin.className = "flex-1 pb-3 text-xs font-bold border-b-2 border-[#FF5733] text-[#FF5733]";
+    tabLogin.className = "flex-1 pb-3 text-xs font-bold border-b-2 border-[#E11D48] text-[#E11D48]";
     tabRegister.className = "flex-1 pb-3 text-xs font-bold text-slate-400";
   } else {
     formLogin.classList.add("hidden");
@@ -176,6 +176,8 @@ async function handleLogin(e) {
 
     if (currentUser.role === "admin") {
       switchMode("admin");
+    } else {
+      switchMode("flow");
     }
   } catch (err) {
     alert("❌ Lỗi: " + err.message);
@@ -311,50 +313,51 @@ function updateSelectionSummaryUI() {
 
   // 1. Cập nhật Mục đích
   if (userChoices.category === "an_uong") {
-    catEl.innerHTML = `<span class="truncate">🍜 Ăn uống</span>`;
-    catEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-orange-300 bg-orange-50 text-[#FF5733] font-bold shadow-sm transition flex items-center justify-center gap-1 text-center truncate";
+    catEl.innerHTML = `<span class="truncate">1. Đi Ăn Uống</span>`;
+    catEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-rose-300 bg-rose-50 text-[#E11D48] font-black shadow-xs transition flex items-center justify-center gap-1 text-center truncate";
   } else if (userChoices.category === "di_choi") {
-    catEl.innerHTML = `<span class="truncate">📸 Vui chơi</span>`;
-    catEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-sky-300 bg-sky-50 text-sky-700 font-bold shadow-sm transition flex items-center justify-center gap-1 text-center truncate";
+    catEl.innerHTML = `<span class="truncate">1. Đi Vui Chơi</span>`;
+    catEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-teal-300 bg-teal-50 text-teal-800 font-black shadow-xs transition flex items-center justify-center gap-1 text-center truncate";
   } else {
     catEl.innerHTML = `<span class="truncate">1. Mục đích</span>`;
-    catEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 hover:border-orange-300 hover:bg-orange-50/50 transition flex items-center justify-center gap-1 text-center truncate";
+    catEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 hover:border-[#E11D48] hover:bg-rose-50/60 transition flex items-center justify-center gap-1 text-center truncate";
   }
 
   // 2. Cập nhật Bối cảnh
   const ctxMap = {
-    "di_1_minh": "🎧 Đi 1 mình",
-    "nguoi_yeu": "💑 Cặp đôi",
-    "ban_be": "🎉 Bạn bè",
-    "gia_dinh": "👨‍👩‍👧 Gia đình"
+    "di_1_minh": "2. Đi 1 mình",
+    "nguoi_yeu": "2. Cặp đôi",
+    "ban_be": "2. Nhóm bạn",
+    "gia_dinh": "2. Gia đình"
   };
-  if (userChoices.context in ctxMap) {
+  if (userChoices.context && userChoices.context in ctxMap) {
     ctxEl.innerHTML = `<span class="truncate">${ctxMap[userChoices.context]}</span>`;
-    ctxEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-teal-300 bg-teal-50 text-teal-800 font-bold shadow-sm transition flex items-center justify-center gap-1 text-center truncate";
+    ctxEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-rose-300 bg-rose-50 text-[#E11D48] font-black shadow-xs transition flex items-center justify-center gap-1 text-center truncate";
   } else {
     ctxEl.innerHTML = `<span class="truncate">2. Đi cùng</span>`;
-    ctxEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 hover:border-teal-300 hover:bg-teal-50/50 transition flex items-center justify-center gap-1 text-center truncate";
+    ctxEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 hover:border-[#E11D48] hover:bg-rose-50/60 transition flex items-center justify-center gap-1 text-center truncate";
   }
 
   // 3. Cập nhật Ngân sách
   const bdgMap = {
-    "under_50k": "🪙 < 50k",
-    "50k_100k": "🍜 50k-100k",
-    "100k_250k": "🍱 100k-250k",
-    "above_250k": "👑 > 250k"
+    "under_50k": "3. < 50k",
+    "50k_100k": "3. 50k - 100k",
+    "100k_250k": "3. 100k - 250k",
+    "above_250k": "3. > 250k",
+    "all": "3. Tùy duyên"
   };
   if (userChoices.price_level === "custom" && userChoices.custom_budget) {
     const formatted = userChoices.custom_budget >= 1000000 
       ? (userChoices.custom_budget / 1000000).toFixed(1) + 'Tr' 
       : (userChoices.custom_budget / 1000) + 'k';
-    bdgEl.innerHTML = `<span class="truncate">✏️ ${formatted}</span>`;
-    bdgEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-indigo-300 bg-indigo-50 text-indigo-800 font-bold shadow-sm transition flex items-center justify-center gap-1 text-center truncate";
-  } else if (userChoices.price_level in bdgMap) {
+    bdgEl.innerHTML = `<span class="truncate">3. ${formatted}</span>`;
+    bdgEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-rose-300 bg-rose-50 text-[#E11D48] font-black shadow-xs transition flex items-center justify-center gap-1 text-center truncate";
+  } else if (userChoices.price_level && userChoices.price_level in bdgMap) {
     bdgEl.innerHTML = `<span class="truncate">${bdgMap[userChoices.price_level]}</span>`;
-    bdgEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-indigo-300 bg-indigo-50 text-indigo-800 font-bold shadow-sm transition flex items-center justify-center gap-1 text-center truncate";
+    bdgEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-rose-300 bg-rose-50 text-[#E11D48] font-black shadow-xs transition flex items-center justify-center gap-1 text-center truncate";
   } else {
     bdgEl.innerHTML = `<span class="truncate">3. Ngân sách</span>`;
-    bdgEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 hover:border-indigo-300 hover:bg-indigo-50/50 transition flex items-center justify-center gap-1 text-center truncate";
+    bdgEl.className = "cursor-pointer py-1.5 px-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 hover:border-[#E11D48] hover:bg-rose-50/60 transition flex items-center justify-center gap-1 text-center truncate";
   }
 }
 
@@ -395,7 +398,7 @@ function goBackStep(step) {
 }
 
 function restartFlow() {
-  userChoices = { category: "all", context: "all", price_level: "all", custom_budget: null };
+  userChoices = { category: null, context: null, price_level: null, custom_budget: null };
   currentFlowOffset = 0;
   const customInp = document.getElementById("customBudgetInput");
   if (customInp) customInp.value = "";
@@ -421,7 +424,7 @@ async function showFinishResults(offset = 0) {
     if (userChoices.price_level === "custom" && userChoices.custom_budget) {
       bdgText = `${userChoices.custom_budget.toLocaleString()}đ`;
     }
-    criteriaBadge.innerHTML = `<span class="bg-orange-100/80 text-[#FF5733] px-2.5 py-0.5 rounded-md font-extrabold text-[10px]">🎯 TIÊU CHÍ: ${catText} • ${ctxText} • 💰 ${bdgText}</span>`;
+    criteriaBadge.innerHTML = `<span class="bg-rose-100 text-[#E11D48] px-2.5 py-0.5 rounded-md font-extrabold text-[10px]">🎯 TIÊU CHÍ: ${catText} • ${ctxText} • 💰 ${bdgText}</span>`;
   }
 
   const resultsBox = document.getElementById("flowResults");
@@ -451,141 +454,228 @@ function renderPlaceImage(p, widthClass = "w-full", heightClass = "h-full", cust
   const imgSrc = p.image_url;
   if (imgSrc && imgSrc.trim()) {
     return `
-      <img src="${imgSrc}" onerror="this.outerHTML='<div class=\\'${widthClass} ${heightClass} bg-slate-100 rounded-xl flex flex-col items-center justify-center text-slate-400 border border-slate-200 select-none\\'><i class=\\'fa-solid fa-camera text-slate-300 text-lg mb-0.5\\'></i><span class=\\'text-[9px] font-bold tracking-tight text-slate-400\\'>Chưa có ảnh</span></div>';" class="${widthClass} ${heightClass} object-cover rounded-xl shadow-inner ${customClass}" alt="${p.name}" />
+      <img src="${imgSrc}" onerror="this.outerHTML='<div class=\'${widthClass} ${heightClass} bg-slate-100 rounded-2xl flex flex-col items-center justify-center text-slate-400 border border-slate-200 select-none\'><i class=\'fa-solid fa-camera text-slate-300 text-xl mb-1\'></i><span class=\'text-[11px] font-bold text-slate-400\'>Chưa có ảnh</span></div>';" class="${widthClass} ${heightClass} object-cover rounded-2xl shadow-inner ${customClass}" alt="${p.name}" />
     `;
   }
   return `
-    <div class="${widthClass} ${heightClass} bg-slate-100/90 border border-slate-200/90 rounded-xl flex flex-col items-center justify-center text-slate-400 select-none ${customClass}">
-      <i class="fa-solid fa-camera text-slate-300 text-lg mb-0.5"></i>
-      <span class="text-[9px] font-bold tracking-tight text-slate-400">Chưa có ảnh</span>
+    <div class="${widthClass} ${heightClass} bg-slate-100 border border-slate-200 rounded-2xl flex flex-col items-center justify-center text-slate-400 select-none ${customClass}">
+      <i class="fa-solid fa-camera text-slate-300 text-2xl mb-1"></i>
+      <span class="text-[11px] font-bold text-slate-400">Chưa có ảnh</span>
     </div>
   `;
 }
 
-// Render 3 quán kết quả (Thiết kế Tinh Gọn - Ít Chữ, Nhanh Gọn)
+// ==============================================================================
+// TAB 1: THẺ GỢI Ý KẾT QUẢ 2 CỘT RỘNG RÃI (DÀNH RIÊNG CHO TAB KHÁM PHÁ NHANH)
+// CỰC KỲ NHẤN MẠNH: TÊN QUÁN, SỐ SAO (NGAY DƯỚI TÊN), GIÁ TIỀN, MỞ CỬA, 2 COMMENT
+// ==============================================================================
+function buildRecommendCardHTML(p, idx) {
+  const isEat = p.category === "an_uong";
+  const isOpen = isPlaceCurrentlyOpen(p.open_time, p.close_time);
+  const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + p.address)}`;
+
+  const isFree = (p.min_price === 0 && p.max_price === 0);
+  const priceRangeFormatted = isFree
+    ? "Miễn phí vé vào cổng"
+    : `${p.min_price.toLocaleString()}đ – ${p.max_price.toLocaleString()}đ`;
+
+  // Khoảng cách: CHỈ HIỂN THỊ KHI NGƯỜI DÙNG CÓ BẬT ĐỊNH VỊ GPS
+  let distanceHTML = "";
+  if (typeof p.distanceKm === "number" && !isNaN(p.distanceKm) && exploreUserCoords) {
+    const isWalk = p.distanceKm <= 0.6;
+    const walkTime = Math.max(1, Math.round(p.distanceKm * 12));
+    const bikeTime = Math.max(1, Math.round(p.distanceKm * 2.5));
+    const distStr = p.distanceKm < 1 ? `${Math.round(p.distanceKm * 1000)}m` : `${p.distanceKm.toFixed(1)} km`;
+
+    distanceHTML = `
+      <span class="ml-2 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold ${isWalk ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-blue-100 text-blue-900 border border-blue-300'} whitespace-nowrap inline-flex items-center gap-1">
+        <i class="fa-solid ${isWalk ? 'fa-person-walking' : 'fa-motorcycle'} text-[11px]"></i>
+        <span>Cách bạn ${distStr}</span>
+        <span class="font-normal opacity-85">(${isWalk ? `~${walkTime}p đi bộ` : `~${bikeTime}p xe máy`})</span>
+      </span>
+    `;
+  }
+
+  const imageHtml = renderPlaceImage(p, "w-full", "h-full");
+
+  return `
+    <div class="recommend-card-2col">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-7 items-stretch">
+        
+        <!-- ==================== CỘT TRÁI (45% - FACTS & THÔNG TIN CỐT LÕI) ==================== -->
+        <div class="md:col-span-5 flex flex-col justify-between">
+          <div>
+            <!-- Ảnh Quán Lớn + Badge Thứ Hạng + Trạng Thái Mở Cửa Nhấn Mạnh Ngay Trên Ảnh -->
+            <div onclick="openPlaceDetailById(${p.id})" class="relative w-full h-52 sm:h-56 rounded-2xl overflow-hidden mb-3.5 border border-slate-200/90 shadow-xs cursor-pointer group">
+              ${imageHtml}
+              <!-- Badge Thứ hạng -->
+              <span class="absolute top-3 left-3 text-xs font-black uppercase text-white bg-[#E11D48] px-3 py-1 rounded-xl shadow-md">
+                GỢI Ý #${idx + 1}
+              </span>
+              <!-- TRẠNG THÁI MỞ CỬA: CỰC KỲ NHẤN MẠNH TRÊN ẢNH -->
+              <div class="absolute top-3 right-3">
+                ${isOpen ? `
+                  <span class="bg-emerald-600/95 backdrop-blur-xs text-white text-[11px] font-black px-3 py-1 rounded-full shadow-md flex items-center gap-1.5 uppercase tracking-wide">
+                    <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                    <span>Đang mở cửa (${p.open_time} - ${p.close_time})</span>
+                  </span>
+                ` : `
+                  <span class="bg-rose-600/95 backdrop-blur-xs text-white text-[11px] font-black px-3 py-1 rounded-full shadow-md flex items-center gap-1.5 uppercase tracking-wide">
+                    <span class="w-2 h-2 rounded-full bg-white"></span>
+                    <span>Đã đóng cửa (${p.open_time} - ${p.close_time})</span>
+                  </span>
+                `}
+              </div>
+            </div>
+
+            <!-- Thể loại & Tag đề cử -->
+            <div class="flex items-center gap-2 flex-wrap mb-2">
+              <span class="text-[11px] font-black uppercase text-[#E11D48] bg-[#FFE4E6] px-2.5 py-0.5 rounded-lg tracking-wider">
+                ${isEat ? 'Ẩm Thực Sài Gòn' : 'Điểm Đến Tham Quan'}
+              </span>
+              ${p.is_admin_choice === 1 ? '<span class="text-[10px] bg-amber-100 text-amber-900 font-extrabold px-2 py-0.5 rounded-md border border-amber-300 flex items-center gap-1"><i class="fa-solid fa-crown text-amber-600"></i> Quán Đề Cử</span>' : ''}
+              <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-md border border-emerald-200">
+                <i class="fa-solid fa-circle-check text-emerald-600"></i> Đã kiểm chứng
+              </span>
+            </div>
+
+            <!-- Tên quán (Headline lớn, đậm nét) -->
+            <h3 onclick="openPlaceDetailById(${p.id})" class="font-black text-slate-900 text-xl sm:text-2xl tracking-tight leading-snug mb-2.5 hover:text-[#E11D48] transition cursor-pointer" title="Bấm để xem chi tiết quán">
+              ${p.name}
+            </h3>
+
+            <!-- SỐ SAO: CỰC KỲ NHẤN MẠNH - VỊ TRÍ HỢP LÝ NGAY DƯỚI TÊN QUÁN -->
+            <div class="flex items-center gap-3 mb-3 flex-wrap">
+              <div class="rating-pill-prominent shadow-2xs">
+                <i class="fa-solid fa-star text-amber-500 text-sm"></i>
+                <span class="text-base font-black text-amber-950">${p.rating}</span>
+                <span class="text-xs text-amber-700 font-extrabold">/ 5.0</span>
+              </div>
+              <div class="flex text-amber-400 text-xs gap-0.5">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+              </div>
+              <span class="text-xs font-bold text-slate-500">(${p.reviews_count || 100} đánh giá trên Google)</span>
+            </div>
+
+            <!-- Địa chỉ cụ thể & Khoảng cách (nếu có GPS) -->
+            <p class="text-xs text-slate-600 font-semibold flex items-start gap-1.5 leading-relaxed mb-4">
+              <i class="fa-solid fa-location-dot text-[#E11D48] text-xs mt-0.5 flex-shrink-0"></i>
+              <span class="flex-1">${p.address} ${distanceHTML}</span>
+            </p>
+          </div>
+
+          <!-- MỨC GIÁ: CỰC KỲ NHẤN MẠNH RIÊNG BIỆT Ở ĐÁY CỘT TRÁI -->
+          <div class="price-block-prominent">
+            <div class="flex items-center justify-between w-full mb-1">
+              <span class="text-[11px] font-black uppercase text-slate-500 tracking-wider flex items-center gap-1.5 whitespace-nowrap">
+                <i class="fa-solid fa-wallet text-[#E11D48] text-xs flex-shrink-0"></i>
+                <span class="whitespace-nowrap">Mức giá chi tiêu</span>
+              </span>
+              <span class="text-[10px] font-extrabold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-md whitespace-nowrap">
+                ${isFree ? 'Tham quan tự do' : 'Chi phí dự kiến'}
+              </span>
+            </div>
+            <div class="flex items-baseline gap-1.5 whitespace-nowrap">
+              <span class="text-xl sm:text-2xl font-black text-emerald-800 tracking-tight whitespace-nowrap">
+                ${priceRangeFormatted}
+              </span>
+              ${!isFree ? `<span class="text-xs font-bold text-slate-500 whitespace-nowrap">/ người</span>` : ''}
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== CỘT PHẢI (55% - EXPERIENCE, 2 REVIEWS & ACTIONS) ==================== -->
+        <div class="md:col-span-7 flex flex-col justify-between pl-0 md:pl-6 md:border-l md:border-slate-200/90 pt-5 md:pt-0 border-t md:border-t-0 border-slate-200/90">
+          <div>
+            <!-- Khung Giờ Cao Điểm Đông Khách -->
+            <div class="p-3.5 bg-amber-50/90 border border-amber-200/90 rounded-2xl mb-4 text-xs">
+              <div class="flex items-center gap-2 text-amber-900 font-black uppercase text-[11px] tracking-wider mb-1">
+                <i class="fa-solid fa-clock-rotate-left text-amber-600 text-sm"></i>
+                <span>Khung giờ cao điểm (Đông khách nhất):</span>
+              </div>
+              <p class="font-extrabold text-amber-950 text-xs pl-6">
+                ${p.peak_hours || '18:00 – 20:30 (Khuyên bạn nên đến sớm để có chỗ ngồi tốt)'}
+              </p>
+            </div>
+
+            <!-- 2 KHỐI COMMENT KHEN & CHÊ: CỰC KỲ NHẤN MẠNH DẠNG REVIEW CARDS -->
+            <div class="space-y-3 mb-5">
+              <!-- Khối Khen 5 sao -->
+              <div class="review-card-khen shadow-2xs">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="font-black text-emerald-950 uppercase text-xs tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-thumbs-up text-emerald-600 text-sm"></i>
+                    <span>Đánh giá khen ngợi (5 sao):</span>
+                  </span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-black px-2 py-0.5 rounded-full">Thực tế</span>
+                </div>
+                <p class="font-medium italic text-emerald-950 text-[13px] leading-relaxed">
+                  ${p.best_review ? `"${p.best_review}"` : '<span class="text-slate-400 not-italic">Chưa có nhận xét khen</span>'}
+                </p>
+              </div>
+
+              <!-- Khối Lưu ý / Góp ý -->
+              <div class="review-card-luuy shadow-2xs">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="font-black text-rose-950 uppercase text-xs tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-triangle-exclamation text-[#E11D48] text-sm"></i>
+                    <span>Lưu ý trải nghiệm & Góp ý:</span>
+                  </span>
+                  <span class="text-[10px] bg-rose-100 text-rose-800 font-black px-2 py-0.5 rounded-full">Ghi nhận</span>
+                </div>
+                <p class="font-medium italic text-slate-800 text-[13px] leading-relaxed">
+                  ${p.worst_review ? `"${p.worst_review}"` : '<span class="text-slate-400 not-italic">Chưa có lưu ý đặc biệt</span>'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hàng Nút Hành Động (Đáy cột phải) -->
+          <div class="pt-4 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2.5">
+            <div class="flex items-center gap-2 flex-wrap">
+              <!-- Nút Tim -->
+              <button onclick="toggleFav(${p.id})" title="Lưu quán yêu thích" class="w-11 h-11 rounded-xl bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-[#E11D48] border border-slate-200 flex items-center justify-center transition cursor-pointer shadow-xs">
+                <i class="fa-regular fa-heart text-base"></i>
+              </button>
+              <!-- Nút Chi tiết -->
+              <button onclick="openPlaceDetailById(${p.id})" title="Xem đầy đủ thông tin" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs">
+                <i class="fa-solid fa-circle-info text-slate-600"></i>
+                <span>Chi tiết quán</span>
+              </button>
+              ${(currentUser && currentUser.role === 'admin') ? `
+                <button onclick="openEditPlaceModalById(${p.id})" title="Sửa dữ liệu quán" class="px-3.5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                  <span>Sửa quán</span>
+                </button>
+              ` : ''}
+            </div>
+
+            <!-- Nút Google Maps Thực Tế (To nhất, nổi bật nhất) -->
+            <a href="${gmapsUrl}" target="_blank" title="Mở trang Google Maps chính thức của quán" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black transition flex items-center gap-2 shadow-sm whitespace-nowrap">
+              <i class="fa-brands fa-google text-sm"></i>
+              <span>Google Maps Thực Tế</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  `;
+}
+
+// Render 3 quán kết quả bước Finish (Sử dụng Thẻ Gợi Ý 2 Cột Cực Kỳ Nhấn Mạnh)
 function renderFinishCards(places) {
   const resultsBox = document.getElementById("flowResults");
   resultsBox.innerHTML = "";
 
   if (!places || places.length === 0) {
-    resultsBox.innerHTML = `<div class="p-6 text-center text-xs text-slate-500 bg-white rounded-2xl border border-slate-200">Không tìm thấy địa điểm phù hợp, vui lòng thử lại tiêu chí khác.</div>`;
+    resultsBox.innerHTML = `<div class="p-8 text-center text-xs text-slate-500 bg-white rounded-2xl border border-slate-200">Không tìm thấy địa điểm phù hợp, vui lòng thử lại tiêu chí khác.</div>`;
     return;
   }
 
   places.forEach((p, idx) => {
-    const isEat = p.category === "an_uong";
-    const isOpen = isPlaceCurrentlyOpen(p.open_time, p.close_time);
-
-    const statusBadge = isOpen
-      ? `<span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-md border border-emerald-200 whitespace-nowrap">🟢 Mở cửa (${p.open_time} - ${p.close_time})</span>`
-      : `<span class="text-[10px] bg-rose-50 text-rose-700 font-bold px-2 py-0.5 rounded-md border border-rose-200 whitespace-nowrap">🔴 Đóng cửa (${p.open_time} - ${p.close_time})</span>`;
-
-    const priceText = p.min_price === 0 && p.max_price === 0
-      ? "Miễn phí vé"
-      : `${p.min_price.toLocaleString()}đ - ${p.max_price.toLocaleString()}đ`;
-
-    const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + p.address)}`;
-    const highlight = p.best_review ? p.best_review.split('.')[0] : (isEat ? "Món ngon nức tiếng Chợ Lớn" : "Di tích văn hóa Quận 5");
-
-    const reviewBadge = `<span class="text-[9px] bg-emerald-50 text-emerald-700 font-extrabold px-1.5 py-0.5 rounded border border-emerald-200 whitespace-nowrap"><i class="fa-solid fa-circle-check text-emerald-500"></i> Đã kiểm chứng</span>`;
-    const adminBadge = p.is_admin_choice === 1
-      ? `<span class="text-[9px] bg-amber-100 text-amber-900 font-extrabold px-1.5 py-0.5 rounded border border-amber-300 flex items-center gap-1 shadow-xs whitespace-nowrap"><i class="fa-solid fa-crown text-amber-600"></i> Quán Admin yêu thích</span>`
-      : '';
-
-    const imageHtml = renderPlaceImage(p, "w-full", "h-full");
-
-    resultsBox.innerHTML += `
-      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 hover:border-[#FF5733] hover:shadow-lg transition-all flex flex-col gap-3">
-        
-        <!-- Header thẻ quán: Tên, Ảnh, Điểm nhấn -->
-        <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-          <div class="relative w-full sm:w-36 h-28 flex-shrink-0">
-            ${imageHtml}
-            <span class="absolute top-2 left-2 text-[10px] font-black uppercase text-white bg-[#FF5733] px-2 py-0.5 rounded-md shadow-sm">
-              #${idx + 1}
-            </span>
-          </div>
-          
-          <div class="flex-1 w-full flex flex-col justify-between">
-            <div>
-              <div class="flex justify-between items-start gap-2">
-                <div>
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="text-[10px] font-extrabold uppercase text-[#FF5733] bg-orange-50 px-2 py-0.5 rounded-md whitespace-nowrap">
-                      ${isEat ? '🍜 Ẩm thực Quận 5' : '📸 Vui chơi & Di tích'}
-                    </span>
-                    ${reviewBadge}
-                    ${adminBadge}
-                  </div>
-                  <h3 class="font-black text-slate-900 text-base mt-1 line-clamp-1">${p.name}</h3>
-                </div>
-                <span class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-xl font-bold whitespace-nowrap flex-shrink-0">
-                  ⭐ ${p.rating}
-                </span>
-              </div>
-
-              <!-- Giờ cao điểm thực tế (Thay cho ô đặc sắc) -->
-              <div class="mt-1.5 text-xs text-amber-950 bg-amber-50/90 border border-amber-200/80 px-2.5 py-1 rounded-xl flex items-center gap-1.5">
-                <i class="fa-solid fa-clock-rotate-left text-amber-600"></i>
-                <strong class="text-amber-900 whitespace-nowrap">Giờ cao điểm:</strong>
-                <span class="font-bold text-amber-800 line-clamp-1">${p.peak_hours || '18:00 - 20:30 (Đông khách)'}</span>
-              </div>
-
-              <!-- Thông số nhanh gọn -->
-              <div class="flex flex-wrap items-center gap-1.5 mt-2">
-                <span class="text-[10px] text-slate-500 flex items-center gap-1 line-clamp-1" title="${p.address}">
-                  <i class="fa-solid fa-location-dot text-rose-500"></i> ${p.address}
-                </span>
-                <span>•</span>
-                ${statusBadge}
-                <span>•</span>
-                <span class="text-[10px] text-slate-700 font-semibold bg-slate-100 px-2 py-0.5 rounded-md whitespace-nowrap">
-                  💰 ${priceText}
-                </span>
-              </div>
-            </div>
-
-            <!-- Các nút hành động chính -->
-            <div class="flex items-center justify-end gap-2 mt-2 pt-2 sm:pt-0 flex-wrap">
-              ${(currentUser && currentUser.role === 'admin') ? `
-                <button onclick="openEditPlaceModalById(${p.id})" title="Chỉnh sửa quán này (Admin)" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-sm whitespace-nowrap cursor-pointer">
-                  <i class="fa-solid fa-pen-to-square"></i> <span>Sửa quán</span>
-                </button>
-              ` : ''}
-              <button onclick="toggleFav(${p.id})" title="Lưu yêu thích" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-500 border border-slate-200 flex items-center justify-center transition flex-shrink-0 cursor-pointer">
-                <i class="fa-regular fa-heart text-xs"></i>
-              </button>
-              <button onclick="rotateFlowResults()" title="Đổi gợi ý khác" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1 whitespace-nowrap cursor-pointer">
-                <i class="fa-solid fa-rotate text-[10px]"></i> <span>Đổi quán khác</span>
-              </button>
-              <button onclick="openPlaceDetailById(${p.id})" title="Xem thông tin chi tiết trên web" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
-                <i class="fa-solid fa-circle-info"></i> <span>Chi tiết</span>
-              </button>
-              <a href="${gmapsUrl}" target="_blank" title="Mở trang Google Maps thực tế để xem 100% đánh giá & ảnh chụp của khách" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
-                <i class="fa-brands fa-google text-xs"></i> <span>GG Maps thực tế</span> <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2 DÒNG ĐÁNH GIÁ SIÊU GỌN - KHÔNG DÀI DÒNG (KHÔNG BỊA COMMENT ẢO) -->
-        <div class="pt-2 border-t border-slate-100 flex flex-col gap-1 text-[11px]">
-          <div class="flex items-start gap-1.5 text-slate-700 bg-emerald-50/50 px-2.5 py-1 rounded-lg">
-            <span class="font-extrabold text-emerald-800 flex items-center gap-1 whitespace-nowrap flex-shrink-0">
-              <i class="fa-solid fa-thumbs-up text-emerald-600 text-[10px]"></i> Khen:
-            </span>
-            <p class="italic ${p.best_review ? 'text-slate-700' : 'text-slate-400 not-italic'} line-clamp-1 leading-tight" title="${p.best_review || 'Chưa có nhận xét'}">${p.best_review ? `"${p.best_review}"` : 'Chưa có nhận xét'}</p>
-          </div>
-          <div class="flex items-start gap-1.5 text-slate-700 bg-rose-50/50 px-2.5 py-1 rounded-lg">
-            <span class="font-extrabold text-rose-800 flex items-center gap-1 whitespace-nowrap flex-shrink-0">
-              <i class="fa-solid fa-triangle-exclamation text-rose-500 text-[10px]"></i> Lưu ý:
-            </span>
-            <p class="italic ${p.worst_review ? 'text-slate-700' : 'text-slate-400 not-italic'} line-clamp-1 leading-tight" title="${p.worst_review || 'Chưa có ghi nhận'}">${p.worst_review ? `"${p.worst_review}"` : 'Chưa có ghi nhận'}</p>
-          </div>
-        </div>
-
-      </div>
-    `;
+    resultsBox.innerHTML += buildRecommendCardHTML(p, idx);
   });
 }
 
@@ -665,9 +755,9 @@ function selectAICompanion(val) {
     const btn = document.getElementById(map[k]);
     if (!btn) return;
     if (k === val) {
-      btn.className = "flex items-center gap-2 p-3 rounded-xl border-2 border-indigo-500 bg-indigo-50/80 text-indigo-900 font-extrabold text-xs shadow-xs transition cursor-pointer text-left";
+      btn.className = "companion-chip active py-2.5 px-3 rounded-xl border-2 border-[#E11D48] bg-rose-50 font-bold text-[#E11D48] shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer text-center";
     } else {
-      btn.className = "flex items-center gap-2 p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition cursor-pointer text-left";
+      btn.className = "companion-chip py-2.5 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-slate-300 transition flex items-center justify-center gap-1.5 cursor-pointer text-center";
     }
   });
 }
@@ -683,9 +773,9 @@ function selectAIPurpose(val) {
     const btn = document.getElementById(map[k]);
     if (!btn) return;
     if (k === val) {
-      btn.className = "flex items-center gap-2 p-3 rounded-xl border-2 border-[#FF5733] bg-orange-50/80 text-[#FF5733] font-extrabold text-xs shadow-xs transition cursor-pointer text-left";
+      btn.className = "purpose-chip active py-2.5 px-3 rounded-xl border-2 border-[#E11D48] bg-rose-50 font-bold text-[#E11D48] shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer text-center";
     } else {
-      btn.className = "flex items-center gap-2 p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition cursor-pointer text-left";
+      btn.className = "purpose-chip py-2.5 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-slate-300 transition flex items-center justify-center gap-1.5 cursor-pointer text-center";
     }
   });
 }
@@ -723,7 +813,7 @@ function toggleItineraryMap() {
 
 // Cấu hình các lớp bản đồ tương tác (Google Maps, OpenStreetMap, Vệ tinh) - Hoàn toàn không bị lỗi 'API key required'
 function initLeafletTileLayers(mapInstance) {
-  // 1. Google Maps Đường Phố (Mặc định: cực nét, 100% tiếng Việt chuẩn Quận 5, tốc độ cao, không cần API key)
+  // 1. Google Maps Đường Phố (Mặc định: cực nét, 100% tiếng Việt chuẩn Sài Gòn, tốc độ cao, không cần API key)
   const googleStreets = L.tileLayer("https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
     maxZoom: 20,
     subdomains: ["mt0", "mt1", "mt2", "mt3"],
@@ -820,7 +910,7 @@ function renderItineraryMap(startCoords, steps) {
   }
 
   // 2. Markers cho 3 trạm
-  const colors = ["#FF5733", "#EA580C", "#C2410C"];
+  const colors = ["#E11D48", "#2563EB", "#059669"];
   steps.forEach((s, idx) => {
     if (s.lat && s.lon) {
       const latLng = [s.lat, s.lon];
@@ -828,7 +918,7 @@ function renderItineraryMap(startCoords, steps) {
 
       const stepIcon = L.divIcon({
         className: "custom-leaflet-marker",
-        html: `<div style="background-color: ${colors[idx] || '#FF5733'}; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 2.5px solid white;">${idx + 1}</div>`,
+        html: `<div style="background-color: ${colors[idx] || '#E11D48'}; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 2.5px solid white;">${idx + 1}</div>`,
         iconSize: [32, 32],
         iconAnchor: [16, 32],
         popupAnchor: [0, -32]
@@ -837,7 +927,7 @@ function renderItineraryMap(startCoords, steps) {
       const popupHtml = `
         <div style="min-width: 170px; font-family: sans-serif; line-height: 1.4;">
           <div style="font-weight: 800; font-size: 12px; color: #0F172A;">Trạm ${idx + 1}: ${s.action}</div>
-          <div style="font-weight: 700; color: #FF5733; margin-top: 3px;">${s.location}</div>
+          <div style="font-weight: 700; color: #E11D48; margin-top: 3px;">${s.location}</div>
           <div style="font-size: 11px; color: #64748B; margin-top: 2px;">🕒 ${s.time}</div>
           ${s.must_try_tip ? `<div style="font-size: 11px; color: #047857; margin-top: 3px; font-weight: 600;">💡 ${s.must_try_tip}</div>` : ''}
         </div>
@@ -873,7 +963,7 @@ async function requestAIItinerary() {
   const modelBadgeEl = document.getElementById("aiModelBadgeDisplay");
   const btnGmaps = document.getElementById("btnGmapsMultiRoute");
 
-  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Google Gemini AI đang tính toán & tối ưu lộ trình...`;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Đang tính toán & kết nối lộ trình 3 trạm...`;
   btn.disabled = true;
 
   const selectedModel = document.getElementById("aiModelSelect")?.value || "gemini-3.8-flash";
@@ -921,24 +1011,24 @@ async function requestAIItinerary() {
     container.innerHTML = "";
     result.steps.forEach((s, idx) => {
       container.innerHTML += `
-        <div class="flex items-start gap-3.5 bg-slate-50/90 p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs hover:border-[#FF5733]/40 transition">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#FF5733] to-[#FF8C42] text-white flex items-center justify-center font-black text-xs shadow-sm flex-shrink-0 mt-0.5">
+        <div class="flex items-start gap-3.5 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs hover:border-[#E11D48]/40 transition">
+          <div class="w-8 h-8 rounded-xl bg-[#E11D48] text-white flex items-center justify-center font-black text-xs shadow-sm flex-shrink-0 mt-0.5">
             ${idx + 1}
           </div>
           <div class="flex-1 min-w-0">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
               <h4 class="font-extrabold text-slate-900 text-xs sm:text-sm">${s.action}</h4>
-              <span class="text-[11px] font-bold text-orange-700 bg-orange-100/70 px-2.5 py-0.5 rounded-lg whitespace-nowrap">${s.time}</span>
+              <span class="text-[11px] font-bold text-[#E11D48] bg-rose-50 px-2.5 py-0.5 rounded-lg whitespace-nowrap border border-rose-200/80">${s.time}</span>
             </div>
-            <p class="font-black text-sm text-[#FF5733] mt-1.5">${s.location}</p>
+            <p class="font-black text-sm text-slate-900 mt-1.5">${s.location}</p>
 
             ${s.ai_reason ? `
-              <div class="mt-2.5 text-xs bg-white p-3 rounded-xl border border-slate-200/80 text-slate-700 shadow-xs">
-                <div class="text-[10px] font-bold text-indigo-600 uppercase flex items-center gap-1 mb-1">
-                  <i class="fa-solid fa-sparkles"></i> Phân tích của Gemini AI:
+              <div class="mt-2.5 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-700 shadow-2xs">
+                <div class="text-[10px] font-bold text-[#E11D48] uppercase flex items-center gap-1 mb-1">
+                  <i class="fa-solid fa-circle-check"></i> Lý do lựa chọn & Điểm nổi bật:
                 </div>
                 <div class="leading-relaxed font-medium">${s.ai_reason}</div>
-                ${s.must_try_tip ? `<div class="mt-2 text-[11px] font-bold text-emerald-700 flex items-start gap-1 pt-1.5 border-t border-slate-100"><i class="fa-solid fa-lightbulb text-amber-500 mt-0.5"></i> <span>Gợi ý trải nghiệm: ${s.must_try_tip}</span></div>` : ''}
+                ${s.must_try_tip ? `<div class="mt-2 text-[11px] font-bold text-emerald-800 flex items-start gap-1 pt-1.5 border-t border-slate-200"><i class="fa-solid fa-lightbulb text-amber-500 mt-0.5"></i> <span>Gợi ý trải nghiệm: ${s.must_try_tip}</span></div>` : ''}
               </div>
             ` : ''}
 
@@ -949,12 +1039,12 @@ async function requestAIItinerary() {
               <span>•</span>
               <span>🕒 ${s.open_hours}</span>
             </div>
-            ${s.traffic_warning ? `<p class="text-[11px] text-amber-800 bg-amber-50 border border-amber-200/80 p-2.5 rounded-xl mt-2 font-medium">⚠️ <strong>Lưu ý:</strong> ${s.traffic_warning}</p>` : ''}
+            ${s.traffic_warning ? `<p class="text-[11px] text-amber-900 bg-amber-50 border border-amber-200 p-2.5 rounded-xl mt-2 font-medium">⚠️ <strong>Lưu ý:</strong> ${s.traffic_warning}</p>` : ''}
             
-            <div class="mt-3 pt-2.5 border-t border-slate-200/70 flex items-center justify-between">
+            <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
               <span class="text-[10px] text-slate-400 font-semibold">Trạm dừng #${idx + 1} trên lộ trình</span>
               ${s.place_id ? `
-                <button onclick="openPlaceDetailById(${s.place_id})" class="text-[11px] font-bold text-[#FF5733] hover:underline flex items-center gap-1 cursor-pointer">
+                <button onclick="openPlaceDetailById(${s.place_id})" class="text-[11px] font-bold text-[#E11D48] hover:underline flex items-center gap-1 cursor-pointer">
                   <i class="fa-solid fa-circle-info text-[10px]"></i> <span>Xem chi tiết quán & review</span>
                 </button>
               ` : ''}
@@ -968,7 +1058,7 @@ async function requestAIItinerary() {
   } catch (err) {
     alert("❌ Lỗi: " + err.message);
   } finally {
-    btn.innerHTML = `<span>Lên Lộ Trình Tối Ưu Bằng Gemini AI ✨</span> <i class="fa-solid fa-arrow-right text-xs"></i>`;
+    btn.innerHTML = `<i class="fa-solid fa-route mr-1.5"></i> <span>Tạo Lịch Trình Khám Phá</span>`;
     btn.disabled = false;
   }
 }
@@ -979,23 +1069,27 @@ async function requestAIItinerary() {
 
 let exploreUserCoords = null;
 
-// Bảng tọa độ các địa danh nổi tiếng tại Quận 5 để nhận diện tức thì (0ms)
-const KNOWN_D5_LANDMARKS = {
+// Bảng tọa độ các địa danh nổi tiếng tại Sài Gòn để nhận diện tức thì (0ms)
+const KNOWN_SG_LANDMARKS = {
   "su pham": { name: "ĐH Sư Phạm TP.HCM (280 An Dương Vương)", lat: 10.7601, lon: 106.6823 },
-  "280 an duong vuong": { name: "280 An Dương Vương, Quận 5", lat: 10.7601, lon: 106.6823 },
-  "an duong vuong": { name: "280 An Dương Vương, Quận 5", lat: 10.7601, lon: 106.6823 },
-  "an dong": { name: "Chợ An Đông, Quận 5", lat: 10.7573, lon: 106.6713 },
-  "cho an dong": { name: "Chợ An Đông, Quận 5", lat: 10.7573, lon: 106.6713 },
+  "280 an duong vuong": { name: "280 An Dương Vương, TP.HCM", lat: 10.7601, lon: 106.6823 },
+  "an duong vuong": { name: "280 An Dương Vương, TP.HCM", lat: 10.7601, lon: 106.6823 },
+  "an dong": { name: "Chợ An Đông, TP.HCM", lat: 10.7573, lon: 106.6713 },
+  "cho an dong": { name: "Chợ An Đông, TP.HCM", lat: 10.7573, lon: 106.6713 },
   "thuan kieu": { name: "Thuận Kiều Plaza (190 Hồng Bàng)", lat: 10.7554, lon: 106.6577 },
-  "binh tay": { name: "Chợ Bình Tây (Chợ Lớn)", lat: 10.7497, lon: 106.6515 },
-  "cho binh tay": { name: "Chợ Bình Tây (Chợ Lớn)", lat: 10.7497, lon: 106.6515 },
-  "cho lon": { name: "Chợ Lớn, Quận 5", lat: 10.7535, lon: 106.6580 },
+  "binh tay": { name: "Chợ Bình Tây, TP.HCM", lat: 10.7497, lon: 106.6515 },
+  "cho binh tay": { name: "Chợ Bình Tây, TP.HCM", lat: 10.7497, lon: 106.6515 },
+  "ben thanh": { name: "Chợ Bến Thành, TP.HCM", lat: 10.7725, lon: 106.6980 },
+  "cho ben thanh": { name: "Chợ Bến Thành, TP.HCM", lat: 10.7725, lon: 106.6980 },
+  "nha tho duc ba": { name: "Nhà Thờ Đức Bà, TP.HCM", lat: 10.7798, lon: 106.6990 },
+  "pho di bo": { name: "Phố Đi Bộ Nguyễn Huệ, TP.HCM", lat: 10.7744, lon: 106.7032 },
+  "ho con rua": { name: "Hồ Con Rùa, TP.HCM", lat: 10.7828, lon: 106.6958 },
   "cho ray": { name: "Bệnh viện Chợ Rẫy (Nguyễn Chí Thanh)", lat: 10.7577, lon: 106.6596 },
   "benh vien cho ray": { name: "Bệnh viện Chợ Rẫy", lat: 10.7577, lon: 106.6596 },
   "y duoc": { name: "ĐH Y Dược TP.HCM (Hồng Bàng)", lat: 10.7562, lon: 106.6589 },
   "dai hoc y duoc": { name: "ĐH Y Dược TP.HCM", lat: 10.7562, lon: 106.6589 },
-  "van lang": { name: "Công viên Văn Lang, Quận 5", lat: 10.7585, lon: 106.6705 },
-  "cong vien van lang": { name: "Công viên Văn Lang, Quận 5", lat: 10.7585, lon: 106.6705 },
+  "van lang": { name: "Công viên Văn Lang, TP.HCM", lat: 10.7585, lon: 106.6705 },
+  "cong vien van lang": { name: "Công viên Văn Lang, TP.HCM", lat: 10.7585, lon: 106.6705 },
   "hung vuong": { name: "Hùng Vương Plaza (Hồng Bàng)", lat: 10.7570, lon: 106.6625 },
   "dai the gioi": { name: "Công viên Nước Đại Thế Giới", lat: 10.7530, lon: 106.6690 }
 };
@@ -1111,9 +1205,9 @@ async function onExploreLocationInputChange() {
   const norm = removeVietnameseTones(val);
   let foundCoords = null;
 
-  for (const k of Object.keys(KNOWN_D5_LANDMARKS)) {
+  for (const k of Object.keys(KNOWN_SG_LANDMARKS)) {
     if (norm.includes(k)) {
-      foundCoords = { lat: KNOWN_D5_LANDMARKS[k].lat, lon: KNOWN_D5_LANDMARKS[k].lon };
+      foundCoords = { lat: KNOWN_SG_LANDMARKS[k].lat, lon: KNOWN_SG_LANDMARKS[k].lon };
       break;
     }
   }
@@ -1178,11 +1272,120 @@ function clearExploreLocation() {
 function onRadiusFilterChange() {
   const radius = document.getElementById("allRadiusFilter")?.value || "all";
   if (radius !== "all" && !exploreUserCoords) {
-    // Tự động dùng điểm mốc trung tâm Quận 5 nếu chưa nhập vị trí
-    setExploreLocationPreset("280 An Dương Vương, Quận 5 (ĐH Sư Phạm)", 10.7601, 106.6823);
+    // Tự động dùng điểm mốc trung tâm Sài Gòn nếu chưa nhập vị trí
+    setExploreLocationPreset("280 An Dương Vương, TP.HCM (ĐH Sư Phạm)", 10.7601, 106.6823);
     return;
   }
   filterAllPlaces();
+}
+
+// ==============================================================================
+// TAB 2: THẺ CATALOG DU LỊCH 2 CỘT CÂN ĐỐI (DÀNH CHO TAB TỰ CHỌN 40 QUÁN)
+// THIẾT KẾ DẠNG GRID THOÁNG ĐÃNG, KHÔNG BỊ TRÙNG LẶP KIỂU TAB 1
+// ==============================================================================
+function buildCatalogCardHTML(p) {
+  const isEat = p.category === "an_uong";
+  const isOpen = isPlaceCurrentlyOpen(p.open_time, p.close_time);
+  const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + p.address)}`;
+
+  const priceText = (p.min_price === 0 && p.max_price === 0)
+    ? "Miễn phí vé"
+    : `${p.min_price.toLocaleString()}đ – ${p.max_price.toLocaleString()}đ`;
+
+  let distanceHTML = "";
+  if (typeof p.distanceKm === "number" && !isNaN(p.distanceKm) && exploreUserCoords) {
+    const isWalk = p.distanceKm <= 0.6;
+    const distStr = p.distanceKm < 1 ? `${Math.round(p.distanceKm * 1000)}m` : `${p.distanceKm.toFixed(1)} km`;
+    distanceHTML = `
+      <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold ${isWalk ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-blue-50 text-blue-800 border border-blue-200'} whitespace-nowrap inline-flex items-center gap-1">
+        <i class="fa-solid ${isWalk ? 'fa-person-walking' : 'fa-motorcycle'} text-[10px]"></i>
+        <span>${distStr}</span>
+      </span>
+    `;
+  }
+
+  const imageHtml = renderPlaceImage(p, "w-full", "h-full");
+
+  return `
+    <div class="catalog-card-v3">
+      <!-- 1. Header ảnh quán tỷ lệ vàng chuẩn -->
+      <div onclick="openPlaceDetailById(${p.id})" class="card-image-box cursor-pointer group">
+        ${imageHtml}
+        <!-- Badge thể loại -->
+        <span class="absolute top-2.5 left-2.5 text-[10px] font-black uppercase text-[#E11D48] bg-white/95 backdrop-blur-xs px-2.5 py-0.5 rounded-lg shadow-sm">
+          ${isEat ? 'Ẩm Thực' : 'Tham Quan'}
+        </span>
+        <!-- Badge mở cửa -->
+        <span class="absolute top-2.5 right-2.5 text-[10px] font-black uppercase ${isOpen ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'} px-2.5 py-0.5 rounded-lg shadow-sm">
+          ${isOpen ? '🟢 Mở cửa' : '🔴 Đóng cửa'}
+        </span>
+      </div>
+
+      <!-- 2. Thân thẻ thông tin -->
+      <div class="p-4 flex-1 flex flex-col justify-between">
+        <div>
+          <!-- Tên quán + Badge Số sao nổi bật ngay bên cạnh -->
+          <div class="flex items-start justify-between gap-2 mb-1.5">
+            <h4 onclick="openPlaceDetailById(${p.id})" class="font-black text-slate-900 text-sm leading-snug line-clamp-1 hover:text-[#E11D48] transition cursor-pointer" title="${p.name}">
+              ${p.name}
+            </h4>
+            <div class="rating-pill-prominent py-0.5 px-2 text-xs flex-shrink-0">
+              <i class="fa-solid fa-star text-amber-500 text-[11px]"></i>
+              <span class="font-black">${p.rating}</span>
+            </div>
+          </div>
+
+          <!-- Địa chỉ & Khoảng cách -->
+          <div class="text-[11px] text-slate-500 font-medium flex items-center justify-between gap-1.5 mb-2.5" title="${p.address}">
+            <span class="truncate flex items-center gap-1">
+              <i class="fa-solid fa-location-dot text-[#E11D48] text-[11px] flex-shrink-0"></i>
+              <span class="truncate">${p.address}</span>
+            </span>
+            ${distanceHTML}
+          </div>
+
+          <!-- Mức giá & Giờ cao điểm -->
+          <div class="flex items-center justify-between text-[11px] font-bold py-1.5 px-2.5 bg-slate-50 rounded-xl mb-2.5 border border-slate-100">
+            <span class="text-slate-800 truncate mr-2">💰 ${priceText}</span>
+            <span class="text-amber-800 whitespace-nowrap">🕒 ${p.peak_hours ? p.peak_hours.split('(')[0].trim() : '18h - 20h'}</span>
+          </div>
+
+          <!-- 2 dòng nhận xét Khen & Lưu ý súc tích -->
+          <div class="space-y-1.5 text-[11px] mb-3">
+            <div class="bg-emerald-50/80 border border-emerald-200/80 px-2.5 py-1.5 rounded-xl text-emerald-950 flex items-start gap-1.5">
+              <span class="font-black text-emerald-800 whitespace-nowrap flex-shrink-0">Khen:</span>
+              <p class="italic line-clamp-1 ${p.best_review ? '' : 'text-slate-400 not-italic'}" title="${p.best_review || 'Chưa có nhận xét'}">${p.best_review ? `"${p.best_review}"` : 'Chưa có nhận xét'}</p>
+            </div>
+            <div class="bg-rose-50/80 border border-rose-200/80 px-2.5 py-1.5 rounded-xl text-rose-950 flex items-start gap-1.5">
+              <span class="font-black text-rose-800 whitespace-nowrap flex-shrink-0">Lưu ý:</span>
+              <p class="italic line-clamp-1 ${p.worst_review ? '' : 'text-slate-400 not-italic'}" title="${p.worst_review || 'Chưa có ghi nhận'}">${p.worst_review ? `"${p.worst_review}"` : 'Chưa có ghi nhận'}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Chân thẻ hành động -->
+        <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between gap-1.5">
+          <div class="flex items-center gap-1.5">
+            <button onclick="toggleFav(${p.id})" title="Lưu yêu thích" class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-[#E11D48] border border-slate-200 flex items-center justify-center transition cursor-pointer">
+              <i class="fa-regular fa-heart text-xs"></i>
+            </button>
+            <button onclick="openPlaceDetailById(${p.id})" title="Xem chi tiết" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-circle-info text-[10px]"></i> <span>Chi tiết</span>
+            </button>
+            ${(currentUser && currentUser.role === 'admin') ? `
+              <button onclick="openEditPlaceModalById(${p.id})" title="Sửa quán" class="px-2 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer">
+                <i class="fa-solid fa-pen-to-square text-[10px]"></i>
+              </button>
+            ` : ''}
+          </div>
+
+          <a href="${gmapsUrl}" target="_blank" title="Xem 100% đánh giá & ảnh trên Google Maps" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 whitespace-nowrap shadow-xs">
+            <i class="fa-brands fa-google text-xs"></i> <span>Maps thật</span> <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function renderAllPlaces(places) {
@@ -1190,120 +1393,12 @@ function renderAllPlaces(places) {
   container.innerHTML = "";
 
   if (!places || places.length === 0) {
-    container.innerHTML = `<div class="col-span-2 p-10 text-center text-xs text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">Không tìm thấy địa điểm nào khớp với bộ lọc & bán kính đã chọn.<br><button onclick="clearExploreLocation()" class="mt-2 text-[#FF5733] font-bold underline cursor-pointer">Xóa bộ lọc bán kính để xem tất cả</button></div>`;
+    container.innerHTML = `<div class="col-span-full p-10 text-center text-xs text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">Không tìm thấy địa điểm nào khớp với bộ lọc & bán kính đã chọn.<br><button onclick="clearExploreLocation()" class="mt-2 text-[#E11D48] font-bold underline cursor-pointer">Xóa bộ lọc bán kính để xem tất cả</button></div>`;
     return;
   }
 
   places.forEach(p => {
-    const isEat = p.category === "an_uong";
-    const isOpen = isPlaceCurrentlyOpen(p.open_time, p.close_time);
-    const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + p.address)}`;
-
-    const reviewBadge = `<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap"><i class="fa-solid fa-circle-check text-emerald-500"></i> Đã kiểm chứng</span>`;
-    const adminBadge = p.is_admin_choice === 1
-      ? `<span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-100 text-amber-900 border border-amber-300 whitespace-nowrap flex items-center gap-1 shadow-xs"><i class="fa-solid fa-crown text-amber-600"></i> Admin yêu thích</span>`
-      : '';
-
-    let distanceBadge = "";
-    let directRouteBtn = "";
-    if (typeof p.distanceKm === "number" && !isNaN(p.distanceKm)) {
-      const isWalk = p.distanceKm <= 0.6;
-      const walkTime = Math.max(1, Math.round(p.distanceKm * 12));
-      const bikeTime = Math.max(1, Math.round(p.distanceKm * 2.5));
-      const distStr = p.distanceKm < 1 ? `${Math.round(p.distanceKm * 1000)}m` : `${p.distanceKm.toFixed(1)} km`;
-
-      distanceBadge = `
-        <span class="px-2 py-0.5 rounded text-[10px] font-extrabold ${isWalk ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-blue-100/90 text-blue-900 border border-blue-300'} whitespace-nowrap flex items-center gap-1 shadow-2xs" title="Khoảng cách từ vị trí của bạn">
-          <i class="fa-solid ${isWalk ? 'fa-person-walking text-emerald-700' : 'fa-motorcycle text-blue-700'} text-[11px]"></i>
-          <span>Cách ${distStr}</span>
-          <span class="font-normal opacity-85">(${isWalk ? `~${walkTime}p đi bộ` : `~${bikeTime}p xe máy`})</span>
-        </span>
-      `;
-
-      if (exploreUserCoords) {
-        const routeUrl = `https://www.google.com/maps/dir/?api=1&origin=${exploreUserCoords.lat},${exploreUserCoords.lon}&destination=${p.lat},${p.lon}&travelmode=motorcycle`;
-        directRouteBtn = `
-          <a href="${routeUrl}" target="_blank" title="Chỉ đường xe máy từ vị trí của bạn đến đây" class="px-2.5 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-bold transition flex items-center gap-1 whitespace-nowrap shadow-xs">
-            <i class="fa-solid fa-diamond-turn-right text-[10px]"></i> <span>Chỉ đường</span>
-          </a>
-        `;
-      }
-    }
-
-    const imageHtml = renderPlaceImage(p, "w-20", "h-20");
-
-    container.innerHTML += `
-      <div class="bg-white border border-slate-200/90 rounded-2xl p-4 text-xs hover:border-[#FF5733]/60 hover:shadow-md transition flex flex-col justify-between">
-        <div>
-          <div class="flex gap-3 items-start">
-            <div class="w-20 h-20 flex-shrink-0">
-              ${imageHtml}
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex justify-between items-start gap-1">
-                <h4 class="font-extrabold text-sm text-slate-900 truncate" title="${p.name}">${p.name}</h4>
-                <span class="text-amber-600 font-bold whitespace-nowrap flex-shrink-0">⭐ ${p.rating}</span>
-              </div>
-              <p class="text-slate-500 text-[11px] mt-1 flex items-center gap-1 truncate" title="${p.address}">
-                <i class="fa-solid fa-location-dot text-rose-500 text-[10px] flex-shrink-0"></i> <span class="truncate">${p.address}</span>
-              </p>
-              <div class="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                <span class="px-2 py-0.5 rounded text-[10px] font-semibold whitespace-nowrap ${isEat ? 'bg-orange-50 text-[#FF5733]' : 'bg-sky-50 text-sky-600'}">
-                  ${isEat ? '🍜 Ẩm thực' : '📸 Vui chơi'}
-                </span>
-                ${distanceBadge}
-                ${reviewBadge}
-                ${adminBadge}
-                <span class="text-[10px] font-bold whitespace-nowrap ${isOpen ? 'text-emerald-700 bg-emerald-50' : 'text-rose-700 bg-rose-50'} px-1.5 py-0.5 rounded">
-                  ${isOpen ? '🟢 Mở' : '🔴 Đóng'}
-                </span>
-                <span class="text-[10px] text-amber-800 bg-amber-50 border border-amber-200/60 px-1.5 py-0.5 rounded font-medium whitespace-nowrap">
-                  🕒 Đông: ${p.peak_hours || '18:00 - 20:00'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- ĐÁNH GIÁ 5 SAO & 1-2 SAO HIỆN GỌN GÀNG (KHÔNG BỊA COMMENT ẢO) -->
-          <div class="mt-3 pt-2.5 border-t border-slate-100 flex flex-col gap-1.5 text-[10px]">
-            <div class="bg-emerald-50/70 border border-emerald-200/60 px-2 py-1.5 rounded-xl text-slate-700 flex items-start gap-1.5">
-              <span class="font-extrabold text-emerald-900 whitespace-nowrap flex items-center gap-1 flex-shrink-0 mt-0.5">
-                <i class="fa-solid fa-thumbs-up text-emerald-600"></i> Khen (5⭐):
-              </span>
-              <p class="italic font-medium ${p.best_review ? 'text-slate-700' : 'text-slate-400 not-italic'} line-clamp-1 leading-snug" title="${p.best_review || 'Chưa có nhận xét'}">${p.best_review ? `"${p.best_review}"` : 'Chưa có nhận xét'}</p>
-            </div>
-
-            <div class="bg-rose-50/70 border border-rose-200/60 px-2 py-1.5 rounded-xl text-slate-700 flex items-start gap-1.5">
-              <span class="font-extrabold text-rose-900 whitespace-nowrap flex items-center gap-1 flex-shrink-0 mt-0.5">
-                <i class="fa-solid fa-triangle-exclamation text-rose-600"></i> Góp ý (1-2⭐):
-              </span>
-              <p class="italic font-medium ${p.worst_review ? 'text-slate-700' : 'text-slate-400 not-italic'} line-clamp-1 leading-snug" title="${p.worst_review || 'Chưa có ghi nhận'}">${p.worst_review ? `"${p.worst_review}"` : 'Chưa có ghi nhận'}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-3 pt-2.5 border-t border-slate-100 flex justify-between items-center text-[11px] flex-wrap gap-2">
-          <span class="font-bold text-slate-700">💰 ${p.min_price === 0 && p.max_price === 0 ? 'Miễn phí vé' : p.min_price.toLocaleString() + 'đ - ' + p.max_price.toLocaleString() + 'đ'}</span>
-          <div class="flex items-center gap-1.5 flex-wrap">
-            ${directRouteBtn}
-            ${(currentUser && currentUser.role === 'admin') ? `
-              <button onclick="openEditPlaceModalById(${p.id})" class="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-[11px] flex items-center gap-1 transition shadow-sm whitespace-nowrap cursor-pointer" title="Chỉnh sửa toàn bộ dữ liệu quán này">
-                <i class="fa-solid fa-pen-to-square text-[10px]"></i> <span>Sửa quán</span>
-              </button>
-            ` : ''}
-            <button onclick="toggleFav(${p.id})" class="p-1 text-slate-400 hover:text-rose-500 transition cursor-pointer" title="Lưu yêu thích">
-              <i class="fa-regular fa-heart text-xs"></i>
-            </button>
-            <button onclick="openPlaceDetailById(${p.id})" title="Xem thông tin chi tiết trên web" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold transition flex items-center gap-1 cursor-pointer">
-              <i class="fa-solid fa-circle-info text-[10px]"></i> <span>Chi tiết</span>
-            </button>
-            <a href="${gmapsUrl}" target="_blank" title="Mở Google Maps thực tế để xem ảnh chụp & review" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border border-emerald-200 rounded-lg font-bold transition flex items-center gap-1 whitespace-nowrap">
-              <i class="fa-brands fa-google text-[10px]"></i> <span>Thực tế</span> <i class="fa-solid fa-arrow-up-right-from-square text-[8px]"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-    `;
+    container.innerHTML += buildCatalogCardHTML(p);
   });
 }
 
@@ -1409,6 +1504,134 @@ async function toggleFav(placeId) {
 // 6. TRANG QUẢN TRỊ ADMIN (BỘ LỌC A-Z, TRÍCH XUẤT GOOGLE MAPS & CHỈNH ẢNH)
 // ==============================================================================
 
+let currentAdminSubTab = "places";
+
+function switchAdminSubTab(subTab) {
+  currentAdminSubTab = subTab;
+  const btnPlaces = document.getElementById("adminSubTabPlaces");
+  const btnUsers = document.getElementById("adminSubTabUsers");
+  const secPlaces = document.getElementById("adminSectionPlaces");
+  const secUsers = document.getElementById("adminSectionUsers");
+
+  if (subTab === "places") {
+    if (btnPlaces) btnPlaces.className = "admin-subtab-btn active";
+    if (btnUsers) btnUsers.className = "admin-subtab-btn";
+    if (secPlaces) secPlaces.classList.remove("hidden");
+    if (secUsers) secUsers.classList.add("hidden");
+  } else {
+    if (btnPlaces) btnPlaces.className = "admin-subtab-btn";
+    if (btnUsers) btnUsers.className = "admin-subtab-btn active";
+    if (secPlaces) secPlaces.classList.add("hidden");
+    if (secUsers) secUsers.classList.remove("hidden");
+    loadAdminUsers();
+  }
+}
+
+async function loadAdminUsers() {
+  try {
+    const res = await fetch(`${API_BASE}/admin/users`);
+    const users = await res.json();
+    const countBadge = document.getElementById("adminUserCountBadge");
+    const statUsers = document.getElementById("statTotalUsers");
+    if (countBadge) countBadge.innerText = users.length;
+    if (statUsers) statUsers.innerText = users.length;
+
+    renderAdminUsersTable(users);
+  } catch (e) {
+    console.error("Lỗi tải danh sách người dùng:", e);
+  }
+}
+
+function renderAdminUsersTable(users) {
+  const tbody = document.getElementById("adminUsersTable");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+
+  if (!users || users.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-stone-400">Không có tài khoản người dùng nào.</td></tr>`;
+    return;
+  }
+
+  users.forEach(u => {
+    const isAdmin = u.role === "admin";
+    const isSelf = currentUser && currentUser.id === u.id;
+
+    tbody.innerHTML += `
+      <tr class="hover:bg-stone-50/70 transition border-b border-stone-100">
+        <td class="p-3.5 font-mono font-bold text-stone-400 whitespace-nowrap">#${u.id}</td>
+        <td class="p-3.5 font-extrabold text-stone-900 whitespace-nowrap">${u.full_name} ${isSelf ? '<span class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 ml-1">Bạn</span>' : ''}</td>
+        <td class="p-3.5 font-mono text-stone-600 whitespace-nowrap">@${u.username}</td>
+        <td class="p-3.5 whitespace-nowrap">
+          <span class="px-2.5 py-1 rounded-md text-[10px] font-black uppercase ${isAdmin ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-stone-100 text-stone-700 border border-stone-200'}">
+            <i class="fa-solid ${isAdmin ? 'fa-user-gear' : 'fa-user'} mr-1"></i>
+            ${isAdmin ? 'Quản Trị Viên' : 'Thành Viên'}
+          </span>
+        </td>
+        <td class="p-3.5 text-stone-400 text-xs whitespace-nowrap">${u.created_at ? u.created_at.split('T')[0] : 'Ban đầu'}</td>
+        <td class="p-3.5 text-center whitespace-nowrap bg-stone-50/50 border-l border-stone-100">
+          <div class="flex items-center justify-center gap-1.5">
+            <button onclick="toggleUserRole(${u.id}, '${u.role}')" class="px-3 py-1.5 ${isAdmin ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200'} rounded-xl font-bold text-xs flex items-center gap-1 transition cursor-pointer" title="Đổi quyền hạn">
+              <i class="fa-solid ${isAdmin ? 'fa-arrow-down' : 'fa-arrow-up'} text-[10px]"></i>
+              <span>${isAdmin ? 'Hạ quyền User' : 'Nâng quyền Admin'}</span>
+            </button>
+            <button onclick="handleDeleteUser(${u.id}, '${u.username}')" ${isSelf ? 'disabled' : ''} class="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 disabled:opacity-30 rounded-xl font-bold text-xs flex items-center gap-1 transition cursor-pointer" title="${isSelf ? 'Không thể tự xóa tài khoản đang đăng nhập' : 'Xóa tài khoản này'}">
+              <i class="fa-solid fa-trash text-[11px]"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+async function toggleUserRole(userId, currentRole) {
+  const newRole = currentRole === "admin" ? "user" : "admin";
+  const label = newRole === "admin" ? "Quản trị viên (Admin)" : "Thành viên thông thường (User)";
+  if (!confirm(`Bạn có chắc muốn đổi vai trò của tài khoản này thành ${label}?`)) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/users/${userId}/role`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role: newRole })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      alert("Lỗi: " + (data.detail || "Không thể cập nhật vai trò"));
+      return;
+    }
+    alert(data.message || "Cập nhật vai trò thành công!");
+    loadAdminUsers();
+    // Nếu đổi chính tài khoản đang đăng nhập
+    if (currentUser && currentUser.id === userId) {
+      currentUser.role = newRole;
+      localStorage.setItem("sggo_user", JSON.stringify(currentUser));
+      updateAuthUI();
+    }
+  } catch (e) {
+    alert("Lỗi kết nối máy chủ");
+  }
+}
+
+async function handleDeleteUser(userId, username) {
+  if (!confirm(`Cảnh báo: Bạn có chắc muốn xóa vĩnh viễn tài khoản @${username}? Thao tác này không thể hoàn tác.`)) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/users/${userId}`, {
+      method: "DELETE"
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      alert("Lỗi: " + (data.detail || "Không thể xóa tài khoản"));
+      return;
+    }
+    alert(data.message || "Đã xóa tài khoản thành công!");
+    loadAdminUsers();
+  } catch (e) {
+    alert("Lỗi kết nối máy chủ");
+  }
+}
+
 async function loadAdminDashboard() {
   if (!currentUser || currentUser.role !== "admin") {
     alert("Chỉ Quản trị viên (Admin) mới có quyền truy cập khu vực này!");
@@ -1419,10 +1642,10 @@ async function loadAdminDashboard() {
   try {
     const statsRes = await fetch(`${API_BASE}/admin/stats`);
     const stats = await statsRes.json();
-    document.getElementById("statTotalPlaces").innerText = stats.total_places;
-    document.getElementById("statVerifiedPlaces").innerText = stats.verified_places;
-    document.getElementById("statTotalUsers").innerText = stats.total_users;
-    document.getElementById("statTotalFavorites").innerText = stats.total_favorites;
+    if (document.getElementById("statTotalPlaces")) document.getElementById("statTotalPlaces").innerText = stats.total_places;
+    if (document.getElementById("statVerifiedPlaces")) document.getElementById("statVerifiedPlaces").innerText = stats.verified_places;
+    if (document.getElementById("statTotalUsers")) document.getElementById("statTotalUsers").innerText = stats.total_users;
+    if (document.getElementById("statTotalFavorites")) document.getElementById("statTotalFavorites").innerText = stats.total_favorites;
   } catch (e) {}
 
   try {
@@ -1431,6 +1654,8 @@ async function loadAdminDashboard() {
     renderAdminPlacesTable(allPlacesCache);
     populateQuickEditSelect(allPlacesCache);
   } catch (e) {}
+
+  loadAdminUsers();
 }
 
 function populateQuickEditSelect(places) {
@@ -1484,7 +1709,7 @@ function renderAdminPlacesTable(places) {
           <div class="text-[11px] text-slate-400 truncate" title="${p.address}">${p.address}</div>
         </td>
         <td class="p-3 whitespace-nowrap">
-          <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isEat ? 'bg-orange-50 text-[#FF5733]' : 'bg-sky-50 text-sky-600'}">
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isEat ? 'bg-rose-50 text-[#E11D48]' : 'bg-teal-50 text-teal-700'}">
             ${isEat ? '🍜 Ăn uống' : '📸 Đi chơi'}
           </span>
         </td>
@@ -1567,7 +1792,7 @@ async function handleExtractGmaps() {
     document.getElementById("formName").value = p.name || "";
     document.getElementById("formCategory").value = p.category || "an_uong";
     document.getElementById("formAddress").value = p.address || "";
-    document.getElementById("formDistrict").value = p.district || "Quận 5";
+    document.getElementById("formDistrict").value = p.district || "TP.HCM";
     document.getElementById("formOpenTime").value = p.open_time || "08:00";
     document.getElementById("formCloseTime").value = p.close_time || "22:30";
     document.getElementById("formMinPrice").value = p.min_price || 30000;
@@ -1622,7 +1847,7 @@ function updateImagePreview(url) {
 
 function openAddPlaceModal() {
   document.getElementById("placeFormTitle").innerText = "➕ Thêm Địa Điểm Mới Vào CSDL";
-  document.getElementById("placeFormSubtitle").innerText = "Nhập dữ liệu địa điểm tại Quận 5 vào CSDL SQLite";
+  document.getElementById("placeFormSubtitle").innerText = "Nhập dữ liệu địa điểm tại Sài Gòn vào CSDL SQLite";
   document.getElementById("btnSubmitPlaceForm").innerText = "➕ Lưu Địa Điểm Mới Vào SQLite";
   document.getElementById("gmapsExtractorBox").classList.remove("hidden");
   document.getElementById("gmapsExtractInput").value = "";
@@ -1630,7 +1855,7 @@ function openAddPlaceModal() {
   document.getElementById("formPlaceId").value = "";
   document.getElementById("formName").value = "";
   document.getElementById("formCategory").value = "an_uong";
-  document.getElementById("formDistrict").value = "Quận 5";
+  document.getElementById("formDistrict").value = "TP.HCM";
   document.getElementById("formAddress").value = "";
   document.getElementById("formLat").value = "10.7550";
   document.getElementById("formLon").value = "106.6650";
@@ -1682,7 +1907,7 @@ function openEditPlaceModal(p) {
   document.getElementById("formPlaceId").value = p.id;
   document.getElementById("formName").value = p.name || "";
   document.getElementById("formCategory").value = p.category || "an_uong";
-  document.getElementById("formDistrict").value = p.district || "Quận 5";
+  document.getElementById("formDistrict").value = p.district || "TP.HCM";
   document.getElementById("formAddress").value = p.address || "";
   document.getElementById("formLat").value = (p.lat !== undefined && p.lat !== null) ? p.lat : 10.7550;
   document.getElementById("formLon").value = (p.lon !== undefined && p.lon !== null) ? p.lon : 106.6650;
@@ -1723,7 +1948,7 @@ async function handleSavePlace(e) {
     name: document.getElementById("formName").value.trim(),
     category: document.getElementById("formCategory").value,
     address: document.getElementById("formAddress").value.trim(),
-    district: document.getElementById("formDistrict").value.trim() || "Quận 5",
+    district: document.getElementById("formDistrict").value.trim() || "TP.HCM",
     lat: parseFloat(document.getElementById("formLat")?.value || 10.7550),
     lon: parseFloat(document.getElementById("formLon")?.value || 106.6650),
     reviews_count: parseInt(document.getElementById("formReviewsCount")?.value || 100),
@@ -1863,7 +2088,7 @@ function openPlaceDetailById(id) {
   // 1. Phân loại & Huy hiệu Admin Pick
   const isEat = p.category === "an_uong";
   const catLabel = document.getElementById("detailCategoryLabel");
-  if (catLabel) catLabel.innerText = isEat ? "Ẩm thực Quận 5" : "Vui chơi & Di tích";
+  if (catLabel) catLabel.innerText = isEat ? "Ẩm thực Sài Gòn" : "Vui chơi & Di tích";
 
   const adminBadge = document.getElementById("detailAdminChoiceBadge");
   if (adminBadge) {
@@ -1884,7 +2109,7 @@ function openPlaceDetailById(id) {
         <img src="${p.image_url}" alt="${p.name}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\\'w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400 font-bold text-xs gap-1.5\\'><i class=\\'fa-solid fa-camera text-2xl text-slate-300\\'></i> Chưa có ảnh thực tế</div>'" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
         <div class="absolute bottom-3 left-4 right-4 flex justify-between items-center text-white text-xs font-bold drop-shadow">
-          <span>#${p.id} • ${p.district || 'Quận 5'}</span>
+          <span>#${p.id} • ${p.district || 'TP.HCM'}</span>
           <span class="bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-md text-[10px]"><i class="fa-solid fa-camera mr-1"></i> Ảnh thực tế</span>
         </div>
       `;
@@ -1982,15 +2207,23 @@ function openPlaceDetailById(id) {
     });
   }
 
-  // 9. Bình luận khen & lưu ý
+  // 9. Bình luận khen & lưu ý thực tế
   const bestRev = document.getElementById("detailBestReview");
   if (bestRev) {
-    bestRev.innerText = p.best_review ? `"${p.best_review}"` : "Chưa có nhận xét 5 sao tiêu biểu";
+    if (p.best_review && p.best_review.trim()) {
+      bestRev.innerText = p.best_review;
+    } else {
+      bestRev.innerHTML = `<span class="text-slate-400 font-normal italic">Chưa có đánh giá 5 sao nào được ghi nhận trên Google Maps.</span>`;
+    }
   }
 
   const worstRev = document.getElementById("detailWorstReview");
   if (worstRev) {
-    worstRev.innerText = p.worst_review ? `"${p.worst_review}"` : "Chưa có lưu ý đặc biệt, quán phục vụ bình thường";
+    if (p.worst_review && p.worst_review.trim()) {
+      worstRev.innerText = p.worst_review;
+    } else {
+      worstRev.innerHTML = `<span class="text-slate-400 font-normal italic">Chưa có phản ánh hoặc góp ý tiêu cực nào trên Google Maps.</span>`;
+    }
   }
 
   // 10. Bản đồ tương tác Leaflet (Không bị Google Maps chặn)
@@ -2008,7 +2241,7 @@ function openPlaceDetailById(id) {
 
       const pinIcon = L.divIcon({
         className: "custom-leaflet-marker",
-        html: `<div style="background-color: #FF5733; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 2.5px solid white;"><i class="fa-solid fa-location-dot"></i></div>`,
+        html: `<div style="background-color: #E11D48; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 2.5px solid white;"><i class="fa-solid fa-location-dot"></i></div>`,
         iconSize: [32, 32],
         iconAnchor: [16, 32],
         popupAnchor: [0, -32]

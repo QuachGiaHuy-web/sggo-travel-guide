@@ -27,7 +27,7 @@ from backend.database import (
     init_db, authenticate_user, register_user,
     get_all_places, get_place_by_id, add_place, update_place, delete_place,
     toggle_favorite, get_user_favorites, generate_sample_csv, import_csv_data,
-    get_connection
+    get_connection, get_all_users, update_user_role, delete_user
 )
 
 # Tự động đọc file .env
@@ -83,6 +83,9 @@ class QuickRecommendRequest(BaseModel):
     price_level: Optional[str] = "all"   # 'under_50k', '50k_100k', '100k_250k', 'above_250k', 'custom', 'all'
     custom_budget: Optional[int] = None
     offset: Optional[int] = 0
+
+class UserRoleUpdate(BaseModel):
+    role: str
 
 class ExtractGmapsRequest(BaseModel):
     url_or_query: str
@@ -778,10 +781,10 @@ def extract_gmaps_info(req: ExtractGmapsRequest):
     min_price = 45000 if category == "an_uong" else 0
     max_price = 95000 if category == "an_uong" else 30000
     rating = 4.5
-    reviews_count = 850
+    reviews_count = 150
     peak_hours = "18:30 - 20:30" if category == "an_uong" else "09:00 - 11:00"
-    best_review = f"Quán có chất lượng món ăn và phong cách phục vụ rất tốt tại Quận 5. Hương vị đậm đà chuẩn vị Chợ Lớn."
-    worst_review = f"Giờ cao điểm tối khá đông khách, không gian hơi náo nhiệt và thời gian chờ món khoảng 15-20 phút."
+    best_review = ""
+    worst_review = ""
     tags = "nhom_ban,di_1_minh,hen_ho"
 
     # Kiểm tra trước trong CSDL xem có khớp với quán nào sẵn có không (Tối ưu phản hồi < 5ms)
@@ -837,8 +840,8 @@ def extract_gmaps_info(req: ExtractGmapsRequest):
                 f"rating (float từ 4.0 đến 4.8), "
                 f"reviews_count (số nguyên lượng đánh giá), "
                 f"peak_hours (chuỗi giờ cao điểm thật), "
-                f"best_review (1 câu ngắn khen ngợi chi tiết món đặc trưng hoặc kiến trúc), "
-                f"worst_review (1 câu ngắn góp ý thực tế về lượng khách, bãi xe hoặc giờ chờ), "
+                f"best_review (Trích dẫn 1 câu nhận xét 5 sao thực tế của khách hàng trên Google Maps, kèm tên người đánh giá nếu có), "
+                f"worst_review (Trích dẫn 1 câu nhận xét 1-3 sao hoặc góp ý thực tế của khách về giờ chờ/bãi xe/hương vị trên Google Maps, kèm tên người đánh giá nếu có), "
                 f"tags (chuỗi phân cách dấu phẩy: di_1_minh, hen_ho, nhom_ban, gia_dinh)."
                 f"Chỉ trả về duy nhất khối JSON."
             )
@@ -887,7 +890,7 @@ def extract_gmaps_info(req: ExtractGmapsRequest):
             "peak_hours": peak_hours,
             "best_review": best_review,
             "worst_review": worst_review,
-            "image_url": extracted_image or "https://mia.vn/media/uploads/blog-du-lich/sui-cao-thien-nhien-mon-an-1736219349.jpg",
+            "image_url": extracted_image if (extracted_image and str(extracted_image).strip()) else None,
             "tags": tags,
             "is_verified": 1
         }
@@ -919,6 +922,24 @@ def get_admin_stats():
         "total_users": total_users,
         "total_favorites": total_favorites
     }
+
+@app.get("/api/admin/users")
+def admin_get_users():
+    return get_all_users()
+
+@app.put("/api/admin/users/{user_id}/role")
+def admin_update_user_role(user_id: int, req: UserRoleUpdate):
+    ok, msg = update_user_role(user_id, req.role)
+    if not ok:
+        raise HTTPException(status_code=400, detail=msg)
+    return {"status": "ok", "message": msg}
+
+@app.delete("/api/admin/users/{user_id}")
+def admin_delete_user(user_id: int):
+    ok, msg = delete_user(user_id)
+    if not ok:
+        raise HTTPException(status_code=400, detail=msg)
+    return {"status": "ok", "message": msg}
 
 # ==============================================================================
 # PHỤC VỤ GIAO DIỆN FRONTEND TĨNH (STATIC MOUNT)

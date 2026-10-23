@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 import sqlite3
 import os
+import sys
+
+# Ensure backend directory is in sys.path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "sggo.db")
 
@@ -17,15 +21,13 @@ def check():
     print(f"[OK] Database Status: {p_count} places, {u_count} users loaded.")
     conn.close()
 
-if __name__ == "__main__":
-    check()
-
 def test_fallback():
-    from backend.main import generate_heuristic_itinerary, get_all_places
-    places = get_all_places()
-    itin = generate_heuristic_itinerary({"free_time": "14:00 - 18:00"}, places)
-    assert len(itin["schedule"]) == 3
+    from backend.main import generate_itinerary, ItineraryRequest
+    req = ItineraryRequest(start_location="280 An Dương Vương, Quận 5", free_time="14:00 - 18:00")
+    itin = generate_itinerary(req)
+    assert len(itin["steps"]) == 3
     print("[PASS] Fallback itinerary generation verified with 3 stops.")
 
 if __name__ == "__main__":
+    check()
     test_fallback()

@@ -1,5 +1,6 @@
 [
   {
+    "id": 144,
     "name": "Sủi Cảo Thiên Thiên",
     "category": "an_uong",
     "address": "197 Hà Tôn Quyền, Phường 4, Quận 5",
@@ -13,13 +14,16 @@
     "rating": 4.5,
     "reviews_count": 3850,
     "peak_hours": "18:30 - 21:00",
-    "best_review": "Sủi cảo tôm thịt tươi ngon trứ danh phố Hà Tôn Quyền. Nhân tôm nguyên con giòn sần sật, nước lèo ngọt thanh từ xương và mực khô, sủi cảo chiên giòn rụm chấm sốt xí muội cực phẩm.",
-    "worst_review": "Giờ cao điểm tối quán cực kỳ đông, bàn ghế kê sát nhau trong hẻm nên hơi chật chội và phải chờ lấy món khoảng 15-20 phút.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "nhom_ban,di_1_minh,gia_dinh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 1
   },
   {
+    "id": 145,
     "name": "Hủ Tiếu Cả Cần",
     "category": "an_uong",
     "address": "110 Hùng Vương, Phường 9, Quận 5",
@@ -33,13 +37,16 @@
     "rating": 4.3,
     "reviews_count": 2100,
     "peak_hours": "07:30 - 09:00 & 19:00 - 20:30",
-    "best_review": "Hủ tiếu sườn non khô sốt tương gia truyền độc nhất vô nhị hơn nửa thế kỷ. Sườn mềm róc xương, bánh bao xá xíu trứng muối vỏ mềm xốp nhân đậm đà ngon xuất sắc.",
-    "worst_review": "Giá thành từ 85k - 120k/tô là khá cao so với mặt bằng bình dân, nước dùng nấu theo khẩu vị người Hoa Nam Bộ nên hơi ngọt.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "gia_dinh,di_1_minh,hen_ho",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 146,
     "name": "Chè Hà Ký",
     "category": "an_uong",
     "address": "138 Châu Văn Liêm, Phường 11, Quận 5",
@@ -53,13 +60,16 @@
     "rating": 4.4,
     "reviews_count": 1820,
     "peak_hours": "20:00 - 21:30",
-    "best_review": "Quán chè Tàu gia truyền chuẩn vị Chợ Lớn. Chè mè đen sánh mịn thơm bùi, chè hột gà trà thơm nức không tanh, quy linh cao thảo mộc thanh mát giải nhiệt.",
-    "worst_review": "Không gian quán hơi nhỏ hẹp, bàn ghế ít nên buổi tối khách đông thường phải đứng chờ bàn hoặc mua mang về.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "nhom_ban,hen_ho,di_1_minh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 147,
     "name": "Quán Chè Nhà Đèn (Chè Cột Điện)",
     "category": "an_uong",
     "address": "476 Trần Hưng Đạo, Phường 14, Quận 5",
@@ -73,13 +83,16 @@
     "rating": 4.5,
     "reviews_count": 2400,
     "peak_hours": "20:00 - 22:00",
-    "best_review": "Quán chè người Hoa hơn 80 năm tuổi nằm nép mình bên trạm biến điện cũ. Món chè củ năng trứng cút, đu đủ tiềm và sâm bổ lượng thanh ngọt, đậm đà ký ức Sài Gòn xưa.",
-    "worst_review": "Quán ngồi ghế nhựa vỉa hè đường lớn nên thỉnh thoảng khói bụi xe cộ, chỗ để xe hạn chế.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "nhom_ban,di_1_minh,hen_ho",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 1
   },
   {
+    "id": 148,
     "name": "Nhà Hàng Dimsum Ái Huê",
     "category": "an_uong",
     "address": "412 Trần Hưng Đạo, Phường 11, Quận 5",
@@ -93,13 +106,16 @@
     "rating": 4.6,
     "reviews_count": 3250,
     "peak_hours": "11:30 - 13:00 & 18:30 - 20:30",
-    "best_review": "Nhà hàng ẩm thực Quảng Đông truyền thống bậc nhất khu Chợ Lớn. Há cảo tôm tươi vỏ trong veo, bánh bao kim sa thơm ngậy, vịt quay Bắc Kinh da giòn rụm phục vụ chuẩn chỉ.",
-    "worst_review": "Cuối tuần khách đặt tiệc gia đình và họp mặt rất đông nên sảnh lớn khá ồn ào, cần đặt bàn trước để có chỗ đẹp.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "gia_dinh,hen_ho,nhom_ban",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 149,
     "name": "Cơm Gà Đông Nguyên",
     "category": "an_uong",
     "address": "242 Nguyễn Trãi, Phường 8, Quận 5",
@@ -113,13 +129,16 @@
     "rating": 4.4,
     "reviews_count": 2600,
     "peak_hours": "11:30 - 13:00 & 18:00 - 19:30",
-    "best_review": "Cơm gà xối mỡ và gà luộc da giòn thịt thơm ngọt chắc. Cơm chiên tơi vàng ruộm, canh tiềm thuốc bắc thanh nhiệt ăn kèm nước tương gừng pha chế độc quyền.",
-    "worst_review": "Giờ cơm trưa rất đông nhân viên công sở, chỗ để xe trước quán có hạn và canh tiềm có giá hơi cao.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "gia_dinh,nhom_ban,di_1_minh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 150,
     "name": "Trà Sữa Phượng Hoàng Chợ Lớn",
     "category": "an_uong",
     "address": "317B Triệu Quang Phục, Phường 10, Quận 5",
@@ -133,13 +152,16 @@
     "rating": 4.7,
     "reviews_count": 3500,
     "peak_hours": "19:00 - 21:00",
-    "best_review": "Huyền thoại trà sữa Chợ Lớn gắn bó với học sinh sinh viên. Hồng trà sữa thơm béo đậm đà vị trà, trân châu hoàng kim dẻo mềm nấu đường đen, giá chỉ từ 20k ly lớn.",
-    "worst_review": "Quán chỉ bán mang đi (takeaway) không có chỗ ngồi lại. Buổi tối shipper và các bạn trẻ xếp hàng rất dài.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "nhom_ban,di_1_minh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 151,
     "name": "Lẩu Cá Dân Ích",
     "category": "an_uong",
     "address": "99 Châu Văn Liêm, Phường 14, Quận 5",
@@ -153,13 +175,16 @@
     "rating": 4.4,
     "reviews_count": 2300,
     "peak_hours": "18:00 - 20:30",
-    "best_review": "Nồi lẩu cù lao ống khói đốt than hồng độc đáo truyền thống người Hoa. Nước lẩu ngọt thanh chua nhẹ, cá bông lau tươi rói, chả cá dai giòn và da heo chiên ngấm vị đậm đà.",
-    "worst_review": "Lẩu đốt than nên không gian trong nhà hơi nóng bức, giá nồi lẩu từ 300k nên phù hợp đi nhóm từ 3 người trở lên.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "nhom_ban,gia_dinh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 152,
     "name": "Dimsum Tiến Phát (Điểm Tâm Tiến Phát)",
     "category": "an_uong",
     "address": "18 Ký Hòa, Phường 11, Quận 5",
@@ -173,13 +198,16 @@
     "rating": 4.5,
     "reviews_count": 3100,
     "peak_hours": "07:00 - 09:30",
-    "best_review": "Quán điểm tâm sáng chuẩn phong vị Hong Kong nức tiếng Chợ Lớn. Bánh cuốn tôm tươi mướt mịn, bánh xếp Triều Châu nhân hẹ đậm đà, trà nóng miễn phí thơm ngát.",
-    "worst_review": "Quán chỉ bán buổi sáng đến trưa là nghỉ. Tầm 8h sáng khách chen chúc nhau đứng đợi bàn, nhân viên quá bận rộn nên phục vụ chưa được niềm nở.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "gia_dinh,hen_ho,di_1_minh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 1
   },
   {
+    "id": 153,
     "name": "Cà Phê Ba Lù (Chợ Phùng Hưng)",
     "category": "an_uong",
     "address": "192 Phùng Hưng, Phường 14, Quận 5",
@@ -193,13 +221,16 @@
     "rating": 4.6,
     "reviews_count": 1450,
     "peak_hours": "06:30 - 08:30",
-    "best_review": "Cà phê vợt rang bơ thủ công bằng chảo củi hơn 70 năm tuổi. Ly bạc xỉu nóng béo thơm ngậy nồng nàn, cảm nhận nhịp sống chợ sớm Chợ Lớn chân thực và mộc mạc nhất.",
-    "worst_review": "Quán nằm lọt thỏm ngay trong lòng chợ truyền thống ẩm ướt, chỗ ngồi chỉ là vài chiếc ghế nhựa con sát vách, không có điều hòa sống ảo.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "di_1_minh,hen_ho",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 154,
     "name": "Baoz Dimsum - Nguyễn Tri Phương",
     "category": "an_uong",
     "address": "88 Nguyễn Tri Phương, Phường 7, Quận 5",
@@ -213,13 +244,16 @@
     "rating": 4.5,
     "reviews_count": 5100,
     "peak_hours": "12:00 - 13:30 & 19:00 - 21:00",
-    "best_review": "Menu hơn 100 món dimsum và ẩm thực Hồng Kông hiện đại. Chân gà hấp tàu xì, bánh bao xá xíu nướng và mì kéo sợi tươi ngon miệng, máy lạnh mát rượi, phục vụ chuyên nghiệp.",
-    "worst_review": "Vào giờ cao điểm tối luôn phải lấy số thứ tự chờ đợi từ 20 đến 30 phút, giá món cộng thêm thuế phí dịch vụ nên hóa đơn thanh toán khá cao.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "gia_dinh,nhom_ban,hen_ho",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 155,
     "name": "Hủ Tiếu Mì Sa Tế Quảng Ký",
     "category": "an_uong",
     "address": "117 Triệu Quang Phục, Phường 11, Quận 5",
@@ -233,13 +267,16 @@
     "rating": 4.5,
     "reviews_count": 1050,
     "peak_hours": "18:00 - 19:30",
-    "best_review": "Món hủ tiếu sa tế nai và bò viên trứ danh người Tiều hơn 60 năm. Nước dùng sền sệt thơm nức mùi đậu phộng rang giã nhuyễn, mè và sả ớt cay nồng đậm đà khó quên.",
-    "worst_review": "Món ăn có vị béo ngậy và cay nồng đặc trưng, ai không quen ăn cay hoặc sợ béo ngậy của đậu phộng sẽ thấy khó ăn và mau no.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "di_1_minh,nhom_ban",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 156,
     "name": "Mì Kéo Kungfu Khải Ký",
     "category": "an_uong",
     "address": "118 Hà Tôn Quyền, Phường 4, Quận 5",
@@ -253,13 +290,16 @@
     "rating": 4.4,
     "reviews_count": 1300,
     "peak_hours": "18:30 - 20:30",
-    "best_review": "Vừa được ăn mì vừa được xem nghệ nhân biểu diễn quăng quật kéo sợi mì tươi điêu luyện ngay trước quầy. Sợi mì dai mềm tự nhiên, sườn kho và vịt tiềm mềm thơm béo ngậy.",
-    "worst_review": "Không gian quán ngoài trời vỉa hè hơi khói bụi, chỗ gửi xe chật chội và phục vụ vào lúc đông khách phải giục nhiều lần mới có đũa muỗng.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "nhom_ban,di_1_minh,hen_ho",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 157,
     "name": "Bánh Bao Thọ Phát (Trụ sở chính)",
     "category": "an_uong",
     "address": "78 Nguyễn Tri Phương, Phường 7, Quận 5",
@@ -273,13 +313,16 @@
     "rating": 4.3,
     "reviews_count": 2100,
     "peak_hours": "07:00 - 08:30 & 17:00 - 18:30",
-    "best_review": "Trụ sở gốc bánh bao nóng hổi ra lò liên tục. Bánh bao 8 trứng cút xá xíu khổng lồ nhân đầy ắp, há cảo xíu mại hấp tại chỗ thơm ngào ngạt, giá thành rất rẻ hợp ăn nhanh.",
-    "worst_review": "Quán chủ yếu bán mang về nên khách dừng xe dưới lòng đường mua rất đông dễ gây ùn tắc giao thông, nhân viên đóng gói theo dây chuyền hơi vội vã.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "di_1_minh,nhom_ban",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 158,
     "name": "Cháo Tiều Cô Út",
     "category": "an_uong",
     "address": "51/33 Cao Đạt, Phường 1, Quận 5",
@@ -293,13 +336,16 @@
     "rating": 4.4,
     "reviews_count": 1420,
     "peak_hours": "18:00 - 19:30",
-    "best_review": "Tô cháo Tiều gia truyền nấu trong từng thố nhỏ riêng biệt. Hạt gạo nở hoa sánh dẻo, cật heo, bao tử, gan tươi giòn sần sật không hề hôi tanh, rắc nhiều tiêu hành thơm cay nồng ấm bụng.",
-    "worst_review": "Quán nằm sâu trong hẻm Cao Đạt ngoằn ngoèo khó tìm, giá một tô thập cẩm 85k là khá cao so với mặt bằng hẻm.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "gia_dinh,di_1_minh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 159,
     "name": "Mì Vịt Tiềm Hải Ký",
     "category": "an_uong",
     "address": "357 Nguyễn Trãi, Phường 7, Quận 5",
@@ -313,13 +359,16 @@
     "rating": 4.4,
     "reviews_count": 1950,
     "peak_hours": "18:30 - 20:30",
-    "best_review": "Đùi vịt góc tư khổng lồ chiên giòn da rồi tiềm mềm rục trong nước thuốc Bắc ngọt thanh thảo mộc. Sợi mì trứng vàng tươi dai sần sật ăn cùng đu đủ chua chống ngấy tuyệt hảo.",
-    "worst_review": "Giá trên 130k cho một tô mì vịt tiềm là khá cao, nước dùng vị thảo mộc hơi đậm nên ai không quen mùi thuốc bắc sẽ thấy khó ăn.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "gia_dinh,hen_ho",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 160,
     "name": "Phá Lấu Bò Cô Thảo",
     "category": "an_uong",
     "address": "243 Nguyễn Trãi, Phường 8, Quận 5",
@@ -333,13 +382,16 @@
     "rating": 4.5,
     "reviews_count": 2250,
     "peak_hours": "16:30 - 18:30",
-    "best_review": "Chén phá lấu nước cốt dừa béo ngậy màu vàng cam bắt mắt. Lòng bò, lá xách, tổ ong làm sạch kỹ giòn rụm không tanh, chấm nước mắm tắc chua ngọt cay nồng ăn kèm bánh mì giòn tan.",
-    "worst_review": "Chỗ ngồi vỉa hè hơi chật chội, nước dùng phá lấu nấu nước cốt dừa khá béo nên ăn nhiều sẽ thấy hơi ngấy nếu không uống kèm trà đá.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "nhom_ban,di_1_minh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 161,
     "name": "Quán Lẩu Dê Bàu Sen",
     "category": "an_uong",
     "address": "132 Lê Hồng Phong, Phường 3, Quận 5",
@@ -353,13 +405,16 @@
     "rating": 4.3,
     "reviews_count": 1780,
     "peak_hours": "19:00 - 21:00",
-    "best_review": "Quán lẩu dê lâu đời tại ngã tư Bàu Sen. Thịt dê tươi mềm ướp gia vị đậm đà không hôi, nước lẩu thuốc bắc thơm lừng ngấm vị tía tô, chấm chao sa tế béo cay cực kỳ cuốn.",
-    "worst_review": "Quán phục vụ ăn nhậu buổi tối nên không khí rất ồn ào và có mùi khói thuốc lá, không thích hợp cho người thích yên tĩnh.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "nhom_ban,gia_dinh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 162,
     "name": "Nước Mía Sầu Riêng Chợ Lớn",
     "category": "an_uong",
     "address": "248 Bùi Hữu Nghĩa, Phường 2, Quận 5",
@@ -373,13 +428,16 @@
     "rating": 4.6,
     "reviews_count": 1550,
     "peak_hours": "19:30 - 21:30",
-    "best_review": "Nước mía tươi ép cùng múi sầu riêng tươi béo ngậy thơm nức mũi. Vị ngọt thanh của mía hòa quyện vị thơm bùi đậm đà của sầu riêng tạo nên thức uống giải nhiệt độc lạ của Sài Gòn.",
-    "worst_review": "Ai không quen mùi sầu riêng sẽ thấy khá nồng, thức uống ngọt đậm nên ai kiêng ngọt nên dặn quán cho nhiều đá.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "di_1_minh,nhom_ban",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 163,
     "name": "Cơm Chiên Da Gà Triều Quang Phục",
     "category": "an_uong",
     "address": "148 Triệu Quang Phục, Phường 11, Quận 5",
@@ -393,13 +451,16 @@
     "rating": 4.4,
     "reviews_count": 1250,
     "peak_hours": "18:00 - 20:00",
-    "best_review": "Đĩa cơm chiên xối mỡ nóng hổi ăn kèm phần da gà chiên nước mắm giòn rụm béo thơm không thể cưỡng lại. Canh rong biển thanh mát, giá thành cực kỳ sinh viên chỉ từ 35k.",
-    "worst_review": "Món ăn chiên xào nhiều dầu mỡ nên dễ ngấy, quán ngồi bàn nhựa vỉa hè hơi tối và có khói bếp chiên phà ra ngoài.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "nhom_ban,di_1_minh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 164,
     "name": "Hào Uyển Dimsum Gia Truyền",
     "category": "an_uong",
     "address": "45 Nguyễn Trãi, Phường 2, Quận 5",
@@ -413,13 +474,16 @@
     "rating": 4.4,
     "reviews_count": 1100,
     "peak_hours": "11:30 - 13:00 & 19:00 - 20:30",
-    "best_review": "Quán dimsum ấm cúng mức giá phải chăng hơn các nhà hàng tiệc lớn. Xíu mại tôm thịt ú nụ, bánh hẹ chiên giòn vỏ thơm ngậy, sốt tương giấm pha rất vừa miệng.",
-    "worst_review": "Không gian quán hơi nhỏ và máy hút mùi chưa tốt nên ngồi ăn thỉnh thoảng bị bám mùi dầu mỡ chiên xào.",
+    "best_review": "fsdfsfsdsdfsfsdfdsfsdfsdfdsfs fsdfdsfsddddddddddddddddddddd ddddddddddddddddddddddddddddd",
+    "worst_review": "fsdfsfsdsdfsfsdfdsfsdfsdfdsfs fsdfdsfsddddddddddddddddddddd ddddddddddddddddddddddddddddd",
     "image_url": null,
     "tags": "hen_ho,gia_dinh,nhom_ban",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 165,
     "name": "Dimsum Tân Sanh Hoạt",
     "category": "an_uong",
     "address": "322 Nguyễn Trãi, Phường 8, Quận 5",
@@ -433,13 +497,16 @@
     "rating": 4.5,
     "reviews_count": 1650,
     "peak_hours": "07:30 - 09:30 & 18:30 - 20:30",
-    "best_review": "Tiệm điểm tâm người Hoa lâu đời có tiếng Chợ Lớn. Bánh xếp Triều Châu nhân hẹ thơm nức, bánh bao kim sa chảy tràn béo ngậy, trà cúc La Hán quả ngọt thanh dịu mát.",
-    "worst_review": "Quán mang phong cách truyền thống bình dân nên cơ sở vật chất hơi cũ, chỗ để xe trước cửa khá hẹp.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "gia_dinh,hen_ho,di_1_minh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 166,
     "name": "Chùa Bà Thiên Hậu (Tuệ Thành Hội Quán)",
     "category": "di_choi",
     "address": "710 Nguyễn Trãi, Phường 11, Quận 5",
@@ -453,13 +520,16 @@
     "rating": 4.7,
     "reviews_count": 8900,
     "peak_hours": "09:00 - 11:00 & Ngày Rằm",
-    "best_review": "Di tích kiến trúc nghệ thuật quốc gia gần 300 năm tuổi của người Quảng Đông. Phù điêu gốm Cây Mai trên mái chùa tinh xảo bậc nhất, các vòng nhang xoắn ốc treo trên trần nhà tạo nên vẻ đẹp linh thiêng huyền ảo.",
-    "worst_review": "Khói nhang trong chùa rất dày đặc cay mắt vào ngày mùng một và ngày rằm, các bãi giữ xe tự phát xung quanh chùa hay chèo kéo lấy giá cao.",
-    "image_url": null,
+    "best_review": null,
+    "worst_review": null,
+    "image_url": "images/verified/thien_hau.jpg",
     "tags": "gia_dinh,di_1_minh,hen_ho",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 1
   },
   {
+    "id": 167,
     "name": "Phố Lồng Đèn Lương Nhữ Học",
     "category": "di_choi",
     "address": "Đường Lương Nhữ Học, Phường 11, Quận 5",
@@ -473,13 +543,16 @@
     "rating": 4.6,
     "reviews_count": 4500,
     "peak_hours": "19:00 - 21:30 (Mùa Trung Thu và cuối tuần)",
-    "best_review": "Con phố rực rỡ sắc màu cổ tích với hàng ngàn lồng đèn giấy kiếng truyền thống. Không khí lễ hội Chợ Lớn náo nhiệt, chụp hình áo dài hay trang phục truyền thống cực kỳ lung linh.",
-    "worst_review": "Dịp Trung Thu đông nghẹt thở, người chen chúc nhau từng bước chân, một số chủ tiệm khó tính nếu chỉ đứng chụp ảnh mà không mua lồng đèn ủng hộ.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "hen_ho,nhom_ban,gia_dinh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 168,
     "name": "The Yum Cha Tearoom",
     "category": "di_choi",
     "address": "120 Triệu Quang Phục, Phường 11, Quận 5",
@@ -493,13 +566,16 @@
     "rating": 4.6,
     "reviews_count": 820,
     "peak_hours": "15:00 - 17:30",
-    "best_review": "Không gian hoài niệm Hồng Kông thập niên 80 với nhạc cassette êm dịu, đèn vàng ấm cúng. Trà Thiết Quan Âm thơm mát hậu ngọt, bánh nướng thanh vị, rất hợp hẹn hò lãng mạn.",
-    "worst_review": "Quán trong hẻm nhỏ không có chỗ đậu ô tô, không gian chú trọng sự yên tĩnh nên nhóm bạn thích cười đùa nói to sẽ không phù hợp ở đây.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "hen_ho,di_1_minh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 169,
     "name": "Hội Quán Nghĩa An (Miếu Quan Đế)",
     "category": "di_choi",
     "address": "678 Nguyễn Trãi, Phường 11, Quận 5",
@@ -513,13 +589,16 @@
     "rating": 4.6,
     "reviews_count": 3600,
     "peak_hours": "14:00 - 16:30",
-    "best_review": "Đặc trưng kiến trúc Triều Châu với nghệ thuật chạm khắc gỗ sơn son thếp vàng đỉnh cao. Tượng Quan Công uy nghiêm và tượng ngựa Xích Thố oai vệ trong khuôn viên trang nhã.",
-    "worst_review": "Bãi gửi xe đối diện chùa đôi khi tự ý lấy giá gửi xe cao hơn quy định, cần chú ý hỏi giá gửi xe trước khi vào.",
-    "image_url": null,
+    "best_review": null,
+    "worst_review": null,
+    "image_url": "images/verified/nghia_an.jpg",
     "tags": "gia_dinh,di_1_minh,nhom_ban",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 170,
     "name": "Nhà Thờ Cha Tam (Thánh Phanxicô Xaviê)",
     "category": "di_choi",
     "address": "25 Học Lạc, Phường 14, Quận 5",
@@ -533,13 +612,16 @@
     "rating": 4.6,
     "reviews_count": 2300,
     "peak_hours": "16:00 - 17:30",
-    "best_review": "Kiến trúc Gothic châu Âu kết hợp độc đáo mái ngói âm dương kiểu Trung Hoa. Cảnh quan thoáng đãng rợp bóng cây cổ thụ, lưu giữ nhiều chứng tích lịch sử của Sài Gòn.",
-    "worst_review": "Khi nhà thờ đang diễn ra thánh lễ giáo dân thì khách tham quan chỉ được đứng ngoài sân, không được tự ý bước vào chụp ảnh làm ồn.",
-    "image_url": null,
+    "best_review": null,
+    "worst_review": null,
+    "image_url": "images/verified/nha_tho_cha_tam.jpg",
     "tags": "gia_dinh,di_1_minh,hen_ho",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 171,
     "name": "Chợ Lớn Dược Liệu (Phố Đông Y Lãn Ông)",
     "category": "di_choi",
     "address": "Đường Hải Thượng Lãn Ông, Phường 10, Quận 5",
@@ -553,13 +635,16 @@
     "rating": 4.5,
     "reviews_count": 1950,
     "peak_hours": "09:00 - 11:00",
-    "best_review": "Con phố thơm nức mùi thảo mộc thuốc Bắc đặc trưng. Kiến trúc nhà cổ kính thời Pháp thuộc pha nét Hoa tạo nên những góc chụp ảnh film cực kỳ nghệ thuật.",
-    "worst_review": "Xe ba gác và xe máy bốc dỡ hàng thuốc bắc buổi sáng chạy khá nhanh, vỉa hè phơi thuốc nên người đi bộ phải đi xuống lòng đường.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "di_1_minh,nhom_ban,hen_ho",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 172,
     "name": "Chợ Bình Tây (Chợ Lớn Mới)",
     "category": "di_choi",
     "address": "57A Tháp Mười, Phường 2, Quận 5",
@@ -573,13 +658,16 @@
     "rating": 4.5,
     "reviews_count": 6800,
     "peak_hours": "08:00 - 10:30",
-    "best_review": "Ngôi chợ đầu mối biểu tượng của Chợ Lớn với tháp đồng hồ mái ngói Bát Quái tuyệt đẹp do thương gia Quách Đàm xây dựng. Tầng trệt và xung quanh bán đầy bánh mứt, đồ ăn truyền thống.",
-    "worst_review": "Đây là chợ bán sỉ nên nếu mua lẻ một vài món tiểu thương sẽ không mấy mặn mà, bên trong chợ vào buổi trưa khá hầm nóng bí gió.",
-    "image_url": null,
+    "best_review": null,
+    "worst_review": null,
+    "image_url": "images/verified/cho_binh_tay.jpg",
     "tags": "gia_dinh,nhom_ban,di_1_minh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 1
   },
   {
+    "id": 173,
     "name": "Hội Quán Ôn Lăng (Chùa Ông Lào)",
     "category": "di_choi",
     "address": "12 Lão Tử, Phường 11, Quận 5",
@@ -593,13 +681,16 @@
     "rating": 4.6,
     "reviews_count": 1650,
     "peak_hours": "10:00 - 11:30",
-    "best_review": "Ngôi chùa Phúc Kiến cổ kính với tục đánh kẻ tiểu nhân độc đáo vào dịp Tết Nguyên Tiêu. Mái ngói rồng uốn lượn tuyệt mỹ, không gian yên bình thanh tịnh giữa phố thị.",
-    "worst_review": "Khu vực sân trước hẹp, đường Lão Tử là đường một chiều nhỏ nên đi xe ô tô vào đây rất dễ kẹt đường.",
-    "image_url": null,
+    "best_review": null,
+    "worst_review": null,
+    "image_url": "images/verified/on_lang.jpg",
     "tags": "gia_dinh,di_1_minh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 174,
     "name": "Nhà Thờ Chợ Quán (Thánh Tâm Chúa Giêsu)",
     "category": "di_choi",
     "address": "120 Trần Bình Trọng, Phường 2, Quận 5",
@@ -613,13 +704,16 @@
     "rating": 4.8,
     "reviews_count": 1600,
     "peak_hours": "16:30 - 18:00 & Chiều Chúa Nhật",
-    "best_review": "Nhà thờ có giáo xứ cổ nhất Sài Gòn với lịch sử gần 300 năm. Tháp chuông cao vút mang kiến trúc Gothic cổ điển uy nghiêm giữa rặng cây cổ thụ xanh mát, góc chụp hình trang nhã.",
-    "worst_review": "Vào giờ tan lễ chiều Chúa Nhật đường Trần Bình Trọng trước cổng nhà thờ thường xuyên bị kẹt xe kéo dài.",
-    "image_url": null,
+    "best_review": null,
+    "worst_review": null,
+    "image_url": "images/verified/cho_quan.jpg",
     "tags": "gia_dinh,di_1_minh,hen_ho",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 175,
     "name": "Chùa Vạn Phật (Ngôi Chùa 10.000 Tượng Phật)",
     "category": "di_choi",
     "address": "66/14 Nghĩa Thục, Phường 5, Quận 5",
@@ -633,13 +727,16 @@
     "rating": 4.7,
     "reviews_count": 2250,
     "peak_hours": "09:30 - 11:30",
-    "best_review": "Đại điện trên tầng 4 ốp hàng vạn pho tượng Phật mạ vàng lộng lẫy uy nghiêm vô cùng choáng ngợp. Bức tượng Phật Tỳ Lô Giá Na ngự trên đài sen lớn tạo cảm giác an lạc thanh tịnh tuyệt đối.",
-    "worst_review": "Chùa nằm trong con hẻm nhỏ Nghĩa Thục chỉ vừa 2 xe máy tránh nhau, không có chỗ để xe ô tô và bậc thang lên tầng 4 khá dốc với người già.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "gia_dinh,di_1_minh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 176,
     "name": "Hội Quán Hà Chương (Chùa Bà Hạc)",
     "category": "di_choi",
     "address": "802 Nguyễn Trãi, Phường 14, Quận 5",
@@ -653,13 +750,16 @@
     "rating": 4.6,
     "reviews_count": 1450,
     "peak_hours": "09:00 - 11:00",
-    "best_review": "Đỉnh cao nghệ thuật điêu khắc đá của người Hẹ (Hà Châu). 4 cột đá nguyên khối tạc rồng cuộn sống động độc nhất Việt Nam, mái ngói cong vút như thuyền lướt sóng tuyệt tác.",
-    "worst_review": "Khuôn viên chùa hơi hẹp và nằm sát mặt tiền đường Nguyễn Trãi nên tiếng còi xe cộ bên ngoài vọng vào khá nhiều.",
-    "image_url": null,
+    "best_review": null,
+    "worst_review": null,
+    "image_url": "images/verified/ha_chuong.jpg",
     "tags": "gia_dinh,di_1_minh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 177,
     "name": "Hội Quán Tam Sơn (Chùa Tam Sơn)",
     "category": "di_choi",
     "address": "118 Triệu Quang Phục, Phường 11, Quận 5",
@@ -673,13 +773,16 @@
     "rating": 4.6,
     "reviews_count": 1050,
     "peak_hours": "08:30 - 10:30",
-    "best_review": "Ngôi miếu cổ linh thiêng của cộng đồng người Phúc Kiến, nổi tiếng cầu con cái và gia đạo bình an. Không gian đượm màu thời gian với sắc đỏ son truyền thống và mùi hương trầm thanh tịnh.",
-    "worst_review": "Khu vực sân miếu không có bãi giữ xe riêng, phải gửi xe ở các quầy buôn bán lân cận với giá 10k.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "gia_dinh,di_1_minh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 178,
     "name": "Hùng Vương Plaza (Trung Tâm Thương Mại)",
     "category": "di_choi",
     "address": "126 Hùng Vương, Phường 12, Quận 5",
@@ -693,13 +796,16 @@
     "rating": 4.5,
     "reviews_count": 5800,
     "peak_hours": "18:30 - 21:00",
-    "best_review": "Khu phức hợp mua sắm, ẩm thực và rạp chiếu phim CGV hiện đại bậc nhất Quận 5. Nhiều thương hiệu thời trang, khu vui chơi mát rượi, rất thích hợp hẹn hò hoặc dạo chơi gia đình ngày nắng nóng hay mưa gió.",
-    "worst_review": "Hầm gửi xe vào dịp cuối tuần rất đông, lối dốc xuống hầm hẹp và thời gian chờ thang máy lên tầng chiếu phim khá lâu.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "hen_ho,nhom_ban,gia_dinh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 179,
     "name": "Chợ An Đông (Thiên Đường Thời Trang & Ăn Vặt)",
     "category": "di_choi",
     "address": "34-36 An Dương Vương, Phường 9, Quận 5",
@@ -713,13 +819,16 @@
     "rating": 4.3,
     "reviews_count": 4100,
     "peak_hours": "10:00 - 14:00",
-    "best_review": "Chợ sỉ quần áo và thời trang lớn nhất nhì thành phố. Tầng hầm là khu ẩm thực đặc sắc với bún mắm, nem nướng, gỏi cuốn chuẩn vị Nam Bộ giá bình dân.",
-    "worst_review": "Tiểu thương ở đây nói thách giá quần áo khá cao đối với khách mua lẻ, lối đi giữa các quầy hàng chất vải vóc hơi chật chội và nóng bức.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "nhom_ban,gia_dinh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 180,
     "name": "Công Viên Văn Lang (Nhạc Nước & Phố Đi Bộ Quận 5)",
     "category": "di_choi",
     "address": "Giao lộ Hùng Vương - An Dương Vương, Phường 9, Quận 5",
@@ -733,13 +842,16 @@
     "rating": 4.4,
     "reviews_count": 3100,
     "peak_hours": "19:00 - 21:00 (Trình diễn nhạc nước)",
-    "best_review": "Quảng trường công viên rộng rãi lát đá sạch sẽ với hệ thống nhạc nước ánh sáng lung linh vào tối cuối tuần. Nơi tụ họp dạo mát, trượt ván, uống trà sữa vỉa hè thoáng đãng của giới trẻ Quận 5.",
-    "worst_review": "Buổi tối cuối tuần rất đông đúc, tiếng loa kẹo kéo thỉnh thoảng hơi ồn và cần chú ý trông coi xe máy và ví tiền cẩn thận.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "nhom_ban,hen_ho,gia_dinh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 181,
     "name": "Miếu Nhị Phủ (Chùa Ông Bổn)",
     "category": "di_choi",
     "address": "264 Hải Thượng Lãn Ông, Phường 14, Quận 5",
@@ -753,13 +865,16 @@
     "rating": 4.6,
     "reviews_count": 1850,
     "peak_hours": "09:00 - 11:00",
-    "best_review": "Di tích lịch sử - văn hóa quốc gia của cộng đồng người Hoa gốc Phúc Châu và Tuyền Châu. Nổi bật với kiến trúc mái ngói hình thuyền cong vút, tượng rồng gốm ghép sành sứ tinh xảo và không gian trầm mặc tĩnh lặng.",
-    "worst_review": "Đoạn đường Hải Thượng Lãn Ông phía trước miếu xe tải nhỏ chở hàng hóa đông nên lúc sang đường cần chú ý cẩn thận.",
-    "image_url": null,
+    "best_review": null,
+    "worst_review": null,
+    "image_url": "images/verified/nhi_phu.jpg",
     "tags": "gia_dinh,di_1_minh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 182,
     "name": "Nhà Sách Hải Triều Chợ Lớn",
     "category": "di_choi",
     "address": "175 Nguyễn Trãi, Phường 2, Quận 5",
@@ -773,13 +888,16 @@
     "rating": 4.5,
     "reviews_count": 820,
     "peak_hours": "18:00 - 20:00",
-    "best_review": "Nhà sách văn hóa lâu đời lưu giữ nhiều đầu sách chữ Hán, văn học và từ điển tiếng Hoa hiếm có. Không gian yên tĩnh, nhân viên am hiểu sách tư vấn nhiệt tình cho người yêu văn hóa.",
-    "worst_review": "Nhà sách thiết kế theo phong cách truyền thống hơi cũ, không có khu vực cà phê đọc sách hiện đại như các chuỗi nhà sách mới.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "di_1_minh,gia_dinh",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   },
   {
+    "id": 183,
     "name": "Quán Trà Cổ Thập Toàn Đại Bổ",
     "category": "di_choi",
     "address": "42 Triệu Quang Phục, Phường 10, Quận 5",
@@ -793,10 +911,12 @@
     "rating": 4.5,
     "reviews_count": 940,
     "peak_hours": "14:30 - 17:00",
-    "best_review": "Quán trà thảo mộc đông y cổ điển giữa lòng phố cổ Chợ Lớn. Trà hoa cúc kỷ tử, trà La Hán quả thanh nhiệt pha trong ấm đất nung, nghe nhạc không lời thư thái tuyệt đối.",
-    "worst_review": "Vị trà thảo dược có vị hơi nhẫn đắng tự nhiên nên ai thích uống trà ngọt đậm phong cách trà sữa hiện đại sẽ thấy khó uống.",
+    "best_review": null,
+    "worst_review": null,
     "image_url": null,
     "tags": "di_1_minh,hen_ho",
-    "is_verified_review": 1
+    "is_verified": 1,
+    "is_verified_review": 0,
+    "is_admin_choice": 0
   }
 ]

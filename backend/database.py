@@ -102,6 +102,17 @@ def init_db():
         FOREIGN KEY (place_id) REFERENCES places(id)
     );
 
+    
+    CREATE TABLE IF NOT EXISTS import_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        filename TEXT,
+        total_rows INTEGER,
+        success_count INTEGER,
+        error_count INTEGER,
+        errors_json TEXT,
+        imported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
     CREATE TABLE IF NOT EXISTS favorites (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
@@ -599,3 +610,13 @@ def save_itinerary(user_id: int, title: str, target_budget: int, free_time: int,
     conn.commit()
     conn.close()
     return itin_id
+
+
+def get_import_logs(limit: int = 20):
+    """Truy vấn lịch sử các lần import CSV (Section 5 ERD Import Log)"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM import_logs ORDER BY id DESC LIMIT ?", (limit,))
+    rows = [dict(r) for r in cursor.fetchall()]
+    conn.close()
+    return rows

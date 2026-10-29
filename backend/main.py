@@ -974,3 +974,10 @@ def get_companion_tier_score(user_companion: str, place_tags: list) -> float:
         if u in t or t in u:
             return 12.0
     return 0.0
+
+
+@app.get("/api/admin/import-logs")
+def admin_get_import_logs(current_user: dict = Depends(get_current_admin_user)):
+    """API lấy lịch sử các lần import CSV kèm báo cáo lỗi"""
+    from backend.database import get_import_logs
+    return {"status": "success", "logs": get_import_logs()}

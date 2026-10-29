@@ -75,6 +75,9 @@ def init_db():
     if "is_admin_choice" not in existing_cols:
         cursor.execute("ALTER TABLE places ADD COLUMN is_admin_choice INTEGER DEFAULT 0")
         conn.commit()
+    if "is_hidden" not in existing_cols:
+        cursor.execute("ALTER TABLE places ADD COLUMN is_hidden INTEGER DEFAULT 0")
+        conn.commit()
 
     # 3. BẢNG FAVORITES (Địa điểm yêu thích của người dùng)
     cursor.execute("""
@@ -546,3 +549,13 @@ def import_csv_data(csv_text):
     conn.close()
     sync_db_to_json()
     return count
+
+def toggle_hide_place(place_id: int, is_hidden: int = 1) -> bool:
+    """Toggle ẩn/hiện một địa điểm (G6-FR01 & G6-FR08)"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE places SET is_hidden = ? WHERE id = ?", (is_hidden, place_id))
+    success = cursor.rowcount > 0
+    conn.commit()
+    conn.close()
+    return success

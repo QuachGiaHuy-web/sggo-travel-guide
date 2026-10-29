@@ -270,7 +270,7 @@ def get_all_places(category=None, context_tag=None, min_budget=None, max_budget=
     conn = get_connection()
     cursor = conn.cursor()
 
-    query = "SELECT * FROM places WHERE 1=1"
+    query = "SELECT * FROM places WHERE is_hidden = 0"
     params = []
 
     if only_verified:

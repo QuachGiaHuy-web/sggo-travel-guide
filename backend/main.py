@@ -1002,3 +1002,21 @@ def parse_free_time_minutes(time_str: str) -> int:
     if "buổi" in s: return 240
     if "cả ngày" in s: return 480
     return 180
+
+def check_itinerary_constraints(route_places: list, max_budget, free_time_mins: int):
+    total_est_budget = sum((p.get("min_price", 0) + p.get("max_price", 0)) // 2 for p in route_places)
+    min_required_time = len(route_places) * 60
+    violations = []
+    if free_time_mins < min_required_time:
+        violations.append({
+            "code": "TIME_TOO_SHORT",
+            "message": f"Thời gian rảnh ({free_time_mins}p) quá ngắn cho {len(route_places)} địa điểm",
+            "suggested_min_time": min_required_time
+        })
+    if max_budget is not None and max_budget > 0 and total_est_budget > max_budget:
+        violations.append({
+            "code": "BUDGET_TOO_LOW",
+            "message": f"Ngân sách ({max_budget:,}đ) thấp hơn chi phí dự kiến ({total_est_budget:,}đ)",
+            "suggested_min_budget": total_est_budget
+        })
+    return violations, total_est_budget, min_required_time

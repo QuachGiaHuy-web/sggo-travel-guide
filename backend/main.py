@@ -981,3 +981,24 @@ def admin_get_import_logs(current_user: dict = Depends(get_current_admin_user)):
     """API lấy lịch sử các lần import CSV kèm báo cáo lỗi"""
     from backend.database import get_import_logs
     return {"status": "success", "logs": get_import_logs()}
+
+def parse_target_budget_amount(budget_str: str):
+    if not budget_str or budget_str == "tuy_duyen":
+        return None
+    b = str(budget_str).strip().lower()
+    if b == "0" or "miễn phí" in b:
+        return 0
+    if b.isdigit():
+        return int(b)
+    if "50k-100k" in b: return 100000
+    if "100k-200k" in b: return 200000
+    if "200k-500k" in b: return 500000
+    if ">500k" in b: return 1000000
+    return None
+
+def parse_free_time_minutes(time_str: str) -> int:
+    s = str(time_str).lower()
+    if "2-3" in s: return 150
+    if "buổi" in s: return 240
+    if "cả ngày" in s: return 480
+    return 180

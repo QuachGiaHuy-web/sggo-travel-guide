@@ -2318,3 +2318,27 @@ function closeSideMap() {
 function copySideMapAddress() {
   copyDetailAddress();
 }
+
+// Tab 3 Budget handling
+let aiBudgetLevel = "100k_250k";
+let aiTargetBudget = 250000;
+
+function selectAIBudget(level, amount) {
+    aiBudgetLevel = level;
+    aiTargetBudget = amount;
+    ['free', 'under_100k', '100k_250k', 'above_250k'].forEach(l => {
+        const btn = document.getElementById(`aibudget_${l}`);
+        if (btn) {
+            if (l === level) {
+                btn.className = "px-2 py-2 rounded-xl border-2 border-[#E11D48] bg-rose-50 text-[#E11D48] text-xs font-black transition cursor-pointer";
+            } else {
+                btn.className = "px-2 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold hover:border-[#E11D48] transition cursor-pointer";
+            }
+        }
+    });
+}
+
+function handleAutoRelaxConstraint() {
+    selectAIBudget("above_250k", 500000);
+    requestAIItinerary(false);
+}

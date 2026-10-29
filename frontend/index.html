@@ -530,6 +530,20 @@
             </div>
           </div>
 
+                    <!-- 5. Ngân sách dự kiến / người (G6-FR03 & G6-FR05) -->
+          <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/90">
+            <div class="flex items-center justify-between mb-2">
+              <label class="block text-xs font-bold text-slate-800">5. Ngân sách dự kiến / người (G6-FR03)</label>
+              <span id="aiBudgetValueDisplay" class="text-[11px] font-bold text-[#E11D48]">100k - 250k / người</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mb-2">
+              <button type="button" onclick="selectAIBudget('free', 0)" id="aibudget_free" class="px-2 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold hover:border-[#E11D48] transition cursor-pointer">0đ (Miễn phí)</button>
+              <button type="button" onclick="selectAIBudget('under_100k', 100000)" id="aibudget_under_100k" class="px-2 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold hover:border-[#E11D48] transition cursor-pointer">&lt; 100k</button>
+              <button type="button" onclick="selectAIBudget('100k_250k', 250000)" id="aibudget_100k_250k" class="px-2 py-2 rounded-xl border-2 border-[#E11D48] bg-rose-50 text-[#E11D48] text-xs font-black transition cursor-pointer">100k - 250k</button>
+              <button type="button" onclick="selectAIBudget('above_250k', 500000)" id="aibudget_above_250k" class="px-2 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold hover:border-[#E11D48] transition cursor-pointer">&gt; 250k</button>
+            </div>
+          </div>
+
           <!-- 5. Ghi chú & Yêu cầu riêng (Take note) -->
           <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/90">
             <div class="flex items-center justify-between mb-1.5">

@@ -284,6 +284,54 @@ function switchMode(mode) {
   if (mode === "admin" && isAdmin) loadAdminDashboard();
 }
 
+function parsePlaceTiers(tagsStr) {
+  if (!tagsStr || typeof tagsStr !== "string") return { tier1: [], tier2: [] };
+  const str = tagsStr.trim();
+  if (str.includes("tier1:") || str.includes("tier2:")) {
+    const parts = str.split("|");
+    let t1 = [], t2 = [];
+    parts.forEach(p => {
+      const trimmed = p.trim();
+      if (trimmed.startsWith("tier1:")) {
+        t1 = trimmed.replace("tier1:", "").split(",").map(x => x.trim()).filter(Boolean);
+      } else if (trimmed.startsWith("tier2:")) {
+        t2 = trimmed.replace("tier2:", "").split(",").map(x => x.trim()).filter(Boolean);
+      }
+    });
+    return { tier1: t1, tier2: t2 };
+  } else {
+    const all = str.split(",").map(x => x.trim()).filter(Boolean);
+    return { tier1: all.slice(0, 2), tier2: all.slice(2) };
+  }
+}
+
+function onAdminTagChange(tag, tier) {
+  const chkT1 = document.getElementById(`chk_t1_${tag}`);
+  const chkT2 = document.getElementById(`chk_t2_${tag}`);
+  if (tier === 1 && chkT1 && chkT1.checked) {
+    if (chkT2) chkT2.checked = false;
+  } else if (tier === 2 && chkT2 && chkT2.checked) {
+    if (chkT1) chkT1.checked = false;
+  }
+  syncAdminTagsInput();
+}
+
+function syncAdminTagsInput() {
+  const allTags = ['di_1_minh', 'hen_ho', 'nhom_ban', 'gia_dinh'];
+  const t1 = [];
+  const t2 = [];
+  allTags.forEach(t => {
+    const c1 = document.getElementById(`chk_t1_${t}`);
+    const c2 = document.getElementById(`chk_t2_${t}`);
+    if (c1 && c1.checked) t1.push(t);
+    if (c2 && c2.checked) t2.push(t);
+  });
+  const hiddenInp = document.getElementById("formTags");
+  if (hiddenInp) {
+    hiddenInp.value = `tier1:${t1.join(",")}|tier2:${t2.join(",")}`;
+  }
+}
+
 function isPlaceCurrentlyOpen(openStr, closeStr) {
   if (!openStr || !closeStr) return true;
   const now = new Date();
@@ -340,6 +388,7 @@ function updateSelectionSummaryUI() {
 
   // 3. Cập nhật Ngân sách
   const bdgMap = {
+    "free": "3. Miễn phí (0đ)",
     "under_50k": "3. < 50k",
     "50k_100k": "3. 50k - 100k",
     "100k_250k": "3. 100k - 250k",
@@ -408,10 +457,16 @@ function restartFlow() {
 }
 
 async function showFinishResults(offset = 0) {
-  currentFlowOffset = offset;
+  currentFlowOffset = Math.max(0, offset);
   document.querySelectorAll(".step-card").forEach(el => el.classList.add("hidden"));
   const finishContainer = document.getElementById("stepFinish");
   finishContainer.classList.remove("hidden");
+
+  // Cập nhật trạng thái nút Quay lại 3 quán trước
+  const btnPrev = document.getElementById("btnPrevFlow");
+  if (btnPrev) {
+    btnPrev.disabled = (currentFlowOffset <= 0);
+  }
 
   // Cập nhật badge tóm tắt tiêu chí khoa học
   const criteriaBadge = document.getElementById("finishCriteriaBadge");
@@ -438,15 +493,36 @@ async function showFinishResults(offset = 0) {
       body: JSON.stringify(payload)
     });
     const places = await res.json();
+
+    const fallbackEl = document.getElementById("flowFallbackNotice");
+    if (fallbackEl) {
+      const fallbackItem = places.find(p => p.free_fallback_notice);
+      if (fallbackItem && fallbackItem.free_fallback_notice) {
+        fallbackEl.innerHTML = `<i class="fa-solid fa-circle-info text-amber-600 mr-2 text-sm flex-shrink-0"></i><span>${fallbackItem.free_fallback_notice}</span>`;
+        fallbackEl.classList.remove("hidden");
+      } else {
+        fallbackEl.classList.add("hidden");
+      }
+    }
+
     renderFinishCards(places);
   } catch (e) {
     resultsBox.innerHTML = `<div class="p-4 bg-red-50 text-red-600 rounded-xl text-xs">Chưa thể kết nối CSDL Backend.</div>`;
   }
 }
 
+function prevFlowResults() {
+  if (currentFlowOffset >= 3) {
+    currentFlowOffset -= 3;
+    showFinishResults(currentFlowOffset);
+    document.getElementById("stepFinish")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
 function rotateFlowResults() {
   currentFlowOffset += 3;
   showFinishResults(currentFlowOffset);
+  document.getElementById("stepFinish")?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 // HÀM HIỂN THỊ ẢNH CHÂN THỰC: 1 LÀ ẢNH THẬT, 2 LÀ HIỂN THỊ "CHƯA CÓ ẢNH" (KHÔNG DÙNG ẢNH ẢO)
@@ -471,13 +547,26 @@ function renderPlaceImage(p, widthClass = "w-full", heightClass = "h-full", cust
 // ==============================================================================
 function buildRecommendCardHTML(p, idx) {
   const isEat = p.category === "an_uong";
+  const hasHours = Boolean(p.hours_display || (p.open_time && p.close_time));
   const isOpen = isPlaceCurrentlyOpen(p.open_time, p.close_time);
   const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + p.address)}`;
 
   const isFree = (p.min_price === 0 && p.max_price === 0);
-  const priceRangeFormatted = isFree
-    ? "Miễn phí vé vào cổng"
-    : `${p.min_price.toLocaleString()}đ – ${p.max_price.toLocaleString()}đ`;
+  const cleanPrice = p.price_display ? p.price_display.replace(/Khoảng\s*/gi, "").replace(/\(.*?\)/g, "").trim() : null;
+  const priceRangeFormatted = cleanPrice
+    ? cleanPrice
+    : (isFree
+      ? "Miễn phí vé vào cổng"
+      : `${p.min_price ? p.min_price.toLocaleString() + 'đ' : ''} – ${p.max_price ? p.max_price.toLocaleString() + 'đ' : ''}`);
+
+  // Làm sạch và định dạng Giờ cao điểm (Nhấn mạnh nổi bật đồng điệu với Mức giá)
+  const rawPeak = (p.peak_hours && p.peak_hours !== 'Chưa rõ') ? p.peak_hours : '';
+  const cleanPeakHours = rawPeak.replace(/\s*\([^\)]*đông[^\)]*\)/gi, '').trim();
+  const hasPeak = Boolean(cleanPeakHours && cleanPeakHours !== 'Chưa rõ');
+  const cleanPeakHoursText = hasPeak ? cleanPeakHours : 'Chưa rõ (quán chưa cập nhật)';
+  const peakHoursFontSize = !hasPeak 
+    ? 'text-xs font-semibold text-amber-800/80 italic' 
+    : (cleanPeakHours.length > 20 ? 'text-base sm:text-lg' : 'text-xl sm:text-2xl');
 
   // Khoảng cách: CHỈ HIỂN THỊ KHI NGƯỜI DÙNG CÓ BẬT ĐỊNH VỊ GPS
   let distanceHTML = "";
@@ -508,60 +597,56 @@ function buildRecommendCardHTML(p, idx) {
             <!-- Ảnh Quán Lớn + Badge Thứ Hạng + Trạng Thái Mở Cửa Nhấn Mạnh Ngay Trên Ảnh -->
             <div onclick="openPlaceDetailById(${p.id})" class="relative w-full h-52 sm:h-56 rounded-2xl overflow-hidden mb-3.5 border border-slate-200/90 shadow-xs cursor-pointer group">
               ${imageHtml}
-              <!-- Badge Thứ hạng -->
-              <span class="absolute top-3 left-3 text-xs font-black uppercase text-white bg-[#E11D48] px-3 py-1 rounded-xl shadow-md">
-                GỢI Ý #${idx + 1}
-              </span>
-              <!-- TRẠNG THÁI MỞ CỬA: CỰC KỲ NHẤN MẠNH TRÊN ẢNH -->
-              <div class="absolute top-3 right-3">
-                ${isOpen ? `
-                  <span class="bg-emerald-600/95 backdrop-blur-xs text-white text-[11px] font-black px-3 py-1 rounded-full shadow-md flex items-center gap-1.5 uppercase tracking-wide">
+              <!-- Container 2 Badge Tránh Đè Lẫn Nhau -->
+              <div class="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none">
+                <!-- Badge Thứ hạng -->
+                <span class="text-xs font-black uppercase text-white bg-[#E11D48] px-3 py-1 rounded-xl shadow-md shrink-0">
+                  GỢI Ý #${idx + 1}
+                </span>
+                <!-- TRẠNG THÁI MỞ CỬA: RÚT GỌN TINH TẾ, KHÔNG TRÀN LẤN -->
+                ${hasHours ? (isOpen ? `
+                  <span class="bg-emerald-600/95 backdrop-blur-xs text-white text-[11px] font-black px-2.5 py-1 rounded-full shadow-md flex items-center gap-1.5 uppercase tracking-wide shrink-0">
                     <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-                    <span>Đang mở cửa (${p.open_time} - ${p.close_time})</span>
+                    <span>Đang mở cửa</span>
                   </span>
                 ` : `
-                  <span class="bg-rose-600/95 backdrop-blur-xs text-white text-[11px] font-black px-3 py-1 rounded-full shadow-md flex items-center gap-1.5 uppercase tracking-wide">
+                  <span class="bg-rose-600/95 backdrop-blur-xs text-white text-[11px] font-black px-2.5 py-1 rounded-full shadow-md flex items-center gap-1.5 uppercase tracking-wide shrink-0">
                     <span class="w-2 h-2 rounded-full bg-white"></span>
-                    <span>Đã đóng cửa (${p.open_time} - ${p.close_time})</span>
+                    <span>Đã đóng cửa</span>
                   </span>
-                `}
+                `) : ''}
               </div>
             </div>
 
-            <!-- Thể loại & Tag đề cử -->
-            <div class="flex items-center gap-2 flex-wrap mb-2">
+            <!-- Thể loại & Quận & Tag đề cử (Gom thành 1 hàng ngang tinh tế) -->
+            <div class="flex items-center gap-2 flex-wrap mb-2.5">
               <span class="text-[11px] font-black uppercase text-[#E11D48] bg-[#FFE4E6] px-2.5 py-0.5 rounded-lg tracking-wider">
-                ${isEat ? 'Ẩm Thực Sài Gòn' : 'Điểm Đến Tham Quan'}
+                ${isEat ? 'Ẩm Thực Sài Gòn' : 'Điểm Đến & Vui Chơi'}
               </span>
+              ${p.district ? `
+                <span class="text-[11px] font-bold text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-lg flex items-center gap-1">
+                  <i class="fa-solid fa-location-dot text-[#E11D48] text-[10px]"></i>
+                  <span>${p.district}</span>
+                </span>
+              ` : ''}
+              ${distanceHTML}
               ${p.is_admin_choice === 1 ? '<span class="text-[10px] bg-amber-100 text-amber-900 font-extrabold px-2 py-0.5 rounded-md border border-amber-300 flex items-center gap-1"><i class="fa-solid fa-crown text-amber-600"></i> Quán Đề Cử</span>' : ''}
-              <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-md border border-emerald-200">
-                <i class="fa-solid fa-circle-check text-emerald-600"></i> Đã kiểm chứng
-              </span>
             </div>
 
             <!-- Tên quán (Headline lớn, đậm nét) -->
-            <h3 onclick="openPlaceDetailById(${p.id})" class="font-black text-slate-900 text-xl sm:text-2xl tracking-tight leading-snug mb-2.5 hover:text-[#E11D48] transition cursor-pointer" title="Bấm để xem chi tiết quán">
+            <h3 onclick="openPlaceDetailById(${p.id})" class="font-black text-slate-900 text-xl sm:text-2xl tracking-tight leading-snug mb-2 hover:text-[#E11D48] transition cursor-pointer" title="Bấm để xem chi tiết quán">
               ${p.name}
             </h3>
 
-            <!-- SỐ SAO: CỰC KỲ NHẤN MẠNH - VỊ TRÍ HỢP LÝ NGAY DƯỚI TÊN QUÁN -->
-            <div class="flex items-center gap-3 mb-3 flex-wrap">
-              <div class="rating-pill-prominent shadow-2xs">
+            <!-- SỐ SAO & ĐÁNH GIÁ (GỌN GÀNG, KHÔNG BAO GIỜ BỊ TRÀN HÀNG) -->
+            <div class="flex items-center gap-2.5 mb-4 flex-nowrap">
+              <div class="rating-pill-prominent shadow-2xs shrink-0">
                 <i class="fa-solid fa-star text-amber-500 text-sm"></i>
                 <span class="text-base font-black text-amber-950">${p.rating}</span>
                 <span class="text-xs text-amber-700 font-extrabold">/ 5.0</span>
               </div>
-              <div class="flex text-amber-400 text-xs gap-0.5">
-                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
-              </div>
-              <span class="text-xs font-bold text-slate-500">(${p.reviews_count || 100} đánh giá trên Google)</span>
+              <span class="text-xs font-bold text-slate-500 truncate">(${parseInt(p.reviews_count || 100).toLocaleString()} đánh giá)</span>
             </div>
-
-            <!-- Địa chỉ cụ thể & Khoảng cách (nếu có GPS) -->
-            <p class="text-xs text-slate-600 font-semibold flex items-start gap-1.5 leading-relaxed mb-4">
-              <i class="fa-solid fa-location-dot text-[#E11D48] text-xs mt-0.5 flex-shrink-0"></i>
-              <span class="flex-1">${p.address} ${distanceHTML}</span>
-            </p>
           </div>
 
           <!-- MỨC GIÁ: CỰC KỲ NHẤN MẠNH RIÊNG BIỆT Ở ĐÁY CỘT TRÁI -->
@@ -569,17 +654,13 @@ function buildRecommendCardHTML(p, idx) {
             <div class="flex items-center justify-between w-full mb-1">
               <span class="text-[11px] font-black uppercase text-slate-500 tracking-wider flex items-center gap-1.5 whitespace-nowrap">
                 <i class="fa-solid fa-wallet text-[#E11D48] text-xs flex-shrink-0"></i>
-                <span class="whitespace-nowrap">Mức giá chi tiêu</span>
-              </span>
-              <span class="text-[10px] font-extrabold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-md whitespace-nowrap">
-                ${isFree ? 'Tham quan tự do' : 'Chi phí dự kiến'}
+                <span class="whitespace-nowrap">Mức giá tham khảo</span>
               </span>
             </div>
             <div class="flex items-baseline gap-1.5 whitespace-nowrap">
               <span class="text-xl sm:text-2xl font-black text-emerald-800 tracking-tight whitespace-nowrap">
                 ${priceRangeFormatted}
               </span>
-              ${!isFree ? `<span class="text-xs font-bold text-slate-500 whitespace-nowrap">/ người</span>` : ''}
             </div>
           </div>
         </div>
@@ -587,15 +668,19 @@ function buildRecommendCardHTML(p, idx) {
         <!-- ==================== CỘT PHẢI (55% - EXPERIENCE, 2 REVIEWS & ACTIONS) ==================== -->
         <div class="md:col-span-7 flex flex-col justify-between pl-0 md:pl-6 md:border-l md:border-slate-200/90 pt-5 md:pt-0 border-t md:border-t-0 border-slate-200/90">
           <div>
-            <!-- Khung Giờ Cao Điểm Đông Khách -->
-            <div class="p-3.5 bg-amber-50/90 border border-amber-200/90 rounded-2xl mb-4 text-xs">
-              <div class="flex items-center gap-2 text-amber-900 font-black uppercase text-[11px] tracking-wider mb-1">
-                <i class="fa-solid fa-clock-rotate-left text-amber-600 text-sm"></i>
-                <span>Khung giờ cao điểm (Đông khách nhất):</span>
+            <!-- Giờ Cao Điểm: Nhấn mạnh nổi bật tương tự Mức giá -->
+            <div class="peak-hours-prominent mb-4">
+              <div class="flex items-center justify-between w-full mb-1">
+                <span class="text-[11px] font-black uppercase text-amber-800 tracking-wider flex items-center gap-1.5 whitespace-nowrap">
+                  <i class="fa-solid fa-clock-rotate-left text-amber-600 text-xs flex-shrink-0"></i>
+                  <span>Giờ cao điểm</span>
+                </span>
               </div>
-              <p class="font-extrabold text-amber-950 text-xs pl-6">
-                ${p.peak_hours || '18:00 – 20:30 (Khuyên bạn nên đến sớm để có chỗ ngồi tốt)'}
-              </p>
+              <div class="flex items-baseline gap-1.5">
+                <span class="${peakHoursFontSize} font-black text-amber-950 tracking-tight leading-tight">
+                  ${cleanPeakHoursText}
+                </span>
+              </div>
             </div>
 
             <!-- 2 KHỐI COMMENT KHEN & CHÊ: CỰC KỲ NHẤN MẠNH DẠNG REVIEW CARDS -->
@@ -607,7 +692,6 @@ function buildRecommendCardHTML(p, idx) {
                     <i class="fa-solid fa-thumbs-up text-emerald-600 text-sm"></i>
                     <span>Đánh giá khen ngợi (5 sao):</span>
                   </span>
-                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-black px-2 py-0.5 rounded-full">Thực tế</span>
                 </div>
                 <p class="font-medium italic text-emerald-950 text-[13px] leading-relaxed">
                   ${p.best_review ? `"${p.best_review}"` : '<span class="text-slate-400 not-italic">Chưa có nhận xét khen</span>'}
@@ -621,7 +705,6 @@ function buildRecommendCardHTML(p, idx) {
                     <i class="fa-solid fa-triangle-exclamation text-[#E11D48] text-sm"></i>
                     <span>Lưu ý trải nghiệm & Góp ý:</span>
                   </span>
-                  <span class="text-[10px] bg-rose-100 text-rose-800 font-black px-2 py-0.5 rounded-full">Ghi nhận</span>
                 </div>
                 <p class="font-medium italic text-slate-800 text-[13px] leading-relaxed">
                   ${p.worst_review ? `"${p.worst_review}"` : '<span class="text-slate-400 not-italic">Chưa có lưu ý đặc biệt</span>'}
@@ -632,30 +715,28 @@ function buildRecommendCardHTML(p, idx) {
 
           <!-- Hàng Nút Hành Động (Đáy cột phải) -->
           <div class="pt-4 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2.5">
-            <div class="flex items-center gap-2 flex-wrap">
-              <!-- Nút Tim -->
-              <button onclick="toggleFav(${p.id})" title="Lưu quán yêu thích" class="w-11 h-11 rounded-xl bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-[#E11D48] border border-slate-200 flex items-center justify-center transition cursor-pointer shadow-xs">
-                <i class="fa-regular fa-heart text-base"></i>
-              </button>
-              <!-- Nút Chi tiết -->
+            <!-- Cụm trái: Chi tiết quán -->
+            <div class="flex items-center gap-2">
               <button onclick="openPlaceDetailById(${p.id})" title="Xem đầy đủ thông tin" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs">
                 <i class="fa-solid fa-circle-info text-slate-600"></i>
                 <span>Chi tiết quán</span>
               </button>
+            </div>
+
+            <!-- Cụm phải: Nút Sửa quán (Admin) đặt ngay sát bên cạnh Nút Google Maps -->
+            <div class="flex items-center gap-2">
               ${(currentUser && currentUser.role === 'admin') ? `
-                <button onclick="openEditPlaceModalById(${p.id})" title="Sửa dữ liệu quán" class="px-3.5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs">
+                <button onclick="openEditPlaceModalById(${p.id})" title="Sửa dữ liệu quán" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-sm whitespace-nowrap">
                   <i class="fa-solid fa-pen-to-square"></i>
                   <span>Sửa quán</span>
                 </button>
               ` : ''}
+              <a href="${gmapsUrl}" target="_blank" title="Mở trang Google Maps chính thức của quán" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black transition flex items-center gap-2 shadow-sm whitespace-nowrap">
+                <i class="fa-brands fa-google text-sm"></i>
+                <span>Google Maps</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+              </a>
             </div>
-
-            <!-- Nút Google Maps Thực Tế (To nhất, nổi bật nhất) -->
-            <a href="${gmapsUrl}" target="_blank" title="Mở trang Google Maps chính thức của quán" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black transition flex items-center gap-2 shadow-sm whitespace-nowrap">
-              <i class="fa-brands fa-google text-sm"></i>
-              <span>Google Maps Thực Tế</span>
-              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-            </a>
           </div>
         </div>
 
@@ -675,7 +756,7 @@ function renderFinishCards(places) {
   }
 
   places.forEach((p, idx) => {
-    resultsBox.innerHTML += buildRecommendCardHTML(p, idx);
+    resultsBox.innerHTML += buildRecommendCardHTML(p, currentFlowOffset + idx);
   });
 }
 
@@ -955,20 +1036,85 @@ function renderItineraryMap(startCoords, steps) {
   }, 350);
 }
 
-async function requestAIItinerary() {
+// ==============================================================================
+// 4.1 QUẢN LÝ NGÂN SÁCH & RÀNG BUỘC TAB 3 (G6-FR03, G6-FR05, G6-FR06)
+// ==============================================================================
+
+let aiBudgetLevel = "100k_250k";
+let aiTargetBudget = 250000;
+let aiShuffleSeed = 0;
+
+function selectAIBudget(level, amount) {
+  aiBudgetLevel = level;
+  aiTargetBudget = amount;
+
+  ["free", "under_100k", "100k_250k", "above_250k"].forEach(l => {
+    const btn = document.getElementById(`aibudget_${l}`);
+    if (btn) {
+      if (l === level) {
+        btn.className = "companion-chip active py-2 px-3 rounded-xl border-2 border-[#E11D48] bg-rose-50 font-bold text-[#E11D48] shadow-xs transition text-center cursor-pointer";
+      } else {
+        btn.className = "companion-chip py-2 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-slate-300 transition text-center cursor-pointer";
+      }
+    }
+  });
+
+  const customInput = document.getElementById("aiCustomBudget");
+  if (customInput) customInput.value = "";
+
+  const displayEl = document.getElementById("aiBudgetValueDisplay");
+  if (displayEl) {
+    if (level === "free") displayEl.innerText = "0đ (Miễn phí hoàn toàn)";
+    else if (level === "under_100k") displayEl.innerText = "Dưới 100.000đ / người";
+    else if (level === "100k_250k") displayEl.innerText = "100.000đ – 250.000đ / người";
+    else if (level === "above_250k") displayEl.innerText = "Trên 250.000đ / người";
+  }
+}
+
+function onCustomAIBudgetInput() {
+  const customInput = document.getElementById("aiCustomBudget");
+  if (!customInput) return;
+  const val = parseInt(customInput.value.replace(/\D/g, ""), 10);
+  if (!isNaN(val) && val > 0) {
+    aiTargetBudget = val;
+    aiBudgetLevel = "custom";
+    ["free", "under_100k", "100k_250k", "above_250k"].forEach(l => {
+      const btn = document.getElementById(`aibudget_${l}`);
+      if (btn) {
+        btn.className = "companion-chip py-2 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-slate-300 transition text-center cursor-pointer";
+      }
+    });
+    const displayEl = document.getElementById("aiBudgetValueDisplay");
+    if (displayEl) displayEl.innerText = `${val.toLocaleString()}đ / người (Tự nhập)`;
+  }
+}
+
+async function requestAIItinerary(isShuffle = false) {
+  if (!isShuffle) {
+    aiShuffleSeed = 0;
+  }
   const btn = document.getElementById("btnSubmitAI");
   const resultArea = document.getElementById("aiResultArea");
+  const constraintAlert = document.getElementById("aiConstraintAlert");
   const container = document.getElementById("aiTimeline");
   const summary = document.getElementById("aiSummary");
-  const modelBadgeEl = document.getElementById("aiModelBadgeDisplay");
   const btnGmaps = document.getElementById("btnGmapsMultiRoute");
 
-  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Đang tính toán & kết nối lộ trình 3 trạm...`;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Đang tính toán & tối ưu lịch trình...`;
   btn.disabled = true;
+
+  const startLoc = document.getElementById("aiStartLoc")?.value.trim();
+  if (!startLoc && !userGPSCoords) {
+    alert("📍 Vui lòng nhập điểm xuất phát hoặc bấm 'Dùng GPS hiện tại'!");
+    document.getElementById("aiStartLoc")?.focus();
+    btn.innerHTML = `<i class="fa-solid fa-route"></i> <span>Tạo Lịch Trình Khám Phá</span>`;
+    btn.disabled = false;
+    return;
+  }
 
   const selectedModel = document.getElementById("aiModelSelect")?.value || "gemini-3.8-flash";
   const takeNoteEl = document.getElementById("aiTakeNote");
-  const takeNoteVal = takeNoteEl ? takeNoteEl.value.trim() : (document.getElementById("aiContext")?.value || "");
+  const takeNoteVal = takeNoteEl ? takeNoteEl.value.trim() : "";
 
   const payload = {
     start_location: document.getElementById("aiStartLoc").value,
@@ -979,7 +1125,10 @@ async function requestAIItinerary() {
     purpose: aiPurpose,
     takenote: takeNoteVal,
     context: takeNoteVal,
-    budget: "Vừa vặn thoải mái",
+    budget: aiBudgetLevel,
+    budget_level: aiBudgetLevel,
+    target_budget: aiTargetBudget,
+    shuffle_seed: aiShuffleSeed,
     ai_model: selectedModel
   };
 
@@ -992,13 +1141,60 @@ async function requestAIItinerary() {
     const result = await res.json();
     if (!res.ok) throw new Error(result.detail || "Không thể lập lộ trình");
 
-    resultArea.classList.remove("hidden");
-    summary.innerText = result.summary || "Lộ trình 3 trạm thuận đường tối ưu do hệ thống sắp xếp.";
-
-    if (modelBadgeEl) {
-      const displayModel = result.model_used || selectedModel;
-      modelBadgeEl.innerHTML = `<i class="fa-solid fa-bolt text-amber-500"></i> ${displayModel}`;
+    // XỬ LÝ VI PHẠM RÀNG BUỘC (BUSINESS RULE 3 & KIỂM THỬ BẮT BUỘC)
+    if (result.feasible === false) {
+      if (resultArea) resultArea.classList.add("hidden");
+      if (constraintAlert) {
+        constraintAlert.classList.remove("hidden");
+        document.getElementById("aiConstraintTitle").innerText = result.error_code === "TIME_TOO_SHORT" ? "Thời gian rảnh quá ngắn" : "Ngân sách không đủ cho lộ trình";
+        document.getElementById("aiConstraintMessage").innerText = result.message;
+        document.getElementById("aiConstraintSuggestionText").innerText = result.suggestion;
+        window._currentRelaxAction = {
+          time: result.recommended_time || "14:00 - 18:30",
+          budget: result.recommended_budget || 250000
+        };
+        constraintAlert.scrollIntoView({ behavior: "smooth" });
+      }
+      return;
     }
+
+    // NẾU THỎA MÃN RÀNG BUỘC
+    if (constraintAlert) constraintAlert.classList.add("hidden");
+    if (resultArea) resultArea.classList.remove("hidden");
+
+    // Cập nhật KPI thẻ ngân sách & thời gian (G6-FR05 MUST)
+    if (result.kpi) {
+      const kpi = result.kpi;
+      const budgetEl = document.getElementById("aiKpiBudget");
+      const budgetBadge = document.getElementById("aiKpiBudgetBadge");
+      if (budgetEl) budgetEl.innerText = `${kpi.total_min_cost.toLocaleString()}đ – ${kpi.total_max_cost.toLocaleString()}đ`;
+      if (budgetBadge) {
+        if (kpi.is_within_budget) {
+          budgetBadge.className = "inline-flex items-center gap-1 text-[10px] font-extrabold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md mt-1";
+          budgetBadge.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>Nằm trong ngân sách dự kiến</span>`;
+        } else {
+          budgetBadge.className = "inline-flex items-center gap-1 text-[10px] font-extrabold text-amber-700 bg-amber-100/80 px-2 py-0.5 rounded-md mt-1";
+          budgetBadge.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>Hơi vượt ngân sách</span>`;
+        }
+      }
+
+      const durEl = document.getElementById("aiKpiDuration");
+      const durBadge = document.getElementById("aiKpiDurationBadge");
+      const h = Math.floor(kpi.total_duration_minutes / 60);
+      const m = kpi.total_duration_minutes % 60;
+      if (durEl) durEl.innerText = `${h > 0 ? h + ' giờ ' : ''}${m} phút (~${kpi.total_duration_minutes} phút)`;
+      if (durBadge) {
+        if (kpi.is_within_time) {
+          durBadge.className = "inline-flex items-center gap-1 text-[10px] font-extrabold text-sky-700 bg-sky-100/80 px-2 py-0.5 rounded-md mt-1";
+          durBadge.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>Vừa vặn khung giờ rảnh</span>`;
+        } else {
+          durBadge.className = "inline-flex items-center gap-1 text-[10px] font-extrabold text-amber-700 bg-amber-100/80 px-2 py-0.5 rounded-md mt-1";
+          durBadge.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>Dài hơn giờ rảnh ban đầu</span>`;
+        }
+      }
+    }
+
+    summary.innerText = result.summary || "Lộ trình 3 trạm thuận đường tối ưu do hệ thống sắp xếp.";
 
     if (btnGmaps && result.gmaps_multi_url) {
       btnGmaps.href = result.gmaps_multi_url;
@@ -1058,9 +1254,29 @@ async function requestAIItinerary() {
   } catch (err) {
     alert("❌ Lỗi: " + err.message);
   } finally {
-    btn.innerHTML = `<i class="fa-solid fa-route mr-1.5"></i> <span>Tạo Lịch Trình Khám Phá</span>`;
+    btn.innerHTML = `<i class="fa-solid fa-route"></i> <span>Tạo Lịch Trình Khám Phá</span>`;
     btn.disabled = false;
   }
+}
+
+function shuffleAIItinerary() {
+  aiShuffleSeed++;
+  requestAIItinerary(true);
+}
+
+function handleAutoRelaxConstraint() {
+  if (window._currentRelaxAction) {
+    if (window._currentRelaxAction.time) {
+      document.getElementById("aiTime").value = window._currentRelaxAction.time;
+    }
+    if (window._currentRelaxAction.budget) {
+      selectAIBudget("100k_250k", window._currentRelaxAction.budget);
+    }
+  } else {
+    document.getElementById("aiTime").value = "14:00 - 18:30";
+    selectAIBudget("100k_250k", 250000);
+  }
+  requestAIItinerary(false);
 }
 
 // ==============================================================================
@@ -1268,12 +1484,49 @@ function clearExploreLocation() {
   filterAllPlaces();
 }
 
+// Hàm thông báo nhắc nhở khi chức năng yêu cầu vị trí GPS/điểm mốc
+function showLocationRequiredNotice(actionType) {
+  const isSort = (actionType === "sort");
+  const msg = isSort
+    ? "📍 Bạn chưa chọn vị trí!\n\nĐể sắp xếp các quán theo 'Khoảng cách: Gần nhất', bạn hãy bấm 'Dùng GPS hiện tại' hoặc bấm chọn một điểm mốc (Hồ Con Rùa, Chợ An Đông,...) ở khung định vị phía trên nhé!"
+    : "📍 Bạn chưa chọn vị trí!\n\nĐể lọc các quán trong bán kính mong muốn, bạn hãy bấm 'Dùng GPS hiện tại' hoặc nhập vị trí của bạn ở khung định vị phía trên nhé!";
+
+  alert(msg);
+
+  // Cuộn mượt và highlight khung định vị để người dùng bắt mắt ngay
+  const locInput = document.getElementById("exploreLocationInput");
+  const locCard = locInput ? locInput.closest(".bg-white") : null;
+  if (locCard) {
+    locCard.scrollIntoView({ behavior: "smooth", block: "center" });
+    locCard.classList.add("ring-4", "ring-[#E11D48]/40", "transition-all", "duration-500");
+    setTimeout(() => {
+      locCard.classList.remove("ring-4", "ring-[#E11D48]/40");
+    }, 2500);
+  }
+  if (locInput) {
+    locInput.focus();
+  }
+}
+
+// Xử lý khi người dùng đổi lựa chọn Sắp xếp
+function handleSortFilterChange() {
+  const sortSelect = document.getElementById("allSortFilter");
+  const sortVal = sortSelect?.value;
+  if (sortVal === "distance_asc" && !exploreUserCoords) {
+    showLocationRequiredNotice("sort");
+    sortSelect.value = "default";
+    return;
+  }
+  filterAllPlaces();
+}
+
 // 5. Khi người dùng thay đổi bộ lọc bán kính
 function onRadiusFilterChange() {
-  const radius = document.getElementById("allRadiusFilter")?.value || "all";
+  const radiusSelect = document.getElementById("allRadiusFilter");
+  const radius = radiusSelect?.value || "all";
   if (radius !== "all" && !exploreUserCoords) {
-    // Tự động dùng điểm mốc trung tâm Sài Gòn nếu chưa nhập vị trí
-    setExploreLocationPreset("280 An Dương Vương, TP.HCM (ĐH Sư Phạm)", 10.7601, 106.6823);
+    showLocationRequiredNotice("radius");
+    radiusSelect.value = "all";
     return;
   }
   filterAllPlaces();
@@ -1288,9 +1541,11 @@ function buildCatalogCardHTML(p) {
   const isOpen = isPlaceCurrentlyOpen(p.open_time, p.close_time);
   const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + p.address)}`;
 
-  const priceText = (p.min_price === 0 && p.max_price === 0)
-    ? "Miễn phí vé"
-    : `${p.min_price.toLocaleString()}đ – ${p.max_price.toLocaleString()}đ`;
+  const priceText = p.price_display
+    ? p.price_display
+    : ((p.min_price === 0 && p.max_price === 0)
+      ? "Miễn phí vé"
+      : `${p.min_price ? p.min_price.toLocaleString() + 'đ' : ''} – ${p.max_price ? p.max_price.toLocaleString() + 'đ' : ''}`);
 
   let distanceHTML = "";
   if (typeof p.distanceKm === "number" && !isNaN(p.distanceKm) && exploreUserCoords) {
@@ -1313,7 +1568,7 @@ function buildCatalogCardHTML(p) {
         ${imageHtml}
         <!-- Badge thể loại -->
         <span class="absolute top-2.5 left-2.5 text-[10px] font-black uppercase text-[#E11D48] bg-white/95 backdrop-blur-xs px-2.5 py-0.5 rounded-lg shadow-sm">
-          ${isEat ? 'Ẩm Thực' : 'Tham Quan'}
+          ${isEat ? 'Ẩm Thực' : 'Đi Chơi'}
         </span>
         <!-- Badge mở cửa -->
         <span class="absolute top-2.5 right-2.5 text-[10px] font-black uppercase ${isOpen ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'} px-2.5 py-0.5 rounded-lg shadow-sm">
@@ -1345,30 +1600,19 @@ function buildCatalogCardHTML(p) {
           </div>
 
           <!-- Mức giá & Giờ cao điểm -->
-          <div class="flex items-center justify-between text-[11px] font-bold py-1.5 px-2.5 bg-slate-50 rounded-xl mb-2.5 border border-slate-100">
+          <div class="flex items-center justify-between text-[11px] font-bold py-1.5 px-2.5 bg-slate-50 rounded-xl mb-2 border border-slate-100">
             <span class="text-slate-800 truncate mr-2">💰 ${priceText}</span>
-            <span class="text-amber-800 whitespace-nowrap">🕒 ${p.peak_hours ? p.peak_hours.split('(')[0].trim() : '18h - 20h'}</span>
+            <span class="text-amber-800 whitespace-nowrap">🕒 ${(p.peak_hours && p.peak_hours !== 'Chưa rõ') ? p.peak_hours.split('(')[0].trim() : 'Chưa rõ'}</span>
           </div>
 
-          <!-- 2 dòng nhận xét Khen & Lưu ý súc tích -->
-          <div class="space-y-1.5 text-[11px] mb-3">
-            <div class="bg-emerald-50/80 border border-emerald-200/80 px-2.5 py-1.5 rounded-xl text-emerald-950 flex items-start gap-1.5">
-              <span class="font-black text-emerald-800 whitespace-nowrap flex-shrink-0">Khen:</span>
-              <p class="italic line-clamp-1 ${p.best_review ? '' : 'text-slate-400 not-italic'}" title="${p.best_review || 'Chưa có nhận xét'}">${p.best_review ? `"${p.best_review}"` : 'Chưa có nhận xét'}</p>
-            </div>
-            <div class="bg-rose-50/80 border border-rose-200/80 px-2.5 py-1.5 rounded-xl text-rose-950 flex items-start gap-1.5">
-              <span class="font-black text-rose-800 whitespace-nowrap flex-shrink-0">Lưu ý:</span>
-              <p class="italic line-clamp-1 ${p.worst_review ? '' : 'text-slate-400 not-italic'}" title="${p.worst_review || 'Chưa có ghi nhận'}">${p.worst_review ? `"${p.worst_review}"` : 'Chưa có ghi nhận'}</p>
-            </div>
-          </div>
+
+
+
         </div>
 
         <!-- 3. Chân thẻ hành động -->
         <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between gap-1.5">
           <div class="flex items-center gap-1.5">
-            <button onclick="toggleFav(${p.id})" title="Lưu yêu thích" class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-[#E11D48] border border-slate-200 flex items-center justify-center transition cursor-pointer">
-              <i class="fa-regular fa-heart text-xs"></i>
-            </button>
             <button onclick="openPlaceDetailById(${p.id})" title="Xem chi tiết" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer">
               <i class="fa-solid fa-circle-info text-[10px]"></i> <span>Chi tiết</span>
             </button>
@@ -1402,8 +1646,56 @@ function renderAllPlaces(places) {
   });
 }
 
+function removeVietnameseTones(str) {
+  if (!str) return "";
+  str = str.toLowerCase();
+  str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+  str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+  str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+  str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+  str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+  str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+  str = str.replace(/đ/g, "d");
+  str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, "");
+  str = str.replace(/\u02C6|\u0306|\u031B/g, "");
+  return str.trim();
+}
+
+function checkPlacePriceMatch(p, price) {
+  if (price === "all") return true;
+  const minP = p.min_price || 0;
+  const maxP = p.max_price || 0;
+  const isFree = (minP === 0 && maxP === 0);
+
+  if (price === "free") {
+    return isFree;
+  }
+  if (price === "under_50k" || price === "50000") {
+    return isFree || (maxP > 0 && maxP <= 65000) || (minP > 0 && minP <= 50000 && maxP <= 75000);
+  }
+  if (price === "50k_100k") {
+    if (isFree) return false;
+    return (minP >= 40000 && minP <= 100000) || (maxP >= 50000 && maxP <= 120000) || (minP < 50000 && maxP >= 60000 && maxP <= 120000);
+  }
+  if (price === "100k_250k") {
+    if (isFree) return false;
+    return (minP >= 90000 && minP <= 250000) || (maxP >= 100000 && maxP <= 280000) || (minP <= 100000 && maxP >= 150000 && maxP <= 300000);
+  }
+  if (price === "above_250k") {
+    if (isFree) return false;
+    return (maxP >= 250000 || minP >= 200000);
+  }
+  if (price === "100000") {
+    return isFree || minP <= 100000;
+  }
+  if (price === "250000") {
+    return isFree || minP <= 250000;
+  }
+  return true;
+}
+
 function filterAllPlaces() {
-  const q = document.getElementById("allSearchInput")?.value.toLowerCase().trim() || "";
+  const q = document.getElementById("allSearchInput")?.value.trim() || "";
   const cat = document.getElementById("allCategoryFilter")?.value || "all";
   const tag = document.getElementById("allTagFilter")?.value || "all";
   const price = document.getElementById("allPriceFilter")?.value || "all";
@@ -1425,14 +1717,31 @@ function filterAllPlaces() {
     }
   });
 
+  const normQ = removeVietnameseTones(q);
+
   let filtered = allPlacesCache.filter(p => {
-    const matchQ = !q || p.name.toLowerCase().includes(q) || p.address.toLowerCase().includes(q);
+    // 1. Tìm kiếm thông minh (có dấu và không dấu tiếng Việt)
+    let matchQ = true;
+    if (normQ) {
+      const normName = removeVietnameseTones(p.name || "");
+      const normAddr = removeVietnameseTones(p.address || "");
+      matchQ = normName.includes(normQ) || normAddr.includes(normQ);
+    }
+
+    // 2. Thể loại (Chỉ có 2 thể loại cốt lõi: Ẩm thực hoặc Đi chơi)
     const matchCat = (cat === "all") || (p.category === cat);
-    const matchTag = (tag === "all") || (p.tags && p.tags.includes(tag));
-    const matchPrice = (price === "all") || (p.min_price <= parseInt(price));
+
+    // 3. Bối cảnh 2-Tier
+    const pTiers = parsePlaceTiers(p.tags);
+    const matchTag = (tag === "all") || pTiers.tier1.includes(tag) || pTiers.tier2.includes(tag);
+
+    // 4. Mức giá chuẩn xác
+    const matchPrice = checkPlacePriceMatch(p, price);
+
+    // 5. Admin pick
     const matchAdminPick = (sort !== "admin_pick") || (p.is_admin_choice === 1);
 
-    // Lọc theo bán kính mét (nếu có vị trí)
+    // 6. Lọc theo bán kính mét (nếu có vị trí)
     let matchRadius = true;
     if (radiusNum !== null) {
       if (typeof p.distanceKm === "number") {
@@ -1456,6 +1765,48 @@ function filterAllPlaces() {
     filtered.sort((a, b) => (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0));
   } else if (sort === "rating_asc") {
     filtered.sort((a, b) => (parseFloat(a.rating) || 0) - (parseFloat(b.rating) || 0));
+  } else if (sort === "price_desc") {
+    // Sắp xếp mức giá từ lớn tới bé (Cao đến thấp)
+    filtered.sort((a, b) => {
+      const pA = a.max_price || a.min_price || 0;
+      const pB = b.max_price || b.min_price || 0;
+      if (pB !== pA) return pB - pA;
+      return (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0);
+    });
+  } else if (sort === "price_asc") {
+    // Sắp xếp mức giá từ bé tới lớn (Thấp đến cao)
+    filtered.sort((a, b) => {
+      const pA = a.min_price || a.max_price || 0;
+      const pB = b.min_price || b.max_price || 0;
+      if (pA !== pB) return pA - pB;
+      return (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0);
+    });
+  } else if (tag !== "all") {
+    // Sắp xếp ưu tiên chuẩn 2-Tier: Quán có tag ở Tier 1 lên đầu, Tier 2 xếp sau, trong cùng Tier xếp theo rating cao
+    filtered.sort((a, b) => {
+      const tA = parsePlaceTiers(a.tags);
+      const tB = parsePlaceTiers(b.tags);
+      const rankA = tA.tier1.includes(tag) ? 1 : (tA.tier2.includes(tag) ? 2 : 3);
+      const rankB = tB.tier1.includes(tag) ? 1 : (tB.tier2.includes(tag) ? 2 : 3);
+      if (rankA !== rankB) return rankA - rankB;
+      return (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0);
+    });
+  } else if (price !== "all") {
+    // Khi đang lọc theo mức giá (ví dụ Dưới 50k) và sắp xếp là Mặc định: Tự động sắp xếp từ lớn tới bé
+    filtered.sort((a, b) => {
+      const pA = a.max_price || a.min_price || 0;
+      const pB = b.max_price || b.min_price || 0;
+      if (pB !== pA) return pB - pA;
+      return (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0);
+    });
+  } else {
+    // Mặc định: Quán Admin yêu thích lên đầu, sau đó theo Rating cao nhất
+    filtered.sort((a, b) => {
+      if ((b.is_admin_choice || 0) !== (a.is_admin_choice || 0)) {
+        return (b.is_admin_choice || 0) - (a.is_admin_choice || 0);
+      }
+      return (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0);
+    });
   }
 
   // Cập nhật thanh đếm kết quả
@@ -1476,29 +1827,7 @@ function filterAllPlaces() {
   renderAllPlaces(filtered);
 }
 
-async function toggleFav(placeId) {
-  if (!currentUser) {
-    alert("Vui lòng đăng nhập tài khoản để lưu địa điểm yêu thích!");
-    openAuthModal();
-    return;
-  }
-
-  try {
-    const res = await fetch(`${API_BASE}/favorites/${placeId}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: currentUser.id })
-    });
-    const data = await res.json();
-    if (data.action === "added") {
-      alert("❤️ Đã thêm địa điểm vào danh sách yêu thích của bạn!");
-    } else {
-      alert("💔 Đã xóa địa điểm khỏi danh sách yêu thích.");
-    }
-  } catch (e) {
-    alert("Không thể lưu yêu thích lúc này.");
-  }
-}
+// Chức năng lưu quán yêu thích đã được xóa theo yêu cầu
 
 // ==============================================================================
 // 6. TRANG QUẢN TRỊ ADMIN (BỘ LỌC A-Z, TRÍCH XUẤT GOOGLE MAPS & CHỈNH ẢNH)
@@ -1649,7 +1978,7 @@ async function loadAdminDashboard() {
   } catch (e) {}
 
   try {
-    const placesRes = await fetch(`${API_BASE}/places`);
+    const placesRes = await fetch(`${API_BASE}/places?include_hidden=true`);
     allPlacesCache = await placesRes.json();
     renderAdminPlacesTable(allPlacesCache);
     populateQuickEditSelect(allPlacesCache);
@@ -1691,10 +2020,11 @@ function renderAdminPlacesTable(places) {
 
   places.forEach(p => {
     const isEat = p.category === "an_uong";
+    const isHidden = (p.is_hidden === 1);
     const imageHtml = renderPlaceImage(p, "w-12", "h-10");
 
     tbody.innerHTML += `
-      <tr class="hover:bg-blue-50/40 transition border-b border-slate-100">
+      <tr class="hover:bg-blue-50/40 transition border-b border-slate-100 ${isHidden ? 'bg-slate-50/80 opacity-75' : ''}">
         <td class="p-3 font-mono font-bold text-slate-400 whitespace-nowrap">#${p.id}</td>
         <td class="p-3 whitespace-nowrap">
           <div class="w-12 h-10 flex-shrink-0">
@@ -1705,6 +2035,7 @@ function renderAdminPlacesTable(places) {
           <div class="font-extrabold text-slate-900 truncate flex items-center gap-1.5" title="${p.name}">
             <span class="truncate">${p.name}</span>
             ${p.is_admin_choice === 1 ? '<span class="text-[9px] bg-amber-100 text-amber-900 font-extrabold px-1.5 py-0.5 rounded border border-amber-300 whitespace-nowrap flex items-center gap-0.5"><i class="fa-solid fa-crown text-amber-600"></i> Pick</span>' : ''}
+            ${isHidden ? '<span class="text-[9px] bg-rose-100 text-rose-700 font-extrabold px-1.5 py-0.5 rounded border border-rose-200 whitespace-nowrap flex items-center gap-0.5"><i class="fa-solid fa-eye-slash"></i> Đã ẩn</span>' : '<span class="text-[9px] bg-emerald-50 text-emerald-700 font-bold px-1.5 py-0.5 rounded border border-emerald-200 whitespace-nowrap flex items-center gap-0.5"><i class="fa-solid fa-eye"></i> Hiện</span>'}
           </div>
           <div class="text-[11px] text-slate-400 truncate" title="${p.address}">${p.address}</div>
         </td>
@@ -1713,17 +2044,20 @@ function renderAdminPlacesTable(places) {
             ${isEat ? '🍜 Ăn uống' : '📸 Đi chơi'}
           </span>
         </td>
-        <td class="p-3 font-medium whitespace-nowrap text-slate-600">${p.min_price.toLocaleString()}đ - ${p.max_price.toLocaleString()}đ</td>
+        <td class="p-3 font-medium whitespace-nowrap text-slate-600">${(p.min_price === 0 && p.max_price === 0) ? 'Miễn phí' : `${p.min_price.toLocaleString()}đ - ${p.max_price.toLocaleString()}đ`}</td>
         <td class="p-3 whitespace-nowrap">
           <span class="font-bold text-amber-600">⭐ ${p.rating}</span>
           <div class="text-[10px] text-slate-400 font-normal">${p.open_time} - ${p.close_time}</div>
         </td>
         <td class="p-3 text-center whitespace-nowrap bg-blue-50/30 border-l border-blue-100">
           <div class="flex items-center justify-center gap-1.5">
-            <button onclick="openEditPlaceModalById(${p.id})" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs flex items-center gap-1.5 transition shadow-sm" title="Chỉnh sửa toàn bộ thông tin quán này">
-              <i class="fa-solid fa-pen-to-square"></i> <span>Sửa dữ liệu</span>
+            <button onclick="handleToggleHidePlace(${p.id}, ${isHidden ? 0 : 1})" class="px-2.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1 transition shadow-xs cursor-pointer ${isHidden ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-slate-200 hover:bg-slate-300 text-slate-700'}" title="${isHidden ? 'Hiện lại quán này trên trang người dùng' : 'Ẩn quán này khỏi trang người dùng'}">
+              <i class="fa-solid ${isHidden ? 'fa-eye' : 'fa-eye-slash'}"></i> <span>${isHidden ? 'Hiện lại' : 'Ẩn quán'}</span>
             </button>
-            <button onclick="handleDeletePlaceById(${p.id})" class="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl font-bold text-xs flex items-center gap-1 transition" title="Xóa địa điểm">
+            <button onclick="openEditPlaceModalById(${p.id})" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs flex items-center gap-1 transition shadow-xs cursor-pointer" title="Chỉnh sửa toàn bộ thông tin quán này">
+              <i class="fa-solid fa-pen-to-square"></i> <span>Sửa</span>
+            </button>
+            <button onclick="handleDeletePlaceById(${p.id})" class="px-2 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl font-bold text-xs flex items-center gap-1 transition cursor-pointer" title="Xóa địa điểm">
               <i class="fa-solid fa-trash"></i>
             </button>
           </div>
@@ -1733,24 +2067,56 @@ function renderAdminPlacesTable(places) {
   });
 }
 
-// BỘ LỌC TỪ A ĐẾN Z CHO ADMIN (BAO GỒM LỌC REVIEW THẬT / MẪU)
+async function handleToggleHidePlace(placeId, targetHidden) {
+  try {
+    const res = await fetch(`${API_BASE}/admin/places/${placeId}/toggle-hide`, {
+      method: "POST"
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Không thể thay đổi trạng thái ẩn.");
+    }
+    const data = await res.json();
+    const p = allPlacesCache.find(x => Number(x.id) === Number(placeId));
+    if (p) p.is_hidden = data.place.is_hidden;
+    filterAdminTable();
+  } catch (err) {
+    alert("Lỗi: " + err.message);
+  }
+}
+
+// BỘ LỌC TỪ A ĐẾN Z CHO ADMIN (BAO GỒM LỌC REVIEW THẬT / MẪU VÀ TRẠNG THÁI ẨN / HIỆN)
 function filterAdminTable() {
-  const q = document.getElementById("adminSearchInput").value.toLowerCase().trim();
-  const cat = document.getElementById("adminCategoryFilter").value;
-  const rating = document.getElementById("adminRatingFilter").value;
-  const price = document.getElementById("adminPriceFilter").value;
+  const q = document.getElementById("adminSearchInput")?.value.trim() || "";
+  const cat = document.getElementById("adminCategoryFilter")?.value || "all";
+  const rating = document.getElementById("adminRatingFilter")?.value || "all";
+  const price = document.getElementById("adminPriceFilter")?.value || "all";
+  const status = document.getElementById("adminStatusFilter")?.value || "all";
+
+  const normQ = removeVietnameseTones(q);
 
   const filtered = allPlacesCache.filter(p => {
-    const matchQ = !q || p.name.toLowerCase().includes(q) || p.address.toLowerCase().includes(q);
+    let matchQ = true;
+    if (normQ) {
+      const normName = removeVietnameseTones(p.name || "");
+      const normAddr = removeVietnameseTones(p.address || "");
+      matchQ = normName.includes(normQ) || normAddr.includes(normQ);
+    }
+
     const matchCat = (cat === "all") || (p.category === cat);
     const matchRating = (rating === "all") || (p.rating >= parseFloat(rating));
     
     let matchPrice = true;
-    if (price === "50000") matchPrice = p.min_price <= 50000;
-    else if (price === "100000") matchPrice = p.min_price <= 100000;
+    if (price === "free") matchPrice = checkPlacePriceMatch(p, "free");
+    else if (price === "50000") matchPrice = checkPlacePriceMatch(p, "under_50k");
+    else if (price === "100000") matchPrice = checkPlacePriceMatch(p, "50k_100k") || checkPlacePriceMatch(p, "under_50k");
     else if (price === "above_100k") matchPrice = p.max_price >= 100000;
 
-    return matchQ && matchCat && matchRating && matchPrice;
+    let matchStatus = true;
+    if (status === "visible") matchStatus = (!p.is_hidden || p.is_hidden === 0);
+    else if (status === "hidden") matchStatus = (p.is_hidden === 1);
+
+    return matchQ && matchCat && matchRating && matchPrice && matchStatus;
   });
 
   renderAdminPlacesTable(filtered);
@@ -1798,8 +2164,16 @@ async function handleExtractGmaps() {
     document.getElementById("formMinPrice").value = p.min_price || 30000;
     document.getElementById("formMaxPrice").value = p.max_price || 85000;
     document.getElementById("formRating").value = p.rating || 4.5;
-    document.getElementById("formPeakHours").value = p.peak_hours || "18:30 - 20:30";
-    document.getElementById("formTags").value = p.tags || "nhom_ban";
+    document.getElementById("formPeakHours").value = p.peak_hours || "Chưa rõ";
+    // Đổ dữ liệu phân tầng 2-Tier vào checkbox
+  const { tier1: curT1, tier2: curT2 } = parsePlaceTiers(p.tags || "");
+  ['di_1_minh', 'hen_ho', 'nhom_ban', 'gia_dinh'].forEach(t => {
+    const c1 = document.getElementById(`chk_t1_${t}`);
+    const c2 = document.getElementById(`chk_t2_${t}`);
+    if (c1) c1.checked = curT1.includes(t);
+    if (c2) c2.checked = curT2.includes(t);
+  });
+  syncAdminTagsInput();
     document.getElementById("formBestReview").value = p.best_review || "";
     document.getElementById("formWorstReview").value = p.worst_review || "";
     
@@ -1865,14 +2239,25 @@ function openAddPlaceModal() {
   document.getElementById("formMinPrice").value = 30000;
   document.getElementById("formMaxPrice").value = 85000;
   document.getElementById("formRating").value = 4.5;
-  document.getElementById("formPeakHours").value = "18:30 - 20:30";
-  document.getElementById("formTags").value = "nhom_ban,di_1_minh,hen_ho";
+  document.getElementById("formPeakHours").value = "";
+  ['di_1_minh', 'hen_ho', 'nhom_ban', 'gia_dinh'].forEach(t => {
+    const c1 = document.getElementById(`chk_t1_${t}`);
+    const c2 = document.getElementById(`chk_t2_${t}`);
+    if (c1) c1.checked = false;
+    if (c2) c2.checked = false;
+  });
+  // Mặc định quán mới: nhom_ban ở Tier 1
+  const defT1 = document.getElementById("chk_t1_nhom_ban");
+  if (defT1) defT1.checked = true;
+  syncAdminTagsInput();
   document.getElementById("formBestReview").value = "";
   document.getElementById("formWorstReview").value = "";
   const chkRev = document.getElementById("formIsVerifiedReview");
   if (chkRev) chkRev.checked = true;
   const chkAdmin = document.getElementById("formIsAdminChoice");
   if (chkAdmin) chkAdmin.checked = false;
+  const chkHidden = document.getElementById("formIsHidden");
+  if (chkHidden) chkHidden.checked = false;
   document.getElementById("formImageUrl").value = "";
   updateImagePreview("");
   document.getElementById("modalPlaceForm").classList.remove("hidden");
@@ -1918,6 +2303,8 @@ function openEditPlaceModal(p) {
   document.getElementById("formMaxPrice").value = p.max_price || 0;
   document.getElementById("formRating").value = p.rating || 4.5;
   document.getElementById("formPeakHours").value = p.peak_hours || "";
+  const pDispEl = document.getElementById("formPriceDisplay");
+  if (pDispEl) pDispEl.value = p.price_display || "";
   document.getElementById("formTags").value = p.tags || "nhom_ban";
   document.getElementById("formBestReview").value = p.best_review || "";
   document.getElementById("formWorstReview").value = p.worst_review || "";
@@ -1925,6 +2312,8 @@ function openEditPlaceModal(p) {
   if (chkRev) chkRev.checked = (p.is_verified_review === 1);
   const chkAdmin = document.getElementById("formIsAdminChoice");
   if (chkAdmin) chkAdmin.checked = (p.is_admin_choice === 1);
+  const chkHidden = document.getElementById("formIsHidden");
+  if (chkHidden) chkHidden.checked = (p.is_hidden === 1);
   document.getElementById("formImageUrl").value = p.image_url || "";
   updateImagePreview(p.image_url || "");
   document.getElementById("modalPlaceForm").classList.remove("hidden");
@@ -1936,12 +2325,15 @@ function closePlaceFormModal() {
 
 async function handleSavePlace(e) {
   e.preventDefault();
+  syncAdminTagsInput();
   const placeId = document.getElementById("formPlaceId").value;
   const isEdit = placeId !== "";
   const chkRev = document.getElementById("formIsVerifiedReview");
   const isRealReview = chkRev ? (chkRev.checked ? 1 : 0) : 1;
   const chkAdmin = document.getElementById("formIsAdminChoice");
   const isAdminChoice = chkAdmin ? (chkAdmin.checked ? 1 : 0) : 0;
+  const chkHidden = document.getElementById("formIsHidden");
+  const isHidden = chkHidden ? (chkHidden.checked ? 1 : 0) : 0;
 
   const rawImg = document.getElementById("formImageUrl").value.trim();
   const payload = {
@@ -1959,12 +2351,14 @@ async function handleSavePlace(e) {
     rating: parseFloat(document.getElementById("formRating").value) || 4.5,
     peak_hours: document.getElementById("formPeakHours").value.trim(),
     tags: document.getElementById("formTags").value.trim(),
+    price_display: document.getElementById("formPriceDisplay")?.value.trim() || null,
     best_review: document.getElementById("formBestReview").value.trim(),
     worst_review: document.getElementById("formWorstReview").value.trim(),
     image_url: rawImg ? rawImg : null,
     is_verified: 1,
     is_verified_review: isRealReview,
-    is_admin_choice: isAdminChoice
+    is_admin_choice: isAdminChoice,
+    is_hidden: isHidden
   };
 
   const url = isEdit ? `${API_BASE}/admin/places/${placeId}` : `${API_BASE}/admin/places`;
@@ -2028,6 +2422,8 @@ function openImportModal() {
   csvToUploadText = "";
   document.getElementById("csvFileName").innerText = "Chưa chọn file nào";
   document.getElementById("btnUploadCSV").disabled = true;
+  const reportBox = document.getElementById("csvValidationReport");
+  if (reportBox) reportBox.classList.add("hidden");
   document.getElementById("modalImportCSV").classList.remove("hidden");
 }
 
@@ -2051,22 +2447,46 @@ function handleCSVFileSelected(e) {
 async function submitCSVImport() {
   if (!csvToUploadText) return;
   const btn = document.getElementById("btnUploadCSV");
-  btn.innerText = "Đang nạp vào CSDL...";
+  const reportBox = document.getElementById("csvValidationReport");
+  const errorListEl = document.getElementById("csvErrorList");
+  const titleEl = document.getElementById("csvValidationTitle");
+
+  btn.innerText = "Đang kiểm tra & nạp CSDL...";
   btn.disabled = true;
 
   try {
     const res = await fetch(`${API_BASE}/admin/import-csv`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ csv_content: csvToUploadText })
+      body: JSON.stringify({ 
+        csv_content: csvToUploadText,
+        filename: document.getElementById("csvFileInput")?.files[0]?.name || "places_import.csv"
+      })
     });
     const data = await res.json();
-    alert(`🎉 Đã nạp thành công ${data.imported_count} địa điểm từ file CSV vào CSDL SQLite!`);
-    closeImportModal();
-    preloadPlaces();
-    loadAdminDashboard();
+
+    if (data.error_count > 0) {
+      if (reportBox) reportBox.classList.remove("hidden");
+      if (titleEl) titleEl.innerText = `Đã nạp ${data.imported_count}/${data.total_rows} dòng. Phát hiện ${data.error_count} dòng lỗi:`;
+      if (errorListEl) {
+        errorListEl.innerHTML = "";
+        data.errors.forEach(err => {
+          errorListEl.innerHTML += `<li><strong>Dòng ${err.row}</strong> (Cột <code class="font-bold text-rose-700 bg-rose-100 px-1 py-0.5 rounded">${err.field}</code>): ${err.reason}</li>`;
+        });
+      }
+      if (data.imported_count > 0) {
+        preloadPlaces();
+        loadAdminDashboard();
+      }
+    } else {
+      if (reportBox) reportBox.classList.add("hidden");
+      alert(`🎉 Toàn bộ ${data.imported_count} địa điểm hợp lệ và đã nạp thành công vào CSDL SQLite!`);
+      closeImportModal();
+      preloadPlaces();
+      loadAdminDashboard();
+    }
   } catch (e) {
-    alert("❌ Không thể nạp file CSV. Hãy kiểm tra định dạng các cột.");
+    alert("❌ Lỗi khi nạp file CSV: " + (e.message || "Không thể kết nối máy chủ."));
   } finally {
     btn.innerText = "Tiến Hành Nạp Dữ Liệu";
     btn.disabled = false;
@@ -2151,9 +2571,11 @@ function openPlaceDetailById(id) {
 
   const priceRangeEl = document.getElementById("detailPriceRange");
   if (priceRangeEl) {
-    priceRangeEl.innerText = (p.min_price === 0 && p.max_price === 0)
-      ? "Miễn phí vé vào cổng"
-      : `${p.min_price.toLocaleString()}đ - ${p.max_price.toLocaleString()}đ`;
+    priceRangeEl.innerText = p.price_display
+      ? p.price_display
+      : ((p.min_price === 0 && p.max_price === 0)
+        ? "Miễn phí vé vào cổng"
+        : `${p.min_price ? p.min_price.toLocaleString() + 'đ' : ''} - ${p.max_price ? p.max_price.toLocaleString() + 'đ' : ''}`);
   }
 
   // 4. Link Google Maps
@@ -2184,27 +2606,45 @@ function openPlaceDetailById(id) {
   }
 
   const openHoursEl = document.getElementById("detailOpenHours");
-  if (openHoursEl) openHoursEl.innerText = `${p.open_time} - ${p.close_time}`;
+  if (openHoursEl) openHoursEl.innerText = p.hours_display || `${p.open_time} - ${p.close_time}`;
 
   // 7. Giờ cao điểm
   const peakHoursEl = document.getElementById("detailPeakHours");
-  if (peakHoursEl) peakHoursEl.innerText = p.peak_hours || "18:00 - 20:30 (Khung giờ đông khách nhất)";
+  if (peakHoursEl) {
+    const rawPeak = (p.peak_hours && p.peak_hours !== 'Chưa rõ') ? p.peak_hours : '';
+    const cleanPeak = rawPeak.replace(/\s*\([^\)]*đông[^\)]*\)/gi, '').trim();
+    peakHoursEl.innerText = cleanPeak || "Chưa rõ (quán chưa cập nhật)";
+  }
 
-  // 8. Bối cảnh tags
+  // 8. Bối cảnh tags (Xếp trên/dưới tự nhiên, KHÔNG ghi chữ Tier 1/2, KHÔNG làm nổi bật lệch màu)
   const tagsContainer = document.getElementById("detailTagsList");
   if (tagsContainer) {
     tagsContainer.innerHTML = "";
     const tagMap = {
       di_1_minh: "🎧 Đi 1 mình",
       hen_ho: "💑 Hẹn hò cặp đôi",
-      nhom_ban: "🎉 Nhóm bạn đông",
+      nhom_ban: "🎉 Nhóm bạn",
       gia_dinh: "👨‍👩‍👧‍👦 Gia đình"
     };
-    const tagsArr = p.tags ? p.tags.split(",").map(t => t.trim()) : ["nhom_ban"];
-    tagsArr.forEach(t => {
-      const label = tagMap[t] || `#${t}`;
-      tagsContainer.innerHTML += `<span class="px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-[10px] font-bold text-slate-700 shadow-xs">${label}</span>`;
-    });
+    const { tier1, tier2 } = parsePlaceTiers(p.tags || "");
+
+    let html = `<div class="w-full space-y-1.5 mt-1">`;
+    if (tier1.length > 0) {
+      html += `
+        <div class="flex items-center gap-1.5 flex-wrap">
+          ${tier1.map(t => `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-xs font-semibold">${tagMap[t] || t}</span>`).join("")}
+        </div>
+      `;
+    }
+    if (tier2.length > 0) {
+      html += `
+        <div class="flex items-center gap-1.5 flex-wrap">
+          ${tier2.map(t => `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-xs font-semibold">${tagMap[t] || t}</span>`).join("")}
+        </div>
+      `;
+    }
+    html += `</div>`;
+    tagsContainer.innerHTML = html;
   }
 
   // 9. Bình luận khen & lưu ý thực tế
@@ -2301,10 +2741,7 @@ function copyDetailAddress() {
   });
 }
 
-async function toggleDetailFav() {
-  if (!currentDetailPlace) return;
-  await toggleFav(currentDetailPlace.id);
-}
+
 
 // Giữ lại alias để tương thích các link cũ
 function openSideMapById(id) {
@@ -2317,28 +2754,4 @@ function closeSideMap() {
 
 function copySideMapAddress() {
   copyDetailAddress();
-}
-
-// Tab 3 Budget handling
-let aiBudgetLevel = "100k_250k";
-let aiTargetBudget = 250000;
-
-function selectAIBudget(level, amount) {
-    aiBudgetLevel = level;
-    aiTargetBudget = amount;
-    ['free', 'under_100k', '100k_250k', 'above_250k'].forEach(l => {
-        const btn = document.getElementById(`aibudget_${l}`);
-        if (btn) {
-            if (l === level) {
-                btn.className = "px-2 py-2 rounded-xl border-2 border-[#E11D48] bg-rose-50 text-[#E11D48] text-xs font-black transition cursor-pointer";
-            } else {
-                btn.className = "px-2 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold hover:border-[#E11D48] transition cursor-pointer";
-            }
-        }
-    });
-}
-
-function handleAutoRelaxConstraint() {
-    selectAIBudget("above_250k", 500000);
-    requestAIItinerary(false);
 }

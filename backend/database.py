@@ -65,11 +65,12 @@ def init_db():
         tags TEXT DEFAULT 'nhom_ban',          -- Danh sách tag: di_1_minh, hen_ho, nhom_ban, gia_dinh
         is_verified INTEGER NOT NULL DEFAULT 1, -- 1: Đã xác thực, 0: Chưa duyệt
         is_verified_review INTEGER NOT NULL DEFAULT 1,
-        is_admin_choice INTEGER NOT NULL DEFAULT 0 -- 1: Quán Admin yêu thích, 0: Thường
+        is_admin_choice INTEGER NOT NULL DEFAULT 0, -- 1: Quán Admin yêu thích, 0: Thường
+        is_hidden INTEGER NOT NULL DEFAULT 0 -- 1: Quán bị ẩn, 0: Bình thường
     );
     """)
 
-    # Tự động migrate cột is_admin_choice nếu dùng CSDL cũ
+    # Tự động migrate cột is_admin_choice và is_hidden nếu dùng CSDL cũ
     cursor.execute("PRAGMA table_info(places)")
     existing_cols = [r["name"] for r in cursor.fetchall()]
     if "is_admin_choice" not in existing_cols:
@@ -81,38 +82,6 @@ def init_db():
 
     # 3. BẢNG FAVORITES (Địa điểm yêu thích của người dùng)
     cursor.execute("""
-    
-    CREATE TABLE IF NOT EXISTS itineraries (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
-        title TEXT,
-        target_budget INTEGER,
-        free_time_minutes INTEGER,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(id)
-    );
-
-    CREATE TABLE IF NOT EXISTS itinerary_stops (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        itinerary_id INTEGER,
-        place_id INTEGER,
-        stop_order INTEGER,
-        allocated_time_minutes INTEGER,
-        FOREIGN KEY (itinerary_id) REFERENCES itineraries(id),
-        FOREIGN KEY (place_id) REFERENCES places(id)
-    );
-
-    
-    CREATE TABLE IF NOT EXISTS import_logs (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        filename TEXT,
-        total_rows INTEGER,
-        success_count INTEGER,
-        error_count INTEGER,
-        errors_json TEXT,
-        imported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-
     CREATE TABLE IF NOT EXISTS favorites (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
@@ -121,6 +90,59 @@ def init_db():
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
         FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE,
         UNIQUE(user_id, place_id)
+    );
+    """)
+
+    # 4. BẢNG ITINERARIES (Lưu trữ lịch trình theo yêu cầu Section 5 đề tài)
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS itineraries (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        start_location TEXT NOT NULL,
+        start_lat REAL,
+        start_lon REAL,
+        free_time TEXT NOT NULL,
+        companion TEXT DEFAULT 'ban_be',
+        purpose TEXT DEFAULT 'ca_hai',
+        budget_level TEXT DEFAULT '100k_250k',
+        target_budget INTEGER DEFAULT 250000,
+        total_estimated_budget_min INTEGER DEFAULT 0,
+        total_estimated_budget_max INTEGER DEFAULT 0,
+        total_duration_minutes INTEGER DEFAULT 0,
+        summary TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+    );
+    """)
+
+    # 5. BẢNG ITINERARY_STOPS (Các chặng dừng trong lịch trình theo yêu cầu Section 5 đề tài)
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS itinerary_stops (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        itinerary_id INTEGER NOT NULL,
+        place_id INTEGER NOT NULL,
+        stop_order INTEGER NOT NULL,
+        time_slot TEXT,
+        action_title TEXT,
+        travel_distance_km REAL,
+        travel_time_minutes INTEGER,
+        estimated_cost_min INTEGER DEFAULT 0,
+        estimated_cost_max INTEGER DEFAULT 0,
+        FOREIGN KEY (itinerary_id) REFERENCES itineraries(id) ON DELETE CASCADE,
+        FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE
+    );
+    """)
+
+    # 6. BẢNG IMPORT_LOGS (Lịch sử nạp CSV & Báo cáo dòng lỗi theo yêu cầu G6-FR09 & Section 5)
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS import_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        filename TEXT NOT NULL DEFAULT 'uploaded_places.csv',
+        total_rows INTEGER NOT NULL DEFAULT 0,
+        success_count INTEGER NOT NULL DEFAULT 0,
+        error_count INTEGER NOT NULL DEFAULT 0,
+        error_details_json TEXT,
+        imported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     """)
 
@@ -297,13 +319,16 @@ def delete_user(user_id):
 # THAO TÁC ĐỊA ĐIỂM (PLACES CRUD)
 # ==============================================================================
 
-def get_all_places(category=None, context_tag=None, min_budget=None, max_budget=None, min_rating=None, search=None, only_verified=True):
+def get_all_places(category=None, context_tag=None, min_budget=None, max_budget=None, min_rating=None, search=None, only_verified=True, include_hidden=False):
     """Lấy danh sách địa điểm theo bộ lọc đa chiều (A đến Z)"""
     conn = get_connection()
     cursor = conn.cursor()
 
-    query = "SELECT * FROM places WHERE is_hidden = 0"
+    query = "SELECT * FROM places WHERE 1=1"
     params = []
+
+    if not include_hidden:
+        query += " AND (is_hidden = 0 OR is_hidden IS NULL)"
 
     if only_verified:
         query += " AND is_verified = 1"
@@ -320,9 +345,13 @@ def get_all_places(category=None, context_tag=None, min_budget=None, max_budget=
         query += " AND max_price >= ?"
         params.append(int(min_budget))
 
-    if max_budget and int(max_budget) > 0:
-        query += " AND min_price <= ?"
-        params.append(int(max_budget))
+    if max_budget is not None and str(max_budget).strip() != "":
+        max_b_val = int(max_budget)
+        if max_b_val == 0:
+            query += " AND min_price = 0 AND max_price = 0"
+        elif max_b_val > 0:
+            query += " AND min_price <= ?"
+            params.append(max_b_val)
 
     if min_rating and float(min_rating) > 0:
         query += " AND rating >= ?"
@@ -355,8 +384,9 @@ def add_place(data):
     INSERT INTO places (
         name, category, address, district, lat, lon, open_time, close_time,
         min_price, max_price, rating, reviews_count, peak_hours,
-        best_review, worst_review, image_url, tags, is_verified, is_verified_review, is_admin_choice
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        best_review, worst_review, image_url, tags, is_verified, is_verified_review, is_admin_choice,
+        price_display, hours_display, is_hidden
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         data.get("name"),
         data.get("category", "an_uong"),
@@ -377,7 +407,10 @@ def add_place(data):
         data.get("tags", "nhom_ban"),
         int(data.get("is_verified", 1)),
         int(data.get("is_verified_review", 1)),
-        int(data.get("is_admin_choice", 0))
+        int(data.get("is_admin_choice", 0)),
+        data.get("price_display"),
+        data.get("hours_display"),
+        int(data.get("is_hidden", 0))
     ))
     conn.commit()
     new_id = cursor.lastrowid
@@ -403,7 +436,7 @@ def update_place(place_id, data):
         min_price = ?, max_price = ?, rating = ?, reviews_count = ?,
         peak_hours = ?, best_review = ?, worst_review = ?,
         image_url = ?, tags = ?, is_verified = ?, is_verified_review = ?,
-        is_admin_choice = ?
+        is_admin_choice = ?, price_display = ?, hours_display = ?, is_hidden = ?
     WHERE id = ?
     """, (
         data.get("name", existing.get("name")),
@@ -426,6 +459,9 @@ def update_place(place_id, data):
         int(data.get("is_verified", existing.get("is_verified", 1))),
         int(data.get("is_verified_review", existing.get("is_verified_review", 1))),
         int(data.get("is_admin_choice", existing.get("is_admin_choice", 0))),
+        data.get("price_display", existing.get("price_display")),
+        data.get("hours_display", existing.get("hours_display")),
+        int(data.get("is_hidden", existing.get("is_hidden", 0))),
         place_id
     ))
     conn.commit()
@@ -443,39 +479,24 @@ def delete_place(place_id):
     sync_db_to_json()
     return True
 
-# ==============================================================================
-# THAO TÁC ĐỊA ĐIỂM YÊU THÍCH (FAVORITES)
-# ==============================================================================
-
-def toggle_favorite(user_id, place_id):
-    """Thêm hoặc hủy lưu địa điểm yêu thích"""
+def toggle_hide_place(place_id):
+    """Bật / tắt trạng thái ẩn của địa điểm (Admin Soft Hide)"""
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT id FROM favorites WHERE user_id = ? AND place_id = ?", (user_id, place_id))
-    fav = cursor.fetchone()
-    if fav:
-        cursor.execute("DELETE FROM favorites WHERE id = ?", (fav["id"],))
-        action = "removed"
-    else:
-        cursor.execute("INSERT INTO favorites (user_id, place_id) VALUES (?, ?)", (user_id, place_id))
-        action = "added"
+    cursor.execute("SELECT id, is_hidden FROM places WHERE id = ?", (place_id,))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        return None
+    curr_hidden = row["is_hidden"] if row["is_hidden"] is not None else 0
+    new_hidden = 1 if curr_hidden == 0 else 0
+    cursor.execute("UPDATE places SET is_hidden = ? WHERE id = ?", (new_hidden, place_id))
     conn.commit()
     conn.close()
-    return action
+    sync_db_to_json()
+    return {"id": place_id, "is_hidden": new_hidden}
 
-def get_user_favorites(user_id):
-    """Lấy danh sách các địa điểm yêu thích của người dùng"""
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("""
-    SELECT p.* FROM places p
-    JOIN favorites f ON p.id = f.place_id
-    WHERE f.user_id = ?
-    ORDER BY f.saved_at DESC
-    """, (user_id,))
-    rows = cursor.fetchall()
-    conn.close()
-    return [dict(r) for r in rows]
+
 
 # ==============================================================================
 # NHẬP XUẤT CSV (IMPORT / EXPORT)
@@ -502,118 +523,200 @@ def generate_sample_csv():
     ])
     return output.getvalue()
 
-def import_csv_data(csv_text):
-    """Đọc dữ liệu từ file CSV tải lên và nạp vào CSDL với khả năng tự phục hồi lỗi kiểu dữ liệu"""
+def import_csv_data(csv_text, filename="uploaded_places.csv"):
+    """
+    Đọc dữ liệu từ file CSV tải lên và nạp vào CSDL với khả năng kiểm tra lỗi chặt chẽ (G6-FR09 & Business Rule 4):
+    - Phát hiện trường bắt buộc bị thiếu (Tên quán, Thể loại, Địa chỉ)
+    - Phát hiện kiểu dữ liệu sai (Tọa độ không phải float, Giá tiền không phải số nguyên, Sao không hợp lệ)
+    - Ghi nhận chi tiết dòng lỗi để Admin xem và chỉnh sửa (Demo Flow 3)
+    - Ghi log lịch sử import vào bảng import_logs (Section 5)
+    """
     f = io.StringIO(csv_text)
     reader = csv.DictReader(f)
     conn = get_connection()
     cursor = conn.cursor()
-    
-    count = 0
+
+    cursor.execute("SELECT LOWER(TRIM(name)) FROM places")
+    existing_names = set(r[0] for r in cursor.fetchall())
+
+    success_count = 0
+    errors = []
+    row_idx = 1  # Header là dòng 1, dòng dữ liệu đầu tiên là dòng 2
+
     for row in reader:
-        name = row.get("name")
+        row_idx += 1
+        name = (row.get("name") or "").strip()
+        address = (row.get("address") or "").strip()
+        category = (row.get("category") or "").strip().lower()
+
+        # 1. Kiểm tra trường bắt buộc
         if not name:
+            errors.append({"row": row_idx, "field": "name", "reason": "Thiếu tên địa điểm (trường bắt buộc)"})
+            continue
+
+        if not address:
+            errors.append({"row": row_idx, "field": "address", "reason": f"Quán '{name}' thiếu địa chỉ cụ thể (trường bắt buộc)"})
+            continue
+
+        if category not in ["an_uong", "di_choi"]:
+            errors.append({"row": row_idx, "field": "category", "reason": f"Quán '{name}' có thể loại '{category}' không hợp lệ (phải là 'an_uong' hoặc 'di_choi')"})
+            continue
+
+        # 2. Kiểm tra kiểu dữ liệu tọa độ
+        try:
+            lat = float(row.get("lat") or 10.7550)
+            if not (8.0 <= lat <= 24.0):
+                raise ValueError("Vĩ độ ngoài phạm vi VN")
+        except Exception:
+            errors.append({"row": row_idx, "field": "lat", "reason": f"Quán '{name}': Vĩ độ (lat) '{row.get('lat')}' không phải số thực hợp lệ"})
             continue
 
         try:
-            lat = float(row.get("lat") or 10.7550)
-        except (ValueError, TypeError):
-            lat = 10.7550
-
-        try:
             lon = float(row.get("lon") or 106.6650)
-        except (ValueError, TypeError):
-            lon = 106.6650
+            if not (102.0 <= lon <= 110.0):
+                raise ValueError("Kinh độ ngoài phạm vi VN")
+        except Exception:
+            errors.append({"row": row_idx, "field": "lon", "reason": f"Quán '{name}': Kinh độ (lon) '{row.get('lon')}' không phải số thực hợp lệ"})
+            continue
+
+        # 3. Kiểm tra kiểu dữ liệu mức giá
+        try:
+            min_price = int(float(row.get("min_price") if row.get("min_price") is not None and str(row.get("min_price")).strip() != "" else 30000))
+            if min_price < 0:
+                raise ValueError("Giá âm")
+        except Exception:
+            errors.append({"row": row_idx, "field": "min_price", "reason": f"Quán '{name}': Giá tối thiểu (min_price) '{row.get('min_price')}' phải là số nguyên >= 0"})
+            continue
 
         try:
-            min_price = int(float(row.get("min_price") or 30000))
-        except (ValueError, TypeError):
-            min_price = 30000
+            max_price = int(float(row.get("max_price") if row.get("max_price") is not None and str(row.get("max_price")).strip() != "" else 80000))
+            if max_price < min_price:
+                raise ValueError("max_price < min_price")
+        except Exception:
+            errors.append({"row": row_idx, "field": "max_price", "reason": f"Quán '{name}': Giá tối đa (max_price) '{row.get('max_price')}' phải lớn hơn hoặc bằng giá tối thiểu"})
+            continue
 
+        # 4. Kiểm tra số sao đánh giá
         try:
-            max_price = int(float(row.get("max_price") or 80000))
-        except (ValueError, TypeError):
-            max_price = 80000
-
-        try:
-            rating = float(row.get("rating") or 4.5)
-        except (ValueError, TypeError):
-            rating = 4.5
+            rating = float(row.get("rating") if row.get("rating") is not None and str(row.get("rating")).strip() != "" else 4.5)
+            if not (1.0 <= rating <= 5.0):
+                raise ValueError("Rating ngoài 1-5")
+        except Exception:
+            errors.append({"row": row_idx, "field": "rating", "reason": f"Quán '{name}': Đánh giá sao (rating) '{row.get('rating')}' phải trong khoảng 1.0 đến 5.0"})
+            continue
 
         try:
             reviews_count = int(float(row.get("reviews_count") or 50))
-        except (ValueError, TypeError):
+        except Exception:
             reviews_count = 50
 
-        category = row.get("category", "an_uong")
-        if category not in ["an_uong", "di_choi"]:
-            category = "an_uong"
+        # Kiểm tra trùng lặp
+        if name.lower() in existing_names:
+            errors.append({"row": row_idx, "field": "name", "reason": f"Địa điểm '{name}' đã tồn tại trong CSDL (bị trùng lặp)"})
+            continue
 
         cursor.execute("""
         INSERT INTO places (
             name, category, address, district, lat, lon, open_time, close_time,
             min_price, max_price, rating, reviews_count, peak_hours,
-            best_review, worst_review, image_url, tags, is_verified
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            best_review, worst_review, image_url, tags, is_verified, is_hidden
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 0)
         """, (
-            name.strip(),
+            name,
             category,
-            row.get("address", "Quận 5, TP.HCM"),
-            "Quận 5",
+            address,
+            row.get("district") or "TP.HCM",
             lat,
             lon,
-            row.get("open_time", "08:00"),
-            row.get("close_time", "22:00"),
+            row.get("open_time") or "08:00",
+            row.get("close_time") or "22:00",
             min_price,
             max_price,
             rating,
             reviews_count,
-            row.get("peak_hours", "18:00 - 20:00"),
+            row.get("peak_hours") or "18:00 - 20:00",
             row.get("best_review") or "",
             row.get("worst_review") or "",
             row.get("image_url") or None,
-            row.get("tags", "nhom_ban"),
-            1
+            row.get("tags") or "nhom_ban"
         ))
-        count += 1
+        existing_names.add(name.lower())
+        success_count += 1
+
+    total_rows = (row_idx - 1)
+    error_count = len(errors)
+
+    # Ghi log lịch sử import vào CSDL (Section 5)
+    try:
+        cursor.execute("""
+        INSERT INTO import_logs (filename, total_rows, success_count, error_count, error_details_json)
+        VALUES (?, ?, ?, ?, ?)
+        """, (filename, total_rows, success_count, error_count, json.dumps(errors, ensure_ascii=False)))
+    except Exception as e:
+        print("[WARN] Failed to insert import_log:", e)
 
     conn.commit()
     conn.close()
     sync_db_to_json()
-    return count
+    return {
+        "filename": filename,
+        "total_rows": total_rows,
+        "success_count": success_count,
+        "error_count": error_count,
+        "errors": errors
+    }
 
-def toggle_hide_place(place_id: int, is_hidden: int = 1) -> bool:
-    """Toggle ẩn/hiện một địa điểm (G6-FR01 & G6-FR08)"""
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("UPDATE places SET is_hidden = ? WHERE id = ?", (is_hidden, place_id))
-    success = cursor.rowcount > 0
-    conn.commit()
-    conn.close()
-    return success
-
-
-def save_itinerary(user_id: int, title: str, target_budget: int, free_time: int, stops: list):
-    """Lưu trữ lịch trình và các điểm dừng vào database (Section 5 ERD)"""
+def save_itinerary(itin_data, stops_data):
+    """Lưu lịch trình và các chặng dừng vào CSDL (Section 5 ERD)"""
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO itineraries (user_id, title, target_budget, free_time_minutes)
-        VALUES (?, ?, ?, ?)
-    """, (user_id, title, target_budget, free_time))
+    INSERT INTO itineraries (
+        user_id, start_location, start_lat, start_lon, free_time, companion,
+        purpose, budget_level, target_budget, total_estimated_budget_min,
+        total_estimated_budget_max, total_duration_minutes, summary
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        itin_data.get("user_id"),
+        itin_data.get("start_location"),
+        itin_data.get("start_lat"),
+        itin_data.get("start_lon"),
+        itin_data.get("free_time"),
+        itin_data.get("companion", "ban_be"),
+        itin_data.get("purpose", "ca_hai"),
+        itin_data.get("budget_level", "100k_250k"),
+        itin_data.get("target_budget", 250000),
+        itin_data.get("total_estimated_budget_min", 0),
+        itin_data.get("total_estimated_budget_max", 0),
+        itin_data.get("total_duration_minutes", 0),
+        itin_data.get("summary", "")
+    ))
     itin_id = cursor.lastrowid
-    for order, stop in enumerate(stops, 1):
+
+    for s in stops_data:
         cursor.execute("""
-            INSERT INTO itinerary_stops (itinerary_id, place_id, stop_order, allocated_time_minutes)
-            VALUES (?, ?, ?, ?)
-        """, (itin_id, stop.get("id"), order, stop.get("allocated_time", 60)))
+        INSERT INTO itinerary_stops (
+            itinerary_id, place_id, stop_order, time_slot, action_title,
+            travel_distance_km, travel_time_minutes, estimated_cost_min, estimated_cost_max
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            itin_id,
+            s.get("place_id"),
+            s.get("stop_order", 1),
+            s.get("time_slot", ""),
+            s.get("action_title", ""),
+            s.get("travel_distance_km", 0.0),
+            s.get("travel_time_minutes", 0),
+            s.get("estimated_cost_min", 0),
+            s.get("estimated_cost_max", 0)
+        ))
+
     conn.commit()
     conn.close()
     return itin_id
 
-
-def get_import_logs(limit: int = 20):
-    """Truy vấn lịch sử các lần import CSV (Section 5 ERD Import Log)"""
+def get_import_logs(limit=10):
+    """Lấy danh sách lịch sử nạp CSV gần nhất"""
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM import_logs ORDER BY id DESC LIMIT ?", (limit,))

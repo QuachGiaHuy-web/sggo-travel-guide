@@ -26,8 +26,9 @@ from typing import Optional, List
 from backend.database import (
     init_db, authenticate_user, register_user,
     get_all_places, get_place_by_id, add_place, update_place, delete_place,
-    toggle_favorite, get_user_favorites, generate_sample_csv, import_csv_data,
-    get_connection, get_all_users, update_user_role, delete_user
+    generate_sample_csv, import_csv_data,
+    get_connection, get_all_users, update_user_role, delete_user,
+    toggle_hide_place, save_itinerary, get_import_logs
 )
 
 # Tự động đọc file .env
@@ -94,12 +95,15 @@ class ItineraryRequest(BaseModel):
     start_location: str
     start_lat: Optional[float] = None
     start_lon: Optional[float] = None
-    free_time: str                       # Giờ rảnh cụ thể: '14:00 - 18:30', '19:00 - 22:30', etc.
+    free_time: str                       # Giờ rảnh: '14:00 - 18:30', '19:00 - 22:30', etc.
     companion: Optional[str] = "ban_be"  # 'di_1_minh', 'nguoi_yeu', 'ban_be', 'gia_dinh'
     purpose: Optional[str] = "ca_hai"    # 'an_uong', 'di_choi', 'ca_hai'
-    takenote: Optional[str] = ""         # Ghi chú / Take note riêng (VD: chán chỗ X rồi, loại ra...)
+    takenote: Optional[str] = ""         # Ghi chú / Loại trừ địa điểm
     context: Optional[str] = ""          # Giữ tương thích ngược
-    budget: Optional[str] = "Vừa vặn thoải mái"
+    budget: Optional[str] = "100k_250k"
+    budget_level: Optional[str] = "100k_250k"
+    target_budget: Optional[int] = 250000
+    shuffle_seed: Optional[int] = 0      # Dùng cho G6-FR06: Xáo trộn / Đổi phương án khác
     ai_model: Optional[str] = "gemini-3.8-flash"
 
 class PlaceModel(BaseModel):
@@ -123,6 +127,9 @@ class PlaceModel(BaseModel):
     is_verified: Optional[int] = 1
     is_verified_review: Optional[int] = 1
     is_admin_choice: Optional[int] = 0
+    is_hidden: Optional[int] = 0
+    price_display: Optional[str] = None
+    hours_display: Optional[str] = None
 
 # ==============================================================================
 # THUẬT TOÁN ĐỊNH TUYẾN & GPS (HAVERSINE NEAREST NEIGHBOR)
@@ -252,10 +259,10 @@ def register(req: RegisterRequest):
 def get_places(category: Optional[str] = None, tag: Optional[str] = None, 
                min_price: Optional[int] = None, max_price: Optional[int] = None,
                min_rating: Optional[float] = None, search: Optional[str] = None,
-               only_verified: Optional[bool] = True):
+               only_verified: Optional[bool] = True, include_hidden: Optional[bool] = False):
     return get_all_places(category=category, context_tag=tag, min_budget=min_price, 
                           max_budget=max_price, min_rating=min_rating, search=search, 
-                          only_verified=only_verified)
+                          only_verified=only_verified, include_hidden=include_hidden)
 
 @app.get("/api/places/{place_id}")
 def get_place(place_id: int):
@@ -268,19 +275,61 @@ def get_place(place_id: int):
 # API GỢI Ý NHANH (QUICK RECOMMENDATION - 5 MỨC NGÂN SÁCH & TỰ NHẬP)
 # ==============================================================================
 
+def parse_place_tiers(place):
+    """
+    Bóc tách cấu trúc 2-Tier:
+    - Nếu chuỗi có định dạng tier1:...|tier2:...: bóc tách chính xác từng Tier.
+    - Nếu chuỗi dạng cũ phân tách dấu phẩy (tag1,tag2,tag3,tag4): 2 tag đầu là Tier 1, còn lại là Tier 2.
+    """
+    tags_str = (place.get("tags") or "").strip()
+    if not tags_str:
+        return [], []
+    if "tier1:" in tags_str or "tier2:" in tags_str:
+        parts = tags_str.split("|")
+        t1, t2 = [], []
+        for p in parts:
+            p = p.strip()
+            if p.startswith("tier1:"):
+                t1 = [x.strip() for x in p.replace("tier1:", "").split(",") if x.strip()]
+            elif p.startswith("tier2:"):
+                t2 = [x.strip() for x in p.replace("tier2:", "").split(",") if x.strip()]
+        return t1, t2
+    else:
+        all_tags = [x.strip() for x in tags_str.split(",") if x.strip()]
+        return all_tags[:2], all_tags[2:]
+
+
+def get_companion_tier_score(place, mapped_tag):
+    """
+    Mô hình Phân Tầng 2 Bậc (2-Tier Fit Model):
+    - Tier 1 (Cốt lõi - Phù hợp xuất sắc): +20.0 điểm cho MỌI tag thuộc Tier 1 (CÙNG TIER THÌ CÙNG ĐIỂM)
+    - Tier 2 (Khả dụng / Thứ cấp): +12.0 điểm cho MỌI tag thuộc Tier 2 (CÙNG TIER THÌ CÙNG ĐIỂM)
+    - Không có tag: -10.0 điểm
+    """
+    if not mapped_tag:
+        return 0.0, None
+    t1, t2 = parse_place_tiers(place)
+    if mapped_tag in t1:
+        return 20.0, 1
+    elif mapped_tag in t2:
+        return 12.0, 2
+    else:
+        return -10.0, None
+
+
 @app.post("/api/quick-recommend")
 def quick_recommend(req: QuickRecommendRequest):
     """
     Thuật toán phân tích ma trận đa chiều & Chấm điểm độ phù hợp (Smart Scoring):
     1. Lọc thể loại (category): Ẩm thực hoặc Vui chơi
-    2. Điểm tương thích đồng hành (context): đi 1 mình, cặp đôi, nhóm bạn, gia đình
+    2. Điểm tương thích đồng hành (context): đi 1 mình, cặp đôi, nhóm bạn, gia đình (chuẩn hóa 2-Tier)
     3. Điểm khớp ngân sách (budget): <50k, 50k-100k, 100k-250k, >250k hoặc số tiền tự nhập
     4. Trọng số uy tín (rating, reviews)
     5. Hỗ trợ offset xoay vòng (Đổi gợi ý khác) không bao giờ bị trùng lặp cứng nhắc
     """
-    all_places = get_all_places(category=req.category)
+    all_places = get_all_places(category=req.category, include_hidden=False)
     if not all_places:
-        all_places = get_all_places()
+        all_places = get_all_places(include_hidden=False)
 
     tag_mapping = {
         "di_1_minh": "di_1_minh",
@@ -293,74 +342,103 @@ def quick_recommend(req: QuickRecommendRequest):
     scored_places = []
     for p in all_places:
         score = 0.0
+        p_dict = dict(p)
 
         # 1. Khớp Category
         if req.category and req.category != "all" and p.get("category") != req.category:
             continue
 
-        # 2. Khớp Context (Đồng hành)
-        tags = [t.strip() for t in (p.get("tags") or "").split(",") if t.strip()]
-        if mapped_tag:
-            if mapped_tag in tags:
-                idx = tags.index(mapped_tag)
-                score += (20.0 - idx * 2.5)
-            else:
-                score -= 10.0
+        # 2. Khớp Context (Đồng hành) - Mô hình 2-Tier Chuẩn Xác (Cùng Tier thì Cùng Điểm)
+        tier_pts, fit_tier = get_companion_tier_score(p, mapped_tag)
+        score += tier_pts
+        p_dict["fit_tier"] = fit_tier
 
-        # 3. Khớp Ngân sách
+        # 3. Khớp Ngân sách (Loại trừ tuyệt đối các quán vi phạm giới hạn ngân sách)
         min_p = p.get("min_price", 0)
         max_p = p.get("max_price", 0)
         avg_p = (min_p + max_p) / 2.0
 
-        if p.get("category") == "di_choi" and min_p == 0 and max_p == 0:
+        if req.price_level == "free":
+            # Khi chọn Miễn phí (0đ): BẮT BUỘC giá phải là 0đ (loại bỏ tuyệt đối quán có thu phí)
+            if not (min_p == 0 and max_p == 0):
+                continue
+            score += 35.0
+        elif p.get("category") == "di_choi" and min_p == 0 and max_p == 0:
             if req.price_level == "under_50k":
-                score += 18.0
+                score += 20.0
             elif req.price_level == "50k_100k":
                 score += 10.0
             else:
-                score += 4.0
+                score += 5.0
         else:
             if req.price_level == "under_50k":
-                if max_p <= 60000:
-                    score += 20.0
-                elif min_p <= 50000:
-                    score += 5.0
-                else:
-                    score -= 30.0
-            elif req.price_level == "50k_100k":
-                if 40000 <= avg_p <= 115000 or (min_p <= 90000 and max_p >= 50000):
-                    score += 20.0
-                elif max_p < 40000:
-                    score -= 8.0
-                else:
-                    score -= 22.0
-            elif req.price_level == "100k_250k":
-                if 90000 <= avg_p <= 260000 or (max_p >= 100000 and min_p <= 250000):
-                    score += 20.0
-                elif max_p < 90000:
-                    score -= 18.0
-                else:
-                    score += 4.0
-            elif req.price_level == "above_250k":
-                if max_p >= 200000:
+                # Dưới 50k: Quán phải có giá tối thiểu <= 65k (loại bỏ dứt điểm các quán đắt tiền 100k, 200k)
+                if min_p > 65000:
+                    continue
+                if max_p <= 55000:
                     score += 25.0
-                elif max_p >= 100000:
-                    score += 6.0
                 else:
-                    score -= 25.0
+                    score += 15.0
+            elif req.price_level == "50k_100k":
+                # 50k - 100k: Quán trong khoảng hợp lý [40k, 125k]
+                if min_p > 125000 or (max_p > 0 and max_p < 40000):
+                    continue
+                if 45000 <= avg_p <= 110000:
+                    score += 25.0
+                else:
+                    score += 15.0
+            elif req.price_level == "100k_250k":
+                # 100k - 250k: Quán trong khoảng [90k, 280k]
+                if min_p > 280000 or (max_p > 0 and max_p < 85000):
+                    continue
+                if 95000 <= avg_p <= 260000:
+                    score += 25.0
+                else:
+                    score += 15.0
+            elif req.price_level == "above_250k":
+                # Trên 250k: Trải nghiệm cao cấp
+                if max_p > 0 and max_p < 150000:
+                    continue
+                if max_p >= 250000:
+                    score += 25.0
+                else:
+                    score += 15.0
             elif req.price_level == "custom" and req.custom_budget and req.custom_budget > 0:
                 cb = req.custom_budget
-                if min_p <= cb:
-                    ratio = min(avg_p, cb) / max(avg_p, cb, 1)
-                    score += 20.0 * ratio
-                else:
-                    score -= 30.0
+                if min_p > cb * 1.3:
+                    continue
+                ratio = min(avg_p, cb) / max(avg_p, cb, 1)
+                score += 25.0 * ratio
 
         # 4. Trọng số Đánh giá (Rating & Reviews)
         rating = float(p.get("rating", 4.0))
-        score += (rating - 4.0) * 6.0
+        reviews_count = int(p.get("reviews_count", 0))
 
-        scored_places.append((score, p))
+        # Điểm số sao: Chuẩn hóa tách mốc trung bình 4.0 (Mean-Centering)
+        rating_score = (rating - 4.0) * 4.0
+
+        # Điểm độ uy tín cộng đồng: Biến đổi Logarithmic Scaling log10(reviews + 1) * 2.0
+        if rating >= 4.0:
+            review_score = math.log10(reviews_count + 1) * 2.0
+        else:
+            review_score = -math.log10(reviews_count + 1) * 1.0
+
+        score += (rating_score + review_score)
+        scored_places.append((score, p_dict))
+
+    # Xử lý trường hợp: Người dùng chọn Ẩm thực nhưng lại chọn Miễn phí (0đ).
+    # Thực tế Sài Gòn không có quán ăn miễn phí 0đ, tự động chuyển hướng tìm các điểm tham quan/check-in 0đ!
+    if not scored_places and req.price_level == "free":
+        free_places = [p for p in get_all_places(category="di_choi", include_hidden=False) if p.get("min_price", 0) == 0 and p.get("max_price", 0) == 0]
+        for p in free_places:
+            p_dict = dict(p)
+            tier_pts, fit_tier = get_companion_tier_score(p, mapped_tag)
+            p_dict["fit_tier"] = fit_tier
+            p_dict["free_fallback_notice"] = "Sài Gòn không có quán ăn miễn phí (0đ). SGGo đã gợi ý các điểm đến tham quan & check-in 0đ phù hợp nhất cho bạn!"
+            rating = float(p.get("rating", 4.0))
+            reviews_count = int(p.get("reviews_count", 0))
+            r_score = (rating - 4.0) * 4.0 + (math.log10(reviews_count + 1) * 2.0 if rating >= 4.0 else -math.log10(reviews_count + 1))
+            scored_places.append((tier_pts + 35.0 + r_score, p_dict))
 
     # Sắp xếp theo điểm phù hợp giảm dần
     scored_places.sort(key=lambda x: x[0], reverse=True)
@@ -381,14 +459,100 @@ def quick_recommend(req: QuickRecommendRequest):
     return results
 
 # ==============================================================================
-# API LẬP LỘ TRÌNH THÔNG MINH (AI SMART ITINERARY)
+# API LẬP LỘ TRÌNH THÔNG MINH (RULE-BASED + HEURISTIC TSP + GEMINI AI EXPLANATION)
 # ==============================================================================
+
+def parse_free_time_minutes(free_time_str: str) -> int:
+    """Tính tổng số phút rảnh từ chuỗi thời gian (VD: '14:00 - 18:30' -> 270 phút)"""
+    if not free_time_str:
+        return 240
+    parts = re.findall(r'(\d{1,2})[:hH](\d{0,2})', free_time_str)
+    if len(parts) >= 2:
+        h1, m1 = int(parts[0][0]), int(parts[0][1] or 0)
+        h2, m2 = int(parts[1][0]), int(parts[1][1] or 0)
+        start_m = h1 * 60 + m1
+        end_m = h2 * 60 + m2
+        if end_m < start_m:
+            end_m += 24 * 60
+        return max(15, end_m - start_m)
+    h_match = re.search(r'(\d+)\s*(tiếng|giờ|h)', free_time_str, re.IGNORECASE)
+    if h_match:
+        return int(h_match.group(1)) * 60
+    return 240
+
+def parse_target_budget_amount(req: ItineraryRequest) -> int:
+    """Xác định ngân sách mục tiêu dạng số nguyên (VNĐ)"""
+    if req.target_budget and req.target_budget > 0:
+        return req.target_budget
+    lvl = req.budget_level or req.budget or "100k_250k"
+    if lvl == "free":
+        return 0
+    elif lvl == "under_100k":
+        return 100000
+    elif lvl == "100k_250k":
+        return 250000
+    elif lvl == "above_250k":
+        return 500000
+    return 250000
+
+def is_place_open_during_window(p: dict, free_time_str: str) -> bool:
+    """Kiểm tra quán có mở cửa trong khung giờ rảnh không (Business Rule 2)"""
+    ot = p.get("open_time")
+    ct = p.get("close_time")
+    if not ot or not ct or ot == "Chưa rõ" or ct == "Chưa rõ":
+        return True
+    try:
+        parts = re.findall(r'(\d{1,2})[:hH](\d{0,2})', free_time_str)
+        if len(parts) >= 2:
+            req_start = int(parts[0][0]) * 60 + int(parts[0][1] or 0)
+            req_end = int(parts[1][0]) * 60 + int(parts[1][1] or 0)
+        else:
+            return True
+
+        ot_parts = re.findall(r'(\d{1,2})[:hH](\d{0,2})', ot)
+        ct_parts = re.findall(r'(\d{1,2})[:hH](\d{0,2})', ct)
+        if not ot_parts or not ct_parts:
+            return True
+        p_start = int(ot_parts[0][0]) * 60 + int(ot_parts[0][1] or 0)
+        p_end = int(ct_parts[0][0]) * 60 + int(ct_parts[0][1] or 0)
+        if p_end < p_start:
+            p_end += 24 * 60
+
+        return not (req_end < p_start or req_start > p_end)
+    except Exception:
+        return True
 
 @app.post("/api/ai-itinerary")
 def generate_itinerary(req: ItineraryRequest):
-    all_places = get_all_places()
+    all_places = get_all_places(include_hidden=False)
     if not all_places:
         raise HTTPException(status_code=500, detail="Cơ sở dữ liệu đang rỗng.")
+
+    # 1. RÀNG BUỘC NGHIỆP VỤ BẮT BUỘC (BUSINESS RULE 3 & KIỂM THỬ BẮT BUỘC)
+    free_duration = parse_free_time_minutes(req.free_time)
+    target_budget = parse_target_budget_amount(req)
+
+    # Ràng buộc thời gian rảnh: Tối thiểu 60 phút cho lịch trình 3 trạm
+    if free_duration < 60:
+        return {
+            "feasible": False,
+            "error_code": "TIME_TOO_SHORT",
+            "message": f"Khung giờ rảnh của bạn ({free_duration} phút) quá ngắn để hoàn thành lịch trình 3 trạm (tối thiểu cần 60 - 90 phút).",
+            "suggestion": "Bạn hãy mở rộng khung giờ rảnh lên tối thiểu 90 phút (ví dụ: '18:00 - 20:30' hoặc '14:00 - 18:30') để có trải nghiệm trọn vẹn nhất nhé!",
+            "recommended_time": "14:00 - 18:30",
+            "recommended_budget": target_budget
+        }
+
+    # Ràng buộc ngân sách: Nếu đi ăn uống mà ngân sách < 40k (không phải chọn 0đ)
+    if req.purpose in ["an_uong", "ca_hai"] and req.budget_level != "free" and target_budget < 40000:
+        return {
+            "feasible": False,
+            "error_code": "BUDGET_TOO_LOW",
+            "message": f"Ngân sách ({target_budget:,}đ) quá thấp cho lộ trình ẩm thực 3 trạm tại TP.HCM.",
+            "suggestion": "Bạn hãy nới ngân sách lên tối thiểu 80.000đ - 100.000đ hoặc chuyển sang mục đích 'Chỉ đi Tham quan' để check-in các điểm 0đ nhé!",
+            "recommended_time": req.free_time,
+            "recommended_budget": 100000
+        }
 
     # 1. Xác định toạ độ điểm xuất phát (Ưu tiên GPS chính xác từ Geolocation API của trình duyệt)
     if req.start_lat and req.start_lon:
@@ -430,8 +594,8 @@ def generate_itinerary(req: ItineraryRequest):
 
     takenote_str = req.takenote or req.context or "Không có ghi chú loại trừ đặc biệt."
 
-    # 3. Sử dụng Google Gemini AI để thấu hiểu ngữ cảnh và chọn 3 trạm phù hợp nhất
-    if ai_client:
+    # 3. Sử dụng Google Gemini AI để thấu hiểu ngữ cảnh và chọn 3 trạm phù hợp nhất (COULD G6-FR11)
+    if ai_client and req.ai_model not in ["none", "rule_based", "off"]:
         prompt = f"""Bạn là Chuyên gia Lập Lộ trình Du lịch & Ẩm thực Sài Gòn (TP.HCM) cho nền tảng SGGo! Travel Guide.
 YÊU CỦA NGƯỜI DÙNG:
 - Điểm xuất phát: "{req.start_location}"
@@ -500,16 +664,31 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
             except Exception:
                 continue
 
-    # 4. Fallback phòng hộ nếu Gemini AI không kết nối được
+    # 4. Fallback phòng hộ nếu Gemini AI không kết nối được hoặc dùng Rule-Based Heuristic
     if len(selected_ids) < 3:
+        # Lọc theo giờ mở cửa (Business Rule 2: địa điểm đóng cửa/ẩn không đưa vào lịch trình)
+        open_cands = [p for p in all_places if is_place_open_during_window(p, req.free_time)]
+        valid_pool = open_cands if len(open_cands) >= 10 else all_places
+
         if req.purpose == "di_choi":
-            candidates = [p for p in all_places if p.get("category") == "di_choi"]
+            candidates = [p for p in valid_pool if p.get("category") == "di_choi"]
             if len(candidates) < 3:
-                candidates += [p for p in all_places if "cafe" in remove_accent(p.get("name", "")).lower() or "che" in remove_accent(p.get("name", "")).lower()]
+                candidates += [p for p in valid_pool if "cafe" in remove_accent(p.get("name", "")).lower() or "che" in remove_accent(p.get("name", "")).lower()]
         elif req.purpose == "an_uong":
-            candidates = [p for p in all_places if p.get("category") == "an_uong"]
+            candidates = [p for p in valid_pool if p.get("category") == "an_uong"]
         else:
-            candidates = all_places
+            candidates = valid_pool
+
+        # Lọc theo ngân sách nếu chọn Miễn phí (0đ)
+        if req.budget_level == "free" or target_budget == 0:
+            free_cands = [p for p in candidates if (p.get("min_price") or 0) == 0 and (p.get("max_price") or 0) == 0]
+            if len(free_cands) >= 3:
+                candidates = free_cands
+
+        # Xáo trộn danh sách ứng viên theo shuffle_seed (G6-FR06: Xáo trộn/Đổi phương án khác)
+        if req.shuffle_seed and req.shuffle_seed > 0:
+            shift = (req.shuffle_seed * 4) % max(1, len(candidates))
+            candidates = candidates[shift:] + candidates[:shift]
 
         # Lọc loại trừ theo Take note (Hỗ trợ cả tên viết tắt, tên phụ, từ khóa như 'chùa bà', 'cả cần', 'hà ký')
         if req.takenote:
@@ -541,19 +720,35 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
             if len(filtered_cands) >= 3:
                 candidates = filtered_cands
 
+        # Sắp xếp ứng viên theo cự ly gần nhất từ điểm xuất phát và áp dụng Sliding Window theo shuffle_seed
+        seed = req.shuffle_seed or 0
+
         # Đối với mục đích 'Cả hai': Đảm bảo kết hợp hài hòa cả Ẩm thực lẫn Vui chơi/Di tích/Cafe
         if req.purpose == "ca_hai":
             play_cands = [p for p in candidates if p.get("category") == "di_choi"]
             eat_cands = [p for p in candidates if p.get("category") == "an_uong"]
             if play_cands and eat_cands:
-                opt_play = optimize_route_nearest_neighbor((start_lat, start_lon), play_cands, max_stops=1)
-                opt_eat = optimize_route_nearest_neighbor((start_lat, start_lon), eat_cands, max_stops=2)
+                play_sorted = sorted(play_cands, key=lambda p: calculate_haversine_distance(start_lat, start_lon, p.get("lat") or 10.75, p.get("lon") or 106.66))
+                eat_sorted = sorted(eat_cands, key=lambda p: calculate_haversine_distance(start_lat, start_lon, p.get("lat") or 10.75, p.get("lon") or 106.66))
+                
+                off_play = (seed * 2) % max(1, len(play_sorted) - 2) if len(play_sorted) > 3 else 0
+                off_eat = (seed * 3) % max(1, len(eat_sorted) - 3) if len(eat_sorted) > 4 else 0
+                
+                win_play = play_sorted[off_play:off_play + 6]
+                win_eat = eat_sorted[off_eat:off_eat + 8]
+                
+                opt_play = optimize_route_nearest_neighbor((start_lat, start_lon), win_play, max_stops=1)
+                opt_eat = optimize_route_nearest_neighbor((start_lat, start_lon), win_eat, max_stops=2)
                 combo = opt_play + opt_eat
                 opt_stops = optimize_route_nearest_neighbor((start_lat, start_lon), combo, max_stops=3)
             else:
-                opt_stops = optimize_route_nearest_neighbor((start_lat, start_lon), candidates, max_stops=3)
+                c_sorted = sorted(candidates, key=lambda p: calculate_haversine_distance(start_lat, start_lon, p.get("lat") or 10.75, p.get("lon") or 106.66))
+                off = (seed * 3) % max(1, len(c_sorted) - 4) if len(c_sorted) > 5 else 0
+                opt_stops = optimize_route_nearest_neighbor((start_lat, start_lon), c_sorted[off:off + 10], max_stops=3)
         else:
-            opt_stops = optimize_route_nearest_neighbor((start_lat, start_lon), candidates, max_stops=3)
+            c_sorted = sorted(candidates, key=lambda p: calculate_haversine_distance(start_lat, start_lon, p.get("lat") or 10.75, p.get("lon") or 106.66))
+            off = (seed * 3) % max(1, len(c_sorted) - 4) if len(c_sorted) > 5 else 0
+            opt_stops = optimize_route_nearest_neighbor((start_lat, start_lon), c_sorted[off:off + 10], max_stops=3)
 
         selected_ids = [p["id"] for p in opt_stops]
         overall_advice = f"Lộ trình 3 trạm tối ưu xuất phát từ '{req.start_location}', sắp xếp theo khung giờ {req.free_time} cho {companion_str} với mục đích {purpose_str}."
@@ -583,20 +778,26 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
         f"&travelmode=two_wheeler"
     )
 
-    # 7. Xây dựng dữ liệu Timeline chi tiết
+    # 7. Xây dựng dữ liệu Timeline chi tiết & Tính toán KPI ràng buộc (G6-FR05 & Section 5)
     steps = []
+    stops_db_data = []
     curr_lat, curr_lon = start_lat, start_lon
+    total_dist = 0.0
+    total_t_min = 0
+
     for idx, spot in enumerate(optimized_places):
         p_lat = spot.get("lat") or 10.7550
         p_lon = spot.get("lon") or 106.6650
         dist = round(calculate_haversine_distance(curr_lat, curr_lon, p_lat, p_lon), 2)
         t_min = max(3, int(round(dist * 3.5)))
+        total_dist += dist
+        total_t_min += t_min
         curr_lat, curr_lon = p_lat, p_lon
 
         ai_info = gemini_stops_info.get(spot["id"], {})
-        slot_time = ai_info.get("time_slot") or f"Chặng {idx+1} ({t_min + 45} phút trải nghiệm)"
+        slot_time = ai_info.get("time_slot") or f"Chặng {idx+1} ({t_min + 45} phút)"
         action_title = ai_info.get("action_title") or f"Trạm {idx+1}: Khám phá {spot['name']} [{ 'Ẩm thực' if spot.get('category') == 'an_uong' else 'Đi chơi/Di tích' }]"
-        ai_reason = ai_info.get("ai_reason", "Địa điểm phù hợp với bối cảnh và thời gian rảnh của bạn.")
+        ai_reason = ai_info.get("ai_reason", "Địa điểm mở cửa phù hợp, láng giềng gần nhất tối ưu lộ trình di chuyển.")
         must_try_tip = ai_info.get("must_try_tip", spot.get("must_try_dishes") or "Trải nghiệm không gian đặc sắc.")
 
         if dist < 0.8:
@@ -606,7 +807,10 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
         else:
             traffic_note = f"Khoảng cách ~{dist} km, nên đi sớm tránh giờ tan tầm kẹt xe."
 
-        steps.append({
+        p_min_cost = spot.get("min_price", 0)
+        p_max_cost = spot.get("max_price", 0)
+
+        step_dict = {
             "place_id": spot.get("id"),
             "time": slot_time,
             "action": action_title,
@@ -617,31 +821,77 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
             "must_try_tip": must_try_tip,
             "image_url": spot.get("image_url"),
             "open_hours": f"{spot.get('open_time')} - {spot.get('close_time')}",
-            "price_range": f"{spot.get('min_price', 0):,}đ - {spot.get('max_price', 0):,}đ",
+            "price_range": f"{p_min_cost:,}đ - {p_max_cost:,}đ",
             "lat": p_lat,
-            "lon": p_lon
+            "lon": p_lon,
+            "dist": dist,
+            "t_min": t_min
+        }
+        steps.append(step_dict)
+
+        stops_db_data.append({
+            "place_id": spot.get("id"),
+            "stop_order": idx + 1,
+            "time_slot": slot_time,
+            "action_title": action_title,
+            "travel_distance_km": dist,
+            "travel_time_minutes": t_min,
+            "estimated_cost_min": p_min_cost,
+            "estimated_cost_max": p_max_cost
         })
 
+    # Tính tổng ngân sách & tổng thời gian (G6-FR05 MUST)
+    total_min_cost = sum(spot.get("min_price", 0) for spot in optimized_places)
+    total_max_cost = sum(spot.get("max_price", 0) for spot in optimized_places)
+    total_stay_mins = len(optimized_places) * 45  # Giả định 45 phút mỗi trạm
+    total_duration_minutes = total_t_min + total_stay_mins
+
+    is_within_budget = (target_budget == 0 and total_min_cost == 0) or (total_min_cost <= target_budget * 1.25)
+    is_within_time = total_duration_minutes <= (free_duration + 30)
+
+    # Lưu lịch trình vào CSDL SQLite (Section 5 ERD & Data Dictionary)
+    itin_id = None
+    try:
+        itin_id = save_itinerary({
+            "user_id": None,
+            "start_location": req.start_location,
+            "start_lat": start_lat,
+            "start_lon": start_lon,
+            "free_time": req.free_time,
+            "companion": req.companion,
+            "purpose": req.purpose,
+            "budget_level": req.budget_level or req.budget,
+            "target_budget": target_budget,
+            "total_estimated_budget_min": total_min_cost,
+            "total_estimated_budget_max": total_max_cost,
+            "total_duration_minutes": total_duration_minutes,
+            "summary": overall_advice
+        }, stops_db_data)
+    except Exception as e:
+        print(f"Lưu itinerary DB log: {e}")
+
     return {
+        "feasible": True,
+        "itinerary_id": itin_id,
         "summary": overall_advice,
         "steps": steps,
         "model_used": actual_model,
         "start_coords": {"lat": start_lat, "lon": start_lon},
-        "gmaps_multi_url": gmaps_multi_url
+        "gmaps_multi_url": gmaps_multi_url,
+        "kpi": {
+            "target_budget": target_budget,
+            "total_min_cost": total_min_cost,
+            "total_max_cost": total_max_cost,
+            "is_within_budget": is_within_budget,
+            "free_duration_minutes": free_duration,
+            "total_duration_minutes": total_duration_minutes,
+            "total_travel_distance_km": round(total_dist, 2),
+            "total_travel_time_minutes": total_t_min,
+            "is_within_time": is_within_time
+        }
     }
 
-# ==============================================================================
-# CÁC API YÊU THÍCH (FAVORITES)
-# ==============================================================================
 
-@app.post("/api/favorites/{place_id}")
-def toggle_user_favorite(place_id: int, user_id: int = Body(..., embed=True)):
-    action = toggle_favorite(user_id, place_id)
-    return {"status": "ok", "action": action}
-
-@app.get("/api/favorites")
-def get_favorites(user_id: int):
-    return get_user_favorites(user_id)
 
 # ==============================================================================
 # CÁC API QUẢN TRỊ DÀNH CHO ADMIN (ADMIN CRUD & IMPORT CSV)
@@ -663,6 +913,13 @@ def modify_place(place_id: int, place: PlaceModel):
 def remove_place(place_id: int):
     delete_place(place_id)
     return {"status": "ok", "message": "Đã xóa địa điểm thành công."}
+
+@app.post("/api/admin/places/{place_id}/toggle-hide")
+def toggle_admin_place_hide(place_id: int):
+    res = toggle_hide_place(place_id)
+    if not res:
+        raise HTTPException(status_code=404, detail="Không tìm thấy địa điểm.")
+    return {"status": "ok", "place": res}
 
 @app.get("/api/admin/sample-csv")
 def download_sample_csv():
@@ -898,10 +1155,24 @@ def extract_gmaps_info(req: ExtractGmapsRequest):
 
 
 
+class ImportCSVRequest(BaseModel):
+    csv_content: str
+    filename: Optional[str] = "places_import.csv"
+
 @app.post("/api/admin/import-csv")
-def import_csv_places(csv_content: str = Body(..., embed=True)):
-    count = import_csv_data(csv_content)
-    return {"status": "ok", "imported_count": count}
+def import_csv_places(req: ImportCSVRequest):
+    res = import_csv_data(req.csv_content, filename=req.filename or "places_import.csv")
+    return {
+        "status": "ok",
+        "imported_count": res.get("success_count", 0),
+        "error_count": res.get("error_count", 0),
+        "total_rows": res.get("total_rows", 0),
+        "errors": res.get("errors", [])
+    }
+
+@app.get("/api/admin/import-logs")
+def admin_get_import_logs(limit: int = 10):
+    return get_import_logs(limit=limit)
 
 @app.get("/api/admin/stats")
 def get_admin_stats():
@@ -913,14 +1184,12 @@ def get_admin_stats():
     verified_places = cursor.fetchone()[0]
     cursor.execute("SELECT COUNT(*) FROM users")
     total_users = cursor.fetchone()[0]
-    cursor.execute("SELECT COUNT(*) FROM favorites")
-    total_favorites = cursor.fetchone()[0]
     conn.close()
     return {
         "total_places": total_places,
         "verified_places": verified_places,
         "total_users": total_users,
-        "total_favorites": total_favorites
+        "total_favorites": 0
     }
 
 @app.get("/api/admin/users")
@@ -948,84 +1217,3 @@ def admin_delete_user(user_id: int):
 frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
 if os.path.exists(frontend_dir):
     app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
-
-@app.post("/api/admin/places/{place_id}/toggle-hide")
-def toggle_admin_place_hide(place_id: int, payload: dict = Body(...), current_user: dict = Depends(get_current_admin_user)):
-    """Toggle visibility status (is_hidden) của một địa điểm"""
-    from backend.database import toggle_hide_place
-    is_hidden = int(payload.get("is_hidden", 1))
-    success = toggle_hide_place(place_id, is_hidden)
-    if not success:
-        raise HTTPException(status_code=404, detail="Không tìm thấy địa điểm")
-    return {"status": "success", "place_id": place_id, "is_hidden": is_hidden}
-
-def parse_place_tiers(place: dict):
-    tags_str = place.get("context_tag") or ""
-    tags = [t.strip().lower() for t in tags_str.split(",") if t.strip()]
-    tier1 = [t for t in tags if any(k in t for k in ["hẹn hò", "gia đình", "bạn bè", "một mình", "nhóm đông"])]
-    tier2 = [t for t in tags if t not in tier1]
-    return tier1, tier2
-
-def get_companion_tier_score(user_companion: str, place_tags: list) -> float:
-    if not user_companion:
-        return 0.0
-    u = user_companion.strip().lower()
-    for t in place_tags:
-        if u in t or t in u:
-            return 12.0
-    return 0.0
-
-
-@app.get("/api/admin/import-logs")
-def admin_get_import_logs(current_user: dict = Depends(get_current_admin_user)):
-    """API lấy lịch sử các lần import CSV kèm báo cáo lỗi"""
-    from backend.database import get_import_logs
-    return {"status": "success", "logs": get_import_logs()}
-
-def parse_target_budget_amount(budget_str: str):
-    if not budget_str or budget_str == "tuy_duyen":
-        return None
-    b = str(budget_str).strip().lower()
-    if b == "0" or "miễn phí" in b:
-        return 0
-    if b.isdigit():
-        return int(b)
-    if "50k-100k" in b: return 100000
-    if "100k-200k" in b: return 200000
-    if "200k-500k" in b: return 500000
-    if ">500k" in b: return 1000000
-    return None
-
-def parse_free_time_minutes(time_str: str) -> int:
-    s = str(time_str).lower()
-    if "2-3" in s: return 150
-    if "buổi" in s: return 240
-    if "cả ngày" in s: return 480
-    return 180
-
-def check_itinerary_constraints(route_places: list, max_budget, free_time_mins: int):
-    total_est_budget = sum((p.get("min_price", 0) + p.get("max_price", 0)) // 2 for p in route_places)
-    min_required_time = len(route_places) * 60
-    violations = []
-    if free_time_mins < min_required_time:
-        violations.append({
-            "code": "TIME_TOO_SHORT",
-            "message": f"Thời gian rảnh ({free_time_mins}p) quá ngắn cho {len(route_places)} địa điểm",
-            "suggested_min_time": min_required_time
-        })
-    if max_budget is not None and max_budget > 0 and total_est_budget > max_budget:
-        violations.append({
-            "code": "BUDGET_TOO_LOW",
-            "message": f"Ngân sách ({max_budget:,}đ) thấp hơn chi phí dự kiến ({total_est_budget:,}đ)",
-            "suggested_min_budget": total_est_budget
-        })
-    return violations, total_est_budget, min_required_time
-
-def shuffle_candidate_places(candidates: list, shuffle_count: int = 0) -> list:
-    if not candidates:
-        return []
-    if shuffle_count > 0:
-        c_copy = list(candidates)
-        offset = (shuffle_count * 2) % len(c_copy)
-        return c_copy[offset:] + c_copy[:offset]
-    return candidates

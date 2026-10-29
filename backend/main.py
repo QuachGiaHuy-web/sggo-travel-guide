@@ -958,3 +958,19 @@ def toggle_admin_place_hide(place_id: int, payload: dict = Body(...), current_us
     if not success:
         raise HTTPException(status_code=404, detail="Không tìm thấy địa điểm")
     return {"status": "success", "place_id": place_id, "is_hidden": is_hidden}
+
+def parse_place_tiers(place: dict):
+    tags_str = place.get("context_tag") or ""
+    tags = [t.strip().lower() for t in tags_str.split(",") if t.strip()]
+    tier1 = [t for t in tags if any(k in t for k in ["hẹn hò", "gia đình", "bạn bè", "một mình", "nhóm đông"])]
+    tier2 = [t for t in tags if t not in tier1]
+    return tier1, tier2
+
+def get_companion_tier_score(user_companion: str, place_tags: list) -> float:
+    if not user_companion:
+        return 0.0
+    u = user_companion.strip().lower()
+    for t in place_tags:
+        if u in t or t in u:
+            return 12.0
+    return 0.0

@@ -570,6 +570,35 @@
 
         <!-- Kết quả Timeline & Bản đồ & Nút Google Maps -->
         <div id="aiResultArea" class="mt-8 pt-6 border-t border-slate-200 hidden">
+        <!-- Cảnh báo vi phạm ràng buộc Business Rule 3 -->
+        <div id="aiConstraintAlert" class="hidden mt-4 p-4 rounded-2xl bg-amber-50 border border-amber-200">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="flex-1">
+              <h4 id="aiConstraintAlertTitle" class="text-xs font-black text-amber-900 mb-1">Cảnh báo ràng buộc lịch trình</h4>
+              <p id="aiConstraintAlertMsg" class="text-xs text-amber-700 leading-relaxed mb-2.5"></p>
+              <button id="btnAutoRelaxConstraint" type="button" onclick="handleAutoRelaxConstraint()" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold shadow-xs transition flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
+                <span id="btnAutoRelaxText">Tự động nới điều kiện & Tạo lại</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 thẻ KPI: Tổng chi phí dự kiến và Tổng thời gian -->
+        <div class="grid grid-cols-2 gap-3 mt-4 mb-4">
+          <div class="bg-gradient-to-br from-emerald-50/80 to-teal-50/50 p-3.5 rounded-2xl border border-emerald-200/80">
+            <div class="text-[11px] font-bold text-emerald-800">Tổng chi phí dự kiến</div>
+            <div id="aiKpiBudget" class="text-base sm:text-lg font-black text-emerald-950 mt-0.5">0đ</div>
+          </div>
+          <div class="bg-gradient-to-br from-sky-50/80 to-indigo-50/50 p-3.5 rounded-2xl border border-sky-200/80">
+            <div class="text-[11px] font-bold text-sky-800">Tổng thời gian dự kiến</div>
+            <div id="aiKpiDuration" class="text-base sm:text-lg font-black text-sky-950 mt-0.5">0p</div>
+          </div>
+        </div>
+
           
           <!-- Nút Mở Google Maps Multi-stop Dẫn Đường Xe Máy 3 Trạm -->
           <div class="mb-6">

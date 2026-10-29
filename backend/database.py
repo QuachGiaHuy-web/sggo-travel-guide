@@ -81,6 +81,27 @@ def init_db():
 
     # 3. BẢNG FAVORITES (Địa điểm yêu thích của người dùng)
     cursor.execute("""
+    
+    CREATE TABLE IF NOT EXISTS itineraries (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        title TEXT,
+        target_budget INTEGER,
+        free_time_minutes INTEGER,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS itinerary_stops (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        itinerary_id INTEGER,
+        place_id INTEGER,
+        stop_order INTEGER,
+        allocated_time_minutes INTEGER,
+        FOREIGN KEY (itinerary_id) REFERENCES itineraries(id),
+        FOREIGN KEY (place_id) REFERENCES places(id)
+    );
+
     CREATE TABLE IF NOT EXISTS favorites (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
@@ -559,3 +580,22 @@ def toggle_hide_place(place_id: int, is_hidden: int = 1) -> bool:
     conn.commit()
     conn.close()
     return success
+
+
+def save_itinerary(user_id: int, title: str, target_budget: int, free_time: int, stops: list):
+    """Lưu trữ lịch trình và các điểm dừng vào database (Section 5 ERD)"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO itineraries (user_id, title, target_budget, free_time_minutes)
+        VALUES (?, ?, ?, ?)
+    """, (user_id, title, target_budget, free_time))
+    itin_id = cursor.lastrowid
+    for order, stop in enumerate(stops, 1):
+        cursor.execute("""
+            INSERT INTO itinerary_stops (itinerary_id, place_id, stop_order, allocated_time_minutes)
+            VALUES (?, ?, ?, ?)
+        """, (itin_id, stop.get("id"), order, stop.get("allocated_time", 60)))
+    conn.commit()
+    conn.close()
+    return itin_id

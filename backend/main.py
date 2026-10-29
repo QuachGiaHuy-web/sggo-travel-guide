@@ -948,3 +948,13 @@ def admin_delete_user(user_id: int):
 frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
 if os.path.exists(frontend_dir):
     app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
+
+@app.post("/api/admin/places/{place_id}/toggle-hide")
+def toggle_admin_place_hide(place_id: int, payload: dict = Body(...), current_user: dict = Depends(get_current_admin_user)):
+    """Toggle visibility status (is_hidden) của một địa điểm"""
+    from backend.database import toggle_hide_place
+    is_hidden = int(payload.get("is_hidden", 1))
+    success = toggle_hide_place(place_id, is_hidden)
+    if not success:
+        raise HTTPException(status_code=404, detail="Không tìm thấy địa điểm")
+    return {"status": "success", "place_id": place_id, "is_hidden": is_hidden}

@@ -1046,6 +1046,13 @@
 
       <h3 class="text-base font-black text-slate-900 mb-2">Nhập Dữ Liệu Từ File CSV</h3>
       <p class="text-xs text-slate-500 mb-4">Chọn file CSV có cấu trúc chuẩn theo mẫu để nạp hàng loạt địa điểm vào CSDL SQLite.</p>
+      <!-- Báo cáo lỗi kiểm tra dữ liệu CSV (G6-FR09 & Demo Flow 3) -->
+      <div id="csvValidationReport" class="hidden mb-4 p-3.5 bg-rose-50 border border-rose-200 rounded-2xl">
+        <h5 class="text-xs font-black text-rose-800 mb-1 flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-exclamation text-rose-600"></i> Báo cáo kiểm tra dữ liệu CSV
+        </h5>
+        <div id="csvErrorList" class="max-h-40 overflow-y-auto text-[11px] text-rose-700 space-y-1"></div>
+      </div>
 
       <div class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-[#E11D48] transition cursor-pointer mb-4" onclick="document.getElementById('csvFileInput').click()">
         <i class="fa-solid fa-file-arrow-up text-3xl text-[#E11D48] mb-2"></i>

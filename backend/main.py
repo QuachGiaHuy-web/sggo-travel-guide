@@ -1020,3 +1020,12 @@ def check_itinerary_constraints(route_places: list, max_budget, free_time_mins: 
             "suggested_min_budget": total_est_budget
         })
     return violations, total_est_budget, min_required_time
+
+def shuffle_candidate_places(candidates: list, shuffle_count: int = 0) -> list:
+    if not candidates:
+        return []
+    if shuffle_count > 0:
+        c_copy = list(candidates)
+        offset = (shuffle_count * 2) % len(c_copy)
+        return c_copy[offset:] + c_copy[:offset]
+    return candidates

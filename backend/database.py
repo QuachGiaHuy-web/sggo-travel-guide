@@ -146,11 +146,37 @@ def init_db():
     );
     """)
 
+    # 7. BẢNG TAGS (Danh mục thẻ ngữ cảnh theo yêu cầu G6-FR08 & Section 5 ERD)
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS tags (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tag_key TEXT UNIQUE NOT NULL,
+        name TEXT NOT NULL,
+        tier_type TEXT DEFAULT 'companion',
+        is_active INTEGER DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    """)
+
+    # 8. BẢNG PLACE_TAGS (Bảng quan hệ nhiều-nhiều giữa Place và Tag theo Section 5 ERD)
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS place_tags (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        place_id INTEGER NOT NULL,
+        tag_id INTEGER NOT NULL,
+        tier INTEGER DEFAULT 1,
+        FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE,
+        FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE,
+        UNIQUE(place_id, tag_id)
+    );
+    """)
+
     conn.commit()
 
     # Khởi tạo dữ liệu mẫu nếu bảng còn trống
     seed_users_if_needed(conn)
     seed_places_if_needed(conn)
+    seed_tags_if_needed(conn)
     conn.close()
 
 def seed_users_if_needed(conn):
@@ -212,6 +238,39 @@ def seed_places_if_needed(conn):
             best_review, worst_review, image_url, tags, is_verified
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, places_to_insert)
+        conn.commit()
+
+
+def seed_tags_if_needed(conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM tags")
+    if cursor.fetchone()[0] == 0:
+        default_tags = [
+            ("nhom_ban", "Nhóm bạn thân", "companion"),
+            ("hen_ho", "Cặp đôi / Hẹn hò", "companion"),
+            ("gia_dinh", "Gia đình / Người thân", "companion"),
+            ("di_1_minh", "Đi một mình (Solo)", "companion"),
+        ]
+        for k, n, t in default_tags:
+            cursor.execute("INSERT OR IGNORE INTO tags (tag_key, name, tier_type) VALUES (?, ?, ?)", (k, n, t))
+        conn.commit()
+
+    cursor.execute("SELECT COUNT(*) FROM place_tags")
+    if cursor.fetchone()[0] == 0:
+        cursor.execute("SELECT id, tag_key FROM tags")
+        tag_map = {row[1]: row[0] for row in cursor.fetchall()}
+
+        cursor.execute("SELECT id, tags FROM places")
+        places = cursor.fetchall()
+        for pid, tags_str in places:
+            if not tags_str:
+                continue
+            raw_tags = [t.strip() for t in tags_str.split(",") if t.strip()]
+            for idx, t in enumerate(raw_tags):
+                tag_id = tag_map.get(t)
+                if tag_id:
+                    tier = 1 if idx < 2 else 2
+                    cursor.execute("INSERT OR IGNORE INTO place_tags (place_id, tag_id, tier) VALUES (?, ?, ?)", (pid, tag_id, tier))
         conn.commit()
 
 def sync_db_to_json():
@@ -723,3 +782,74 @@ def get_import_logs(limit=10):
     rows = [dict(r) for r in cursor.fetchall()]
     conn.close()
     return rows
+
+
+# ==========================================
+# QUẢN LÝ TAG & BỘ LỌC (G6-FR08 & Section 5 ERD)
+# ==========================================
+def get_all_tags():
+    """Lấy danh sách tất cả các tag cùng số lượng quán liên kết"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    SELECT t.id, t.tag_key, t.name, t.tier_type, t.is_active, t.created_at,
+           COUNT(pt.place_id) as place_count
+    FROM tags t
+    LEFT JOIN place_tags pt ON t.id = pt.tag_id
+    GROUP BY t.id
+    ORDER BY t.tier_type, t.id
+    """)
+    rows = [dict(r) for r in cursor.fetchall()]
+    conn.close()
+    return rows
+
+def add_tag(tag_key: str, name: str, tier_type: str = "companion"):
+    """Thêm một tag mới vào hệ thống"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    clean_key = tag_key.strip().lower().replace(" ", "_")
+    try:
+        cursor.execute("""
+        INSERT INTO tags (tag_key, name, tier_type, is_active)
+        VALUES (?, ?, ?, 1)
+        """, (clean_key, name.strip(), tier_type))
+        conn.commit()
+        tag_id = cursor.lastrowid
+        conn.close()
+        return {"status": "success", "id": tag_id, "tag_key": clean_key, "name": name}
+    except Exception as e:
+        conn.close()
+        return {"status": "error", "message": str(e)}
+
+def update_tag(tag_id: int, name: str, is_active: int = 1):
+    """Cập nhật tên và trạng thái của tag"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    UPDATE tags SET name = ?, is_active = ? WHERE id = ?
+    """, (name.strip(), is_active, tag_id))
+    success = cursor.rowcount > 0
+    conn.commit()
+    conn.close()
+    return success
+
+def delete_tag(tag_id: int):
+    """Xóa tag khỏi hệ thống (đồng thời xóa liên kết trong place_tags)"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM place_tags WHERE tag_id = ?", (tag_id,))
+    cursor.execute("DELETE FROM tags WHERE id = ?", (tag_id,))
+    success = cursor.rowcount > 0
+    conn.commit()
+    conn.close()
+    return success
+
+def toggle_tag_active(tag_id: int, is_active: int):
+    """Bật/tắt trạng thái sử dụng của tag"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE tags SET is_active = ? WHERE id = ?", (is_active, tag_id))
+    success = cursor.rowcount > 0
+    conn.commit()
+    conn.close()
+    return success

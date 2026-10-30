@@ -1218,10 +1218,20 @@ async function requestAIItinerary(isShuffle = false) {
             </div>
             <p class="font-black text-sm text-slate-900 mt-1.5">${s.location}</p>
 
+            ${s.rule_explanation ? `
+              <div class="mt-2.5 text-[11px] bg-amber-50/80 border border-amber-200/90 text-amber-900 p-2.5 rounded-xl flex items-start gap-2 shadow-2xs font-semibold">
+                <i class="fa-solid fa-scale-balanced text-amber-600 text-xs mt-0.5 flex-shrink-0"></i>
+                <div class="leading-relaxed">
+                  <span class="font-extrabold uppercase text-[10px] tracking-wider text-amber-700 block mb-0.5">Tiêu chí Rule-based (G6-FR10):</span>
+                  <span>${s.rule_explanation}</span>
+                </div>
+              </div>
+            ` : ''}
+
             ${s.ai_reason ? `
               <div class="mt-2.5 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-700 shadow-2xs">
                 <div class="text-[10px] font-bold text-[#E11D48] uppercase flex items-center gap-1 mb-1">
-                  <i class="fa-solid fa-circle-check"></i> Lý do lựa chọn & Điểm nổi bật:
+                  <i class="fa-solid fa-sparkles text-[#E11D48]"></i> Trợ lý AI Curation & Mẹo trải nghiệm (G6-FR11):
                 </div>
                 <div class="leading-relaxed font-medium">${s.ai_reason}</div>
                 ${s.must_try_tip ? `<div class="mt-2 text-[11px] font-bold text-emerald-800 flex items-start gap-1 pt-1.5 border-t border-slate-200"><i class="fa-solid fa-lightbulb text-amber-500 mt-0.5"></i> <span>Gợi ý trải nghiệm: ${s.must_try_tip}</span></div>` : ''}
@@ -1839,20 +1849,25 @@ function switchAdminSubTab(subTab) {
   currentAdminSubTab = subTab;
   const btnPlaces = document.getElementById("adminSubTabPlaces");
   const btnUsers = document.getElementById("adminSubTabUsers");
+  const btnTags = document.getElementById("adminSubTabTags");
   const secPlaces = document.getElementById("adminSectionPlaces");
   const secUsers = document.getElementById("adminSectionUsers");
+  const secTags = document.getElementById("adminSectionTags");
+
+  [btnPlaces, btnUsers, btnTags].forEach(b => { if (b) b.className = "admin-subtab-btn"; });
+  [secPlaces, secUsers, secTags].forEach(s => { if (s) s.classList.add("hidden"); });
 
   if (subTab === "places") {
     if (btnPlaces) btnPlaces.className = "admin-subtab-btn active";
-    if (btnUsers) btnUsers.className = "admin-subtab-btn";
     if (secPlaces) secPlaces.classList.remove("hidden");
-    if (secUsers) secUsers.classList.add("hidden");
-  } else {
-    if (btnPlaces) btnPlaces.className = "admin-subtab-btn";
+  } else if (subTab === "users") {
     if (btnUsers) btnUsers.className = "admin-subtab-btn active";
-    if (secPlaces) secPlaces.classList.add("hidden");
     if (secUsers) secUsers.classList.remove("hidden");
     loadAdminUsers();
+  } else if (subTab === "tags") {
+    if (btnTags) btnTags.className = "admin-subtab-btn active";
+    if (secTags) secTags.classList.remove("hidden");
+    loadAdminTags();
   }
 }
 
@@ -2754,4 +2769,139 @@ function closeSideMap() {
 
 function copySideMapAddress() {
   copyDetailAddress();
+}
+
+// ==========================================
+// QUẢN LÝ TAG & BỘ LỌC (G6-FR08 & Section 5 ERD)
+// ==========================================
+async function loadAdminTags() {
+  const tbody = document.getElementById("adminTagsTable");
+  if (!tbody) return;
+  tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 font-semibold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang tải danh mục tag...</td></tr>`;
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/tags`);
+    const data = await res.json();
+    const tags = data.tags || [];
+    const countBadge = document.getElementById("adminTagCountBadge");
+    if (countBadge) countBadge.innerText = tags.length;
+    renderAdminTagsTable(tags);
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-rose-500 font-semibold">❌ Lỗi tải tags: ${err.message}</td></tr>`;
+  }
+}
+
+function renderAdminTagsTable(tags) {
+  const tbody = document.getElementById("adminTagsTable");
+  if (!tbody) return;
+  if (!tags || tags.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 font-medium">Chưa có tag nào trong hệ thống.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = tags.map(t => {
+    const isActive = (t.is_active === 1);
+    const tierBadge = t.tier_type === 'companion' 
+      ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-rose-50 text-[#E11D48] border border-rose-200">Bạn đồng hành (Tier 1/2)</span>`
+      : `<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-blue-50 text-blue-700 border border-blue-200">Tiện ích / Không gian</span>`;
+
+    return `
+      <tr class="hover:bg-slate-50/80 transition">
+        <td class="p-3.5 font-bold text-slate-400">#${t.id}</td>
+        <td class="p-3.5 font-mono font-bold text-slate-800 text-xs">${t.tag_key}</td>
+        <td class="p-3.5 font-bold text-slate-900">${t.name}</td>
+        <td class="p-3.5">${tierBadge}</td>
+        <td class="p-3.5">
+          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+            <i class="fa-solid fa-store text-[9px] text-[#E11D48]"></i> ${t.place_count || 0} quán
+          </span>
+        </td>
+        <td class="p-3.5">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold ${isActive ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500 border border-slate-200'}">
+            <span class="w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-400'}"></span>
+            ${isActive ? 'Đang kích hoạt' : 'Đã ẩn'}
+          </span>
+        </td>
+        <td class="p-3.5 text-center bg-slate-50/50 border-l border-slate-200">
+          <div class="inline-flex items-center gap-1.5">
+            <button onclick="handleToggleTag(${t.id}, ${isActive ? 0 : 1})" title="${isActive ? 'Tắt tag' : 'Bật tag'}" class="px-2.5 py-1 rounded-lg text-[11px] font-bold ${isActive ? 'bg-amber-100 hover:bg-amber-200 text-amber-900' : 'bg-emerald-100 hover:bg-emerald-200 text-emerald-900'} transition cursor-pointer">
+              ${isActive ? 'Tắt' : 'Bật'}
+            </button>
+            <button onclick="handleDeleteTag(${t.id}, '${t.name}')" title="Xóa tag" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer">
+              <i class="fa-regular fa-trash-can text-xs"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function openAddTagModal() {
+  const m = document.getElementById("modalAddTag");
+  if (m) m.classList.remove("hidden");
+}
+
+function closeAddTagModal() {
+  const m = document.getElementById("modalAddTag");
+  if (m) m.classList.add("hidden");
+}
+
+async function handleSaveTag(e) {
+  e.preventDefault();
+  const tagKey = document.getElementById("newTagKey")?.value.trim();
+  const tagName = document.getElementById("newTagName")?.value.trim();
+  const tierType = document.getElementById("newTagTierType")?.value || "companion";
+
+  if (!tagKey || !tagName) {
+    alert("Vui lòng điền đầy đủ mã tag và tên hiển thị!");
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/tags`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tag_key: tagKey, name: tagName, tier_type: tierType })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || "Không thể thêm tag");
+
+    alert("✅ Đã thêm tag mới thành công!");
+    closeAddTagModal();
+    document.getElementById("newTagKey").value = "";
+    document.getElementById("newTagName").value = "";
+    loadAdminTags();
+  } catch (err) {
+    alert("❌ Lỗi: " + err.message);
+  }
+}
+
+async function handleToggleTag(tagId, targetActive) {
+  try {
+    const res = await fetch(`${API_BASE}/admin/tags/${tagId}/toggle`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ is_active: targetActive })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || "Không thể đổi trạng thái tag");
+    loadAdminTags();
+  } catch (err) {
+    alert("❌ Lỗi: " + err.message);
+  }
+}
+
+async function handleDeleteTag(tagId, tagName) {
+  if (!confirm(`Bạn có chắc chắn muốn xóa tag "${tagName}"?`)) return;
+  try {
+    const res = await fetch(`${API_BASE}/admin/tags/${tagId}`, {
+      method: "DELETE"
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || "Không thể xóa tag");
+    loadAdminTags();
+  } catch (err) {
+    alert("❌ Lỗi: " + err.message);
+  }
 }

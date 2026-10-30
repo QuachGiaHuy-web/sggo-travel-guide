@@ -528,5 +528,73 @@ Quán Sai Mức Giá,di_choi,222 Lương Nhữ Học,Quận 5,10.75,106.66,khong
         self.assertEqual(logs[0]["error_count"], 1)
 
 
+
+    def test_rtm_fr08_01_admin_tag_management_crud(self):
+        """[TEST-FR08-01] Admin quản lý danh mục tag/tiêu chí: xem, thêm, bật/tắt và xóa tag (G6-FR08)."""
+        # 1. Xem danh sách tags
+        get_res = self.client.get("/api/admin/tags")
+        self.assertEqual(get_res.status_code, 200)
+        tags = get_res.json().get("tags", [])
+        self.assertGreaterEqual(len(tags), 4)
+
+        # 2. Thêm tag mới
+        new_tag = {"tag_key": "test_tag_moi", "name": "Tag Thử Nghiệm", "tier_type": "feature"}
+        post_res = self.client.post("/api/admin/tags", json=new_tag)
+        self.assertEqual(post_res.status_code, 200)
+        tag_id = post_res.json().get("id")
+        self.assertIsNotNone(tag_id)
+
+        # 3. Bật/tắt trạng thái tag
+        toggle_res = self.client.post(f"/api/admin/tags/{tag_id}/toggle", json={"is_active": 0})
+        self.assertEqual(toggle_res.status_code, 200)
+        self.assertEqual(toggle_res.json().get("is_active"), 0)
+
+        # 4. Xóa tag vừa tạo
+        del_res = self.client.delete(f"/api/admin/tags/{tag_id}")
+        self.assertEqual(del_res.status_code, 200)
+        self.assertEqual(del_res.json().get("status"), "success")
+
+    def test_rtm_br02_03_closed_place_excluded_from_itinerary(self):
+        """[TEST-BR02-03] Business Rule 2: Địa điểm đóng cửa không được đưa vào lịch trình."""
+        # Yêu cầu lịch trình vào lúc nửa đêm (00:00 - 02:00)
+        # Các bảo tàng/di tích chỉ mở cửa 07:30 - 17:00 tuyệt đối không được xuất hiện
+        payload = {
+            "start_location": "Chợ Bến Thành, Quận 1",
+            "free_time": "00:00 - 02:00",
+            "companion": "ban_be",
+            "purpose": "di_choi",
+            "budget": "tuy_duyen",
+            "ai_model": "rule_based"
+        }
+        res = self.client.post("/api/ai-itinerary", json=payload)
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        if data.get("feasible") is not False:
+            steps = data.get("steps", [])
+            for s in steps:
+                hours = s.get("open_hours", "")
+                # Không được là điểm đóng cửa lúc 17:00
+                self.assertNotIn("07:30 - 17:00", hours)
+
+    def test_rtm_fr10_01_itinerary_stop_has_rule_explanation(self):
+        """[TEST-FR10-01] G6-FR10 SHOULD: Từng trạm dừng có giải thích rule/tiêu chí gợi ý rõ ràng."""
+        payload = {
+            "start_location": "280 An Dương Vương, TP.HCM",
+            "free_time": "14:00 - 18:30",
+            "companion": "nhom_ban",
+            "purpose": "an_uong",
+            "budget": "100k_250k",
+            "ai_model": "rule_based"
+        }
+        res = self.client.post("/api/ai-itinerary", json=payload)
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        if data.get("feasible") is not False:
+            steps = data.get("steps", [])
+            self.assertGreaterEqual(len(steps), 3)
+            for s in steps:
+                self.assertIn("rule_explanation", s)
+                self.assertTrue(len(s["rule_explanation"]) > 5)
+
 if __name__ == "__main__":
     unittest.main()

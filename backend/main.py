@@ -28,8 +28,10 @@ from backend.database import (
     get_all_places, get_place_by_id, add_place, update_place, delete_place,
     generate_sample_csv, import_csv_data,
     get_connection, get_all_users, update_user_role, delete_user,
-    toggle_hide_place, save_itinerary, get_import_logs
+    toggle_hide_place, save_itinerary, get_import_logs,
+    get_all_tags, add_tag, update_tag, delete_tag, toggle_tag_active
 )
+import datetime
 
 # Tự động đọc file .env
 ENV_PATH = os.path.join(os.path.dirname(__file__), ".env")
@@ -84,6 +86,7 @@ class QuickRecommendRequest(BaseModel):
     price_level: Optional[str] = "all"   # 'under_50k', '50k_100k', '100k_250k', 'above_250k', 'custom', 'all'
     custom_budget: Optional[int] = None
     offset: Optional[int] = 0
+    client_time: Optional[str] = None    # Giờ kiểm tra (HH:MM) để lọc quán mở/đóng
 
 class UserRoleUpdate(BaseModel):
     role: str
@@ -353,6 +356,18 @@ def quick_recommend(req: QuickRecommendRequest):
         score += tier_pts
         p_dict["fit_tier"] = fit_tier
 
+        # 2.5 Kiểm tra trạng thái mở cửa (Business Rule 2: không gợi ý quán đóng cửa)
+        check_t = req.client_time
+        if not check_t:
+            now_vn = datetime.datetime.utcnow() + datetime.timedelta(hours=7)
+            check_t = now_vn.strftime("%H:%M")
+        is_open_now = is_place_open_at_time(p, check_t)
+        p_dict["is_currently_open"] = is_open_now
+        if is_open_now:
+            score += 15.0
+        else:
+            score -= 40.0  # Ưu tiên dứt điểm các quán đang mở cửa lên trước
+
         # 3. Khớp Ngân sách (Loại trừ tuyệt đối các quán vi phạm giới hạn ngân sách)
         min_p = p.get("min_price", 0)
         max_p = p.get("max_price", 0)
@@ -495,6 +510,32 @@ def parse_target_budget_amount(req: ItineraryRequest) -> int:
         return 500000
     return 250000
 
+def is_place_open_at_time(p: dict, check_time_str: str) -> bool:
+    """Kiểm tra quán có đang mở cửa tại thời điểm check_time_str (HH:MM) không (Business Rule 2)"""
+    ot = p.get("open_time")
+    ct = p.get("close_time")
+    if not ot or not ct or ot == "Chưa rõ" or ct == "Chưa rõ":
+        return True
+    try:
+        parts = re.findall(r'(\d{1,2})[:hH](\d{0,2})', check_time_str)
+        if not parts:
+            return True
+        check_mins = int(parts[0][0]) * 60 + int(parts[0][1] or 0)
+
+        ot_parts = re.findall(r'(\d{1,2})[:hH](\d{0,2})', ot)
+        ct_parts = re.findall(r'(\d{1,2})[:hH](\d{0,2})', ct)
+        if not ot_parts or not ct_parts:
+            return True
+        p_start = int(ot_parts[0][0]) * 60 + int(ot_parts[0][1] or 0)
+        p_end = int(ct_parts[0][0]) * 60 + int(ct_parts[0][1] or 0)
+        if p_end <= p_start:
+            p_end += 24 * 60
+            if check_mins < p_start:
+                check_mins += 24 * 60
+        return p_start <= check_mins <= p_end
+    except Exception:
+        return True
+
 def is_place_open_during_window(p: dict, free_time_str: str) -> bool:
     """Kiểm tra quán có mở cửa trong khung giờ rảnh không (Business Rule 2)"""
     ot = p.get("open_time")
@@ -506,8 +547,14 @@ def is_place_open_during_window(p: dict, free_time_str: str) -> bool:
         if len(parts) >= 2:
             req_start = int(parts[0][0]) * 60 + int(parts[0][1] or 0)
             req_end = int(parts[1][0]) * 60 + int(parts[1][1] or 0)
+        elif len(parts) == 1:
+            req_start = int(parts[0][0]) * 60 + int(parts[0][1] or 0)
+            req_end = req_start + 120
         else:
             return True
+
+        if req_end <= req_start:
+            req_end += 24 * 60
 
         ot_parts = re.findall(r'(\d{1,2})[:hH](\d{0,2})', ot)
         ct_parts = re.findall(r'(\d{1,2})[:hH](\d{0,2})', ct)
@@ -515,7 +562,7 @@ def is_place_open_during_window(p: dict, free_time_str: str) -> bool:
             return True
         p_start = int(ot_parts[0][0]) * 60 + int(ot_parts[0][1] or 0)
         p_end = int(ct_parts[0][0]) * 60 + int(ct_parts[0][1] or 0)
-        if p_end < p_start:
+        if p_end <= p_start:
             p_end += 24 * 60
 
         return not (req_end < p_start or req_start > p_end)
@@ -810,6 +857,18 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
         p_min_cost = spot.get("min_price", 0)
         p_max_cost = spot.get("max_price", 0)
 
+        # Xây dựng giải thích rule minh bạch (G6-FR10 SHOULD)
+        mapped_comp_tag = {"ban_be": "nhom_ban", "nguoi_yeu": "hen_ho", "gia_dinh": "gia_dinh", "di_1_minh": "di_1_minh"}.get(req.companion, "nhom_ban")
+        tier_pts, fit_tier = get_companion_tier_score(spot, mapped_comp_tag)
+        rule_reasons = []
+        if tier_pts > 0:
+            rule_reasons.append(f"Khớp bối cảnh '{companion_str}' (+{int(tier_pts)}đ {fit_tier})")
+        rule_reasons.append(f"Mở cửa ({spot.get('open_time')}-{spot.get('close_time')})")
+        avg_cost = (p_min_cost + p_max_cost) // 2
+        rule_reasons.append(f"Chi phí ~{avg_cost:,}đ")
+        rule_reasons.append(f"Cách trạm trước {dist} km")
+        rule_explanation = " • ".join(rule_reasons)
+
         step_dict = {
             "place_id": spot.get("id"),
             "time": slot_time,
@@ -818,6 +877,7 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
             "travel_info": f"Di chuyển ~{dist} km (~{t_min} phút xe máy)",
             "traffic_warning": traffic_note,
             "ai_reason": ai_reason,
+            "rule_explanation": rule_explanation,
             "must_try_tip": must_try_tip,
             "image_url": spot.get("image_url"),
             "open_hours": f"{spot.get('open_time')} - {spot.get('close_time')}",
@@ -1155,6 +1215,15 @@ def extract_gmaps_info(req: ExtractGmapsRequest):
 
 
 
+class TagCreateRequest(BaseModel):
+    tag_key: str
+    name: str
+    tier_type: Optional[str] = "companion"
+
+class TagUpdateRequest(BaseModel):
+    name: str
+    is_active: Optional[int] = 1
+
 class ImportCSVRequest(BaseModel):
     csv_content: str
     filename: Optional[str] = "places_import.csv"
@@ -1209,6 +1278,48 @@ def admin_delete_user(user_id: int):
     if not ok:
         raise HTTPException(status_code=400, detail=msg)
     return {"status": "ok", "message": msg}
+
+
+# ==========================================
+# API QUẢN LÝ TAG & BỘ LỌC (G6-FR08 & Section 5 ERD)
+# ==========================================
+@app.get("/api/admin/tags")
+def admin_get_tags():
+    """API lấy danh sách toàn bộ tag cùng số lượng quán sử dụng (G6-FR08)"""
+    return {"status": "success", "tags": get_all_tags()}
+
+@app.post("/api/admin/tags")
+def admin_add_tag(req: TagCreateRequest):
+    """API thêm tag mới vào hệ thống (G6-FR08)"""
+    res = add_tag(req.tag_key, req.name, req.tier_type)
+    if res.get("status") == "error":
+        raise HTTPException(status_code=400, detail=res.get("message"))
+    return res
+
+@app.put("/api/admin/tags/{tag_id}")
+def admin_update_tag(tag_id: int, req: TagUpdateRequest):
+    """API cập nhật thông tin tag (G6-FR08)"""
+    success = update_tag(tag_id, req.name, req.is_active)
+    if not success:
+        raise HTTPException(status_code=404, detail="Không tìm thấy tag")
+    return {"status": "success", "tag_id": tag_id}
+
+@app.delete("/api/admin/tags/{tag_id}")
+def admin_delete_tag(tag_id: int):
+    """API xóa tag khỏi hệ thống (G6-FR08)"""
+    success = delete_tag(tag_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Không tìm thấy tag")
+    return {"status": "success", "tag_id": tag_id}
+
+@app.post("/api/admin/tags/{tag_id}/toggle")
+def admin_toggle_tag(tag_id: int, payload: dict = Body(...)):
+    """API bật/tắt trạng thái tag (G6-FR08)"""
+    is_active = int(payload.get("is_active", 1))
+    success = toggle_tag_active(tag_id, is_active)
+    if not success:
+        raise HTTPException(status_code=404, detail="Không tìm thấy tag")
+    return {"status": "success", "tag_id": tag_id, "is_active": is_active}
 
 # ==============================================================================
 # PHỤC VỤ GIAO DIỆN FRONTEND TĨNH (STATIC MOUNT)

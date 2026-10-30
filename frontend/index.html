@@ -381,8 +381,9 @@
         </div>
       </div>
 
-      <!-- BỘ LỌC THANH NGANG TAB 2 (HORIZONTAL TOOLBAR - ĐÃ FIX DỨT ĐIỂM LỖI XUỐNG DÒNG) -->
-      <div class="filter-toolbar-editorial mb-5">
+      <!-- BỘ LỌC THANH NGANG TAB 2 (TÁCH BIỆT RÕ RÀNG BỘ LỌC VÀ SẮP XẾP THEO G6-FR02) -->
+      <div class="filter-toolbar-editorial mb-5 space-y-3.5">
+        <!-- Hàng 1: Tìm kiếm & Các Bộ Lọc Tiêu Chí (Filters) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
           <!-- Ô tìm kiếm tên / đường (4 cột / 12) -->
           <div class="lg:col-span-4 relative">
@@ -390,45 +391,63 @@
             <input type="text" id="allSearchInput" onkeyup="filterAllPlaces()" placeholder="Tìm tên quán hoặc đường..." class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:border-[#E11D48] focus:bg-white text-slate-900" />
           </div>
 
-          <!-- 4 dropdowns chia đều 4 cột đối xứng (8 cột / 12 -> mỗi ô đúng 25% cụm) -->
-          <div class="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <!-- 3 Dropdown Lọc Tiêu Chí (8 cột / 12) -->
+          <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             <!-- Thể loại -->
-            <select id="allCategoryFilter" onchange="filterAllPlaces()" class="editorial-select text-xs truncate w-full">
-              <option value="all">Tất cả thể loại</option>
-              <option value="an_uong">Ẩm thực Sài Gòn</option>
-              <option value="di_choi">Điểm đến & Vui chơi</option>
-            </select>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 pl-1">Thể loại</label>
+              <select id="allCategoryFilter" onchange="filterAllPlaces()" class="editorial-select text-xs truncate w-full">
+                <option value="all">Tất cả thể loại</option>
+                <option value="an_uong">🍜 Ẩm thực Sài Gòn</option>
+                <option value="di_choi">📸 Điểm đến & Vui chơi</option>
+              </select>
+            </div>
 
-            <!-- Bối cảnh -->
-            <select id="allTagFilter" onchange="filterAllPlaces()" class="editorial-select text-xs truncate w-full">
-              <option value="all">Mọi bối cảnh</option>
-              <option value="di_1_minh">Đi 1 mình</option>
-              <option value="hen_ho">Hẹn hò cặp đôi</option>
-              <option value="nhom_ban">Nhóm bạn</option>
-              <option value="gia_dinh">Gia đình</option>
-            </select>
+            <!-- Bối cảnh đồng hành -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 pl-1">Bối cảnh</label>
+              <select id="allTagFilter" onchange="filterAllPlaces()" class="editorial-select text-xs truncate w-full">
+                <option value="all">Mọi bối cảnh</option>
+                <option value="di_1_minh">🎧 Đi 1 mình (Solo)</option>
+                <option value="hen_ho">💑 Hẹn hò cặp đôi</option>
+                <option value="nhom_ban">🎉 Nhóm bạn</option>
+                <option value="gia_dinh">👨‍👩‍👧 Gia đình</option>
+              </select>
+            </div>
 
-            <!-- Mức giá -->
-            <select id="allPriceFilter" onchange="filterAllPlaces()" class="editorial-select text-xs truncate w-full">
-              <option value="all">Mọi mức giá</option>
-              <option value="free">Miễn phí (0đ)</option>
-              <option value="under_50k">Dưới 50k</option>
-              <option value="50k_100k">50k – 100k</option>
-              <option value="100k_250k">100k – 250k</option>
-              <option value="above_250k">Trên 250k</option>
-            </select>
+            <!-- Mức giá ngân sách -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 pl-1">Ngân sách</label>
+              <select id="allPriceFilter" onchange="filterAllPlaces()" class="editorial-select text-xs truncate w-full">
+                <option value="all">Mọi mức giá</option>
+                <option value="free">🎁 Miễn phí (0đ)</option>
+                <option value="under_50k">Dưới 50k</option>
+                <option value="50k_100k">50k – 100k</option>
+                <option value="100k_250k">100k – 250k</option>
+                <option value="above_250k">Trên 250k</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-            <!-- Sắp xếp -->
-            <select id="allSortFilter" onchange="handleSortFilterChange()" class="editorial-select text-xs truncate w-full">
-              <option value="default">Sắp xếp: Mặc định</option>
-              <option value="distance_asc">Khoảng cách: Gần nhất</option>
-              <option value="price_desc">Giá: Cao đến thấp</option>
-              <option value="price_asc">Giá: Thấp đến cao</option>
-              <option value="rating_desc">Đánh giá: Cao nhất</option>
-              <option value="rating_asc">Đánh giá: Thấp nhất</option>
-              <option value="admin_pick">Quán đề cử</option>
+        <!-- Hàng 2: Sắp Xếp Riêng Biệt (Sort by - G6-FR02) -->
+        <div class="flex items-center justify-between pt-2.5 border-t border-slate-100 flex-wrap gap-2 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-arrow-down-short-wide text-[#E11D48]"></i> Sắp xếp kết quả:
+            </span>
+            <select id="allSortFilter" onchange="handleSortFilterChange()" class="editorial-select text-xs font-bold py-1.5 px-3 bg-white border border-slate-200 rounded-xl cursor-pointer">
+              <option value="default">⭐ Mặc định (Độ phù hợp)</option>
+              <option value="rating_desc">⭐ Đánh giá: Cao nhất</option>
+              <option value="price_asc">💰 Giá: Thấp đến cao</option>
+              <option value="price_desc">💰 Giá: Cao đến thấp</option>
+              <option value="distance_asc">📍 Khoảng cách: Gần tôi nhất</option>
+              <option value="admin_pick">👑 Quán Admin Đề Cử</option>
             </select>
           </div>
+          <span id="tab2PlacesCountBadge" class="text-[11px] font-extrabold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
+            Đang hiển thị 201 địa điểm
+          </span>
         </div>
       </div>
 
@@ -742,10 +761,13 @@
         <div class="mt-7 flex items-center justify-between border-b border-slate-200 pb-3 flex-wrap gap-3">
           <div class="admin-tab-nav">
             <button type="button" onclick="switchAdminSubTab('places')" id="adminSubTabPlaces" class="admin-subtab-btn active">
-              <i class="fa-solid fa-store mr-1.5"></i> Quản Lý Địa Điểm (40 Quán)
+              <i class="fa-solid fa-store mr-1.5"></i> Quản Lý Địa Điểm
             </button>
             <button type="button" onclick="switchAdminSubTab('users')" id="adminSubTabUsers" class="admin-subtab-btn">
               <i class="fa-solid fa-user-shield mr-1.5"></i> Quản Lý Tài Khoản (<span id="adminUserCountBadge">2</span>)
+            </button>
+            <button type="button" onclick="switchAdminSubTab('tags')" id="adminSubTabTags" class="admin-subtab-btn">
+              <i class="fa-solid fa-tags mr-1.5"></i> Quản Lý Tag & Bộ Lọc (<span id="adminTagCountBadge">4</span>)
             </button>
           </div>
           <span id="adminFilteredCount" class="text-[11px] text-slate-500 font-bold">Hiển thị 40 địa điểm</span>
@@ -831,6 +853,38 @@
                 </tr>
               </thead>
               <tbody id="adminUsersTable" class="divide-y divide-stone-100">
+                <!-- Render từ JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SECTION 3: QUẢN LÝ TAG & BỘ LỌC (G6-FR08 & SECTION 5 ERD) -->
+        <div id="adminSectionTags" class="hidden mt-4">
+          <div class="p-3.5 bg-rose-50 border border-rose-200 rounded-2xl mb-4 text-xs text-rose-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-tags text-[#E11D48] text-sm"></i>
+              <span>Cấu hình danh mục thẻ ngữ cảnh (Context Tags) và tiêu chí bộ lọc hệ thống theo yêu cầu G6-FR08 & Section 5 ERD.</span>
+            </div>
+            <button onclick="openAddTagModal()" class="px-3.5 py-1.5 bg-[#E11D48] hover:bg-[#BE123C] text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer whitespace-nowrap">
+              <i class="fa-solid fa-plus text-[10px]"></i> Thêm Tag Mới
+            </button>
+          </div>
+
+          <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-xs bg-white">
+            <table class="w-full min-w-[650px] text-left text-xs text-slate-600">
+              <thead class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider text-[10px]">
+                <tr>
+                  <th class="p-3.5 whitespace-nowrap">ID</th>
+                  <th class="p-3.5 whitespace-nowrap">Mã Tag (Key)</th>
+                  <th class="p-3.5 whitespace-nowrap">Tên Hiển Thị</th>
+                  <th class="p-3.5 whitespace-nowrap">Phân Loại / Tầng</th>
+                  <th class="p-3.5 whitespace-nowrap">Số Quán Gắn Tag</th>
+                  <th class="p-3.5 whitespace-nowrap">Trạng Thái</th>
+                  <th class="p-3.5 text-center whitespace-nowrap bg-slate-50 border-l border-slate-200">Hành Động</th>
+                </tr>
+              </thead>
+              <tbody id="adminTagsTable" class="divide-y divide-stone-100">
                 <!-- Render từ JS -->
               </tbody>
             </table>
@@ -1140,6 +1194,40 @@
             Lưu Vào Cơ Sở Dữ Liệu SQLite
           </button>
         </div>
+      </form>
+    </div>
+  </div>
+
+    <!-- 3.1 MODAL THÊM TAG MỚI (G6-FR08) -->
+  <div id="modalAddTag" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 relative animate-in fade-in zoom-in duration-200">
+      <button onclick="closeAddTagModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full flex items-center justify-center bg-slate-50 cursor-pointer">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <h3 class="text-base font-black text-slate-900 mb-1">Thêm Tag Ngữ Cảnh Mới</h3>
+      <p class="text-xs text-slate-500 mb-4">Cấu hình tiêu chí bộ lọc và thẻ bối cảnh cho các địa điểm.</p>
+
+      <form onsubmit="handleSaveTag(event)" class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Mã Tag (viết liền, không dấu)</label>
+          <input type="text" id="newTagKey" required placeholder="VD: song_ao, an_dem, yen_tinh" class="pop-input text-xs font-semibold" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Tên hiển thị (Tiếng Việt)</label>
+          <input type="text" id="newTagName" required placeholder="VD: Sống ảo / Chụp hình đẹp" class="pop-input text-xs font-semibold" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Nhóm phân loại</label>
+          <select id="newTagTierType" class="pop-input text-xs font-semibold">
+            <option value="companion">Bối cảnh / Bạn đồng hành</option>
+            <option value="vibe">Không gian / Tiện ích</option>
+            <option value="feature">Đặc trưng trải nghiệm</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-[#E11D48] hover:bg-[#BE123C] text-white rounded-xl text-xs font-bold transition shadow-sm mt-3 cursor-pointer">
+          Lưu Tag Vào Hệ Thống
+        </button>
       </form>
     </div>
   </div>

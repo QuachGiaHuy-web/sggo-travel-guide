@@ -596,5 +596,76 @@ Quán Sai Mức Giá,di_choi,222 Lương Nhữ Học,Quận 5,10.75,106.66,khong
                 self.assertIn("rule_explanation", s)
                 self.assertTrue(len(s["rule_explanation"]) > 5)
 
+    def test_rtm_fr09_04_excel_sample_download(self):
+        """[TEST-FR09-04] G6-FR09 SHOULD: Tải file Excel mẫu (.xlsx) hợp lệ với định dạng binary chuẩn."""
+        res = self.client.get("/api/admin/sample-excel")
+        self.assertEqual(res.status_code, 200)
+        self.assertIn("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", res.headers.get("content-type", ""))
+        self.assertGreater(len(res.content), 2000)
+
+    def test_rtm_fr09_05_excel_import_valid_and_invalid_data(self):
+        """[TEST-FR09-05] G6-FR09 SHOULD: Import hàng loạt từ file Excel (.xlsx), phát hiện dòng lỗi và nạp dòng đúng."""
+        import openpyxl
+        import io
+        import base64
+        import uuid
+
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.append(["name", "category", "address", "district", "lat", "lon", "min_price", "max_price", "rating"])
+        
+        valid_name = f"Quán Excel Test {uuid.uuid4().hex[:6]}"
+        ws.append([valid_name, "an_uong", "888 An Dương Vương, Quận 5", "Quận 5", 10.755, 106.665, 45000, 70000, 4.8])
+        # Dòng lỗi: thiếu tên quán
+        ws.append(["", "an_uong", "123 Địa Chỉ, Quận 5", "Quận 5", 10.75, 106.66, 30000, 50000, 4.5])
+        
+        buf = io.BytesIO()
+        wb.save(buf)
+        b64_content = base64.b64encode(buf.getvalue()).decode("ascii")
+
+        res = self.client.post("/api/admin/import-excel", json={
+            "file_base64": b64_content,
+            "filename": "test_import_excel.xlsx"
+        })
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertEqual(data.get("imported_count"), 1)
+        self.assertEqual(data.get("error_count"), 1)
+        self.assertEqual(data.get("errors")[0]["field"], "name")
+
+        # Kiểm tra bảng import_logs đã ghi nhận file xlsx
+        logs_res = self.client.get("/api/admin/import-logs?limit=5")
+        self.assertEqual(logs_res.status_code, 200)
+        logs = logs_res.json()
+        self.assertEqual(logs[0]["filename"], "test_import_excel.xlsx")
+        self.assertEqual(logs[0]["success_count"], 1)
+
+        # Dọn dẹp quán test sau khi kiểm thử
+        conn = db.get_connection()
+        conn.cursor().execute("DELETE FROM places WHERE name = ?", (valid_name,))
+        conn.commit()
+        conn.close()
+        db.sync_db_to_json()
+
+    def test_rtm_fr05_03_strict_budget_adherence(self):
+        """[TEST-FR05-03] G6-FR05 MUST: Lịch trình tối ưu ngân sách cam kết nằm trong ngân sách dự kiến của người dùng."""
+        payload = {
+            "start_location": "Chợ Bến Thành, Quận 1",
+            "free_time": "14:00 - 18:30",
+            "companion": "nhom_ban",
+            "purpose": "an_uong",
+            "budget": "100k_250k",
+            "target_budget": 250000,
+            "ai_model": "rule_based"
+        }
+        res = self.client.post("/api/ai-itinerary", json=payload)
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        if data.get("feasible") is not False:
+            kpi = data.get("kpi", {})
+            self.assertTrue(kpi.get("is_within_budget"), "Lịch trình phải đảm bảo nằm trong ngân sách dự kiến")
+            self.assertLessEqual(kpi.get("total_min_cost", 0), 250000)
+
 if __name__ == "__main__":
     unittest.main()
+

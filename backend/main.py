@@ -26,7 +26,7 @@ from typing import Optional, List
 from backend.database import (
     init_db, authenticate_user, register_user,
     get_all_places, get_place_by_id, add_place, update_place, delete_place,
-    generate_sample_csv, import_csv_data,
+    generate_sample_csv, generate_sample_excel, import_csv_data, import_file_data, import_excel_data,
     get_connection, get_all_users, update_user_role, delete_user,
     toggle_hide_place, save_itinerary, get_import_logs,
     get_all_tags, add_tag, update_tag, delete_tag, toggle_tag_active
@@ -103,9 +103,9 @@ class ItineraryRequest(BaseModel):
     purpose: Optional[str] = "ca_hai"    # 'an_uong', 'di_choi', 'ca_hai'
     takenote: Optional[str] = ""         # Ghi chú / Loại trừ địa điểm
     context: Optional[str] = ""          # Giữ tương thích ngược
-    budget: Optional[str] = "100k_250k"
-    budget_level: Optional[str] = "100k_250k"
-    target_budget: Optional[int] = 250000
+    budget: Optional[str] = None
+    budget_level: Optional[str] = None
+    target_budget: Optional[int] = None
     shuffle_seed: Optional[int] = 0      # Dùng cho G6-FR06: Xáo trộn / Đổi phương án khác
     ai_model: Optional[str] = "gemini-3.8-flash"
 
@@ -235,6 +235,35 @@ def optimize_route_nearest_neighbor(start_coords, candidates, max_stops=3):
             unvisited.remove(nearest_node)
 
     return route
+
+def find_budget_optimal_route(start_coords, candidates_pool, target_budget: int = 0, max_stops: int = 3):
+    """
+    Tối ưu hóa đa mục tiêu: Chọn max_stops trạm vừa gần nhất (TSP Nearest Neighbor)
+    vừa đảm bảo tổng chi phí tối thiểu <= target_budget (G6-FR05 MUST).
+    """
+    if len(candidates_pool) <= max_stops:
+        return optimize_route_nearest_neighbor(start_coords, candidates_pool, max_stops=max_stops)
+
+    import itertools
+    pool = candidates_pool[:12]
+
+    if target_budget > 0:
+        valid_triplets = []
+        for combo in itertools.combinations(pool, max_stops):
+            cost = sum(p.get("min_price", 0) for p in combo)
+            if cost <= target_budget:
+                ordered = optimize_route_nearest_neighbor(start_coords, list(combo), max_stops=max_stops)
+                d0 = calculate_haversine_distance(start_coords[0], start_coords[1], ordered[0].get("lat") or 10.75, ordered[0].get("lon") or 106.66)
+                d1 = calculate_haversine_distance(ordered[0].get("lat") or 10.75, ordered[0].get("lon") or 106.66, ordered[1].get("lat") or 10.75, ordered[1].get("lon") or 106.66)
+                d2 = calculate_haversine_distance(ordered[1].get("lat") or 10.75, ordered[1].get("lon") or 106.66, ordered[2].get("lat") or 10.75, ordered[2].get("lon") or 106.66)
+                total_d = d0 + d1 + d2
+                valid_triplets.append((total_d, cost, ordered))
+
+        if valid_triplets:
+            valid_triplets.sort(key=lambda x: x[0])
+            return valid_triplets[0][2]
+
+    return optimize_route_nearest_neighbor(start_coords, pool, max_stops=max_stops)
 
 # ==============================================================================
 # CÁC API XÁC THỰC TÀI KHOẢN (AUTH)
@@ -497,7 +526,9 @@ def parse_free_time_minutes(free_time_str: str) -> int:
 
 def parse_target_budget_amount(req: ItineraryRequest) -> int:
     """Xác định ngân sách mục tiêu dạng số nguyên (VNĐ)"""
-    if req.target_budget and req.target_budget > 0:
+    if req.budget_level == "free" or req.budget == "free" or req.target_budget == 0:
+        return 0
+    if req.target_budget is not None and req.target_budget > 0:
         return req.target_budget
     lvl = req.budget_level or req.budget or "100k_250k"
     if lvl == "free":
@@ -578,6 +609,9 @@ def generate_itinerary(req: ItineraryRequest):
     # 1. RÀNG BUỘC NGHIỆP VỤ BẮT BUỘC (BUSINESS RULE 3 & KIỂM THỬ BẮT BUỘC)
     free_duration = parse_free_time_minutes(req.free_time)
     target_budget = parse_target_budget_amount(req)
+    if target_budget == 0 or req.budget == "free" or req.budget_level == "free":
+        target_budget = 0
+        req.budget_level = "free"
 
     # Ràng buộc thời gian rảnh: Tối thiểu 60 phút cho lịch trình 3 trạm
     if free_duration < 60:
@@ -649,6 +683,7 @@ YÊU CỦA NGƯỜI DÙNG:
 - Khung giờ rảnh: "{req.free_time}"
 - Bạn đồng hành: "{companion_str}"
 - Mục đích chuyến đi: "{purpose_str}"
+- Ngân sách tối đa mong muốn: {target_budget:,}đ (Nếu là 0đ nghĩa là miễn phí)
 - Ghi chú & Yêu cầu riêng (Take note): "{takenote_str}"
 
 KHO DỮ LIỆU ĐỊA ĐIỂM XÁC THỰC CỦA HỆ THỐNG TẠI TP.HCM:
@@ -668,7 +703,8 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
    - Nếu người dùng ghi "chán chỗ X", "loại trừ X", "không thích X", "đã đi X nhiều lần" -> TUYỆT ĐỐI KHÔNG CHỌN ĐỊA ĐIỂM ĐÓ!
    - Nếu người dùng ghi "không ăn cay", "thích máy lạnh", "dễ gửi xe" -> Ưu tiên các điểm phù hợp.
 4. KIỂM TRA GIỜ MỞ CỬA: Các địa điểm được chọn PHẢI ĐANG MỞ CỬA trong khung giờ rảnh "{req.free_time}".
-5. Chọn chính xác 3 địa điểm từ danh sách trên theo thứ tự hợp lý và chia khung giờ cụ thể nằm trọn trong "{req.free_time}".
+5. RÀNG BUỘC NGÂN SÁCH (BẮT BUỘC): Tổng chi phí ước tính của 3 trạm (trạm 1 + trạm 2 + trạm 3) PHẢI NẰM TRONG ngân sách {target_budget:,}đ. Không được chọn quán ăn vượt quá khả năng chi trả của khách!
+6. Chọn chính xác 3 địa điểm từ danh sách trên theo thứ tự hợp lý và chia khung giờ cụ thể nằm trọn trong "{req.free_time}".
 6. Trả về ĐÚNG định dạng JSON sau (không dùng bất kỳ chữ nào ngoài JSON):
 {{
   "selected_ids": [id1, id2, id3],
@@ -726,11 +762,20 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
         else:
             candidates = valid_pool
 
-        # Lọc theo ngân sách nếu chọn Miễn phí (0đ)
+        # Lọc theo ngân sách (G6-FR05 MUST): Đảm bảo các trạm không có giá vượt quá ngân sách
         if req.budget_level == "free" or target_budget == 0:
             free_cands = [p for p in candidates if (p.get("min_price") or 0) == 0 and (p.get("max_price") or 0) == 0]
             if len(free_cands) >= 3:
                 candidates = free_cands
+        elif target_budget > 0:
+            # Mỗi trạm tối đa không được vượt quá 65% tổng ngân sách (trừ khi là điểm 0đ tham quan)
+            max_single_cost = int(target_budget * 0.65)
+            budget_filtered = [
+                p for p in candidates 
+                if (p.get("min_price") or 0) <= max_single_cost or ((p.get("min_price") or 0) == 0 and (p.get("max_price") or 0) == 0)
+            ]
+            if len(budget_filtered) >= 3:
+                candidates = budget_filtered
 
         # Xáo trộn danh sách ứng viên theo shuffle_seed (G6-FR06: Xáo trộn/Đổi phương án khác)
         if req.shuffle_seed and req.shuffle_seed > 0:
@@ -784,10 +829,31 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
                 win_play = play_sorted[off_play:off_play + 6]
                 win_eat = eat_sorted[off_eat:off_eat + 8]
                 
-                opt_play = optimize_route_nearest_neighbor((start_lat, start_lon), win_play, max_stops=1)
-                opt_eat = optimize_route_nearest_neighbor((start_lat, start_lon), win_eat, max_stops=2)
-                combo = opt_play + opt_eat
-                opt_stops = optimize_route_nearest_neighbor((start_lat, start_lon), combo, max_stops=3)
+                best_combo = None
+                best_dist = float('inf')
+
+                # Tìm bộ (1 điểm tham quan/cafe, 2 quán ăn) tối ưu cự ly và thỏa ngân sách (G6-FR05 MUST)
+                import itertools
+                for p_stop in win_play[:4]:
+                    p_cost = p_stop.get("min_price", 0)
+                    rem_budget = target_budget - p_cost if target_budget > 0 else 999999999
+                    for e1, e2 in itertools.combinations(win_eat[:8], 2):
+                        if (e1.get("min_price", 0) + e2.get("min_price", 0)) <= rem_budget:
+                            trip = [p_stop, e1, e2]
+                            ordered = optimize_route_nearest_neighbor((start_lat, start_lon), trip, max_stops=3)
+                            d = calculate_haversine_distance(start_lat, start_lon, ordered[0].get("lat") or 10.75, ordered[0].get("lon") or 106.66) + \
+                                calculate_haversine_distance(ordered[0].get("lat") or 10.75, ordered[0].get("lon") or 106.66, ordered[1].get("lat") or 10.75, ordered[1].get("lon") or 106.66) + \
+                                calculate_haversine_distance(ordered[1].get("lat") or 10.75, ordered[1].get("lon") or 106.66, ordered[2].get("lat") or 10.75, ordered[2].get("lon") or 106.66)
+                            if d < best_dist:
+                                best_dist = d
+                                best_combo = ordered
+
+                if best_combo:
+                    opt_stops = best_combo
+                else:
+                    opt_play = optimize_route_nearest_neighbor((start_lat, start_lon), win_play, max_stops=1)
+                    opt_eat = optimize_route_nearest_neighbor((start_lat, start_lon), win_eat, max_stops=2)
+                    opt_stops = optimize_route_nearest_neighbor((start_lat, start_lon), opt_play + opt_eat, max_stops=3)
             else:
                 c_sorted = sorted(candidates, key=lambda p: calculate_haversine_distance(start_lat, start_lon, p.get("lat") or 10.75, p.get("lon") or 106.66))
                 off = (seed * 3) % max(1, len(c_sorted) - 4) if len(c_sorted) > 5 else 0
@@ -795,7 +861,7 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
         else:
             c_sorted = sorted(candidates, key=lambda p: calculate_haversine_distance(start_lat, start_lon, p.get("lat") or 10.75, p.get("lon") or 106.66))
             off = (seed * 3) % max(1, len(c_sorted) - 4) if len(c_sorted) > 5 else 0
-            opt_stops = optimize_route_nearest_neighbor((start_lat, start_lon), c_sorted[off:off + 10], max_stops=3)
+            opt_stops = find_budget_optimal_route((start_lat, start_lon), c_sorted[off:off + 12], target_budget=target_budget, max_stops=3)
 
         selected_ids = [p["id"] for p in opt_stops]
         overall_advice = f"Lộ trình 3 trạm tối ưu xuất phát từ '{req.start_location}', sắp xếp theo khung giờ {req.free_time} cho {companion_str} với mục đích {purpose_str}."
@@ -906,7 +972,7 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
     total_stay_mins = len(optimized_places) * 45  # Giả định 45 phút mỗi trạm
     total_duration_minutes = total_t_min + total_stay_mins
 
-    is_within_budget = (target_budget == 0 and total_min_cost == 0) or (total_min_cost <= target_budget * 1.25)
+    is_within_budget = (target_budget == 0 and total_min_cost == 0) or (total_min_cost <= target_budget)
     is_within_time = total_duration_minutes <= (free_duration + 30)
 
     # Lưu lịch trình vào CSDL SQLite (Section 5 ERD & Data Dictionary)
@@ -987,6 +1053,15 @@ def download_sample_csv():
     return Response(content=csv_text, media_type="text/csv", headers={
         "Content-Disposition": "attachment; filename=template_places.csv"
     })
+
+@app.get("/api/admin/sample-excel")
+def download_sample_excel():
+    excel_bytes = generate_sample_excel()
+    return Response(
+        content=excel_bytes,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=template_places.xlsx"}
+    )
 
 @app.post("/api/admin/extract-gmaps")
 def extract_gmaps_info(req: ExtractGmapsRequest):
@@ -1225,12 +1300,14 @@ class TagUpdateRequest(BaseModel):
     is_active: Optional[int] = 1
 
 class ImportCSVRequest(BaseModel):
-    csv_content: str
+    csv_content: Optional[str] = None
+    file_base64: Optional[str] = None
     filename: Optional[str] = "places_import.csv"
 
 @app.post("/api/admin/import-csv")
 def import_csv_places(req: ImportCSVRequest):
-    res = import_csv_data(req.csv_content, filename=req.filename or "places_import.csv")
+    content = req.file_base64 if req.file_base64 else (req.csv_content or "")
+    res = import_file_data(content, filename=req.filename or "places_import.csv")
     return {
         "status": "ok",
         "imported_count": res.get("success_count", 0),
@@ -1238,6 +1315,10 @@ def import_csv_places(req: ImportCSVRequest):
         "total_rows": res.get("total_rows", 0),
         "errors": res.get("errors", [])
     }
+
+@app.post("/api/admin/import-excel")
+def import_excel_places(req: ImportCSVRequest):
+    return import_csv_places(req)
 
 @app.get("/api/admin/import-logs")
 def admin_get_import_logs(limit: int = 10):

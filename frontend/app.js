@@ -2429,13 +2429,24 @@ async function handleDeletePlace(placeId, name) {
 // 7. TẢI VÀ NHẬP CSV (IMPORT / EXPORT)
 // ==============================================================================
 
+let fileToUploadBase64 = "";
+let uploadedFileName = "";
+
 function downloadCSVTemplate() {
   window.location.href = `${API_BASE}/admin/sample-csv`;
 }
 
+function downloadExcelTemplate() {
+  window.location.href = `${API_BASE}/admin/sample-excel`;
+}
+
 function openImportModal() {
   csvToUploadText = "";
-  document.getElementById("csvFileName").innerText = "Chưa chọn file nào";
+  fileToUploadBase64 = "";
+  uploadedFileName = "";
+  const inp = document.getElementById("csvFileInput");
+  if (inp) inp.value = "";
+  document.getElementById("csvFileName").innerText = "Hỗ trợ định dạng .csv, .xlsx, .xls";
   document.getElementById("btnUploadCSV").disabled = true;
   const reportBox = document.getElementById("csvValidationReport");
   if (reportBox) reportBox.classList.add("hidden");
@@ -2450,17 +2461,30 @@ function handleCSVFileSelected(e) {
   const file = e.target.files[0];
   if (!file) return;
 
+  uploadedFileName = file.name;
   document.getElementById("csvFileName").innerText = `Đã chọn: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+  const isExcel = file.name.toLowerCase().endsWith(".xlsx") || file.name.toLowerCase().endsWith(".xls");
   const reader = new FileReader();
-  reader.onload = function(evt) {
-    csvToUploadText = evt.target.result;
-    document.getElementById("btnUploadCSV").disabled = false;
-  };
-  reader.readAsText(file, "UTF-8");
+
+  if (isExcel) {
+    reader.onload = function(evt) {
+      fileToUploadBase64 = evt.target.result; // Data URL containing base64
+      csvToUploadText = "";
+      document.getElementById("btnUploadCSV").disabled = false;
+    };
+    reader.readAsDataURL(file);
+  } else {
+    reader.onload = function(evt) {
+      csvToUploadText = evt.target.result;
+      fileToUploadBase64 = "";
+      document.getElementById("btnUploadCSV").disabled = false;
+    };
+    reader.readAsText(file, "UTF-8");
+  }
 }
 
 async function submitCSVImport() {
-  if (!csvToUploadText) return;
+  if (!csvToUploadText && !fileToUploadBase64) return;
   const btn = document.getElementById("btnUploadCSV");
   const reportBox = document.getElementById("csvValidationReport");
   const errorListEl = document.getElementById("csvErrorList");
@@ -2470,13 +2494,19 @@ async function submitCSVImport() {
   btn.disabled = true;
 
   try {
+    const payload = {
+      filename: uploadedFileName || "places_import.csv"
+    };
+    if (fileToUploadBase64) {
+      payload.file_base64 = fileToUploadBase64;
+    } else {
+      payload.csv_content = csvToUploadText;
+    }
+
     const res = await fetch(`${API_BASE}/admin/import-csv`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        csv_content: csvToUploadText,
-        filename: document.getElementById("csvFileInput")?.files[0]?.name || "places_import.csv"
-      })
+      body: JSON.stringify(payload)
     });
     const data = await res.json();
 

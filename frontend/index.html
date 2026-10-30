@@ -717,11 +717,14 @@
             <h2 class="text-2xl font-black text-slate-900 mt-2">Bảng Điều Khiển Quản Trị SGGo</h2>
           </div>
           <div class="flex items-center gap-2 flex-wrap">
-            <button onclick="downloadCSVTemplate()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-file-csv text-emerald-600"></i> File CSV Mẫu
+            <button onclick="downloadCSVTemplate()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer" title="Tải file mẫu CSV">
+              <i class="fa-solid fa-file-csv text-rose-600"></i> File CSV Mẫu
             </button>
-            <button onclick="openImportModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-upload"></i> Nhập CSV
+            <button onclick="downloadExcelTemplate()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer" title="Tải file mẫu Excel (.xlsx)">
+              <i class="fa-solid fa-file-excel text-emerald-600"></i> File Excel Mẫu
+            </button>
+            <button onclick="openImportModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs">
+              <i class="fa-solid fa-file-arrow-up"></i> Nhập CSV / Excel
             </button>
             <button onclick="openAddPlaceModal()" class="px-3.5 py-2 bg-[#E11D48] hover:bg-[#BE123C] text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
               <i class="fa-solid fa-plus"></i> Thêm Quán Mới
@@ -1232,35 +1235,45 @@
     </div>
   </div>
 
-  <!-- 3. MODAL NHẬP CSV (IMPORT CSV) -->
+  <!-- 3. MODAL NHẬP HÀNG LOẠT CSV / EXCEL (G6-FR09 SHOULD) -->
   <div id="modalImportCSV" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 relative">
       <button onclick="closeImportModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full flex items-center justify-center bg-slate-50">
         <i class="fa-solid fa-xmark"></i>
       </button>
 
-      <h3 class="text-base font-black text-slate-900 mb-2">Nhập Dữ Liệu Từ File CSV</h3>
-      <p class="text-xs text-slate-500 mb-4">Chọn file CSV có cấu trúc chuẩn theo mẫu để nạp hàng loạt địa điểm vào CSDL SQLite.</p>
+      <h3 class="text-base font-black text-slate-900 mb-1">Nhập Hàng Loạt CSV / Excel</h3>
+      <p class="text-xs text-slate-500 mb-3 leading-relaxed">Chọn file <strong>.CSV</strong> hoặc <strong>.XLSX</strong> có cấu trúc chuẩn để nạp hàng loạt địa điểm vào CSDL SQLite.</p>
 
-      <div class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-[#E11D48] transition cursor-pointer mb-4" onclick="document.getElementById('csvFileInput').click()">
-        <i class="fa-solid fa-file-arrow-up text-3xl text-[#E11D48] mb-2"></i>
-        <p class="text-xs font-bold text-slate-700">Bấm vào đây để chọn file .CSV</p>
-        <p id="csvFileName" class="text-[11px] text-slate-400 mt-1">Chưa chọn file nào</p>
-        <input type="file" id="csvFileInput" accept=".csv" onchange="handleCSVFileSelected(event)" class="hidden" />
+      <div class="flex items-center justify-center gap-3 mb-3 text-[11px] bg-slate-50 p-2 rounded-xl border border-slate-200">
+        <button type="button" onclick="downloadCSVTemplate()" class="text-rose-700 hover:underline font-bold flex items-center gap-1">
+          <i class="fa-solid fa-file-csv text-rose-600"></i> Tải CSV Mẫu
+        </button>
+        <span class="text-slate-300">|</span>
+        <button type="button" onclick="downloadExcelTemplate()" class="text-emerald-700 hover:underline font-bold flex items-center gap-1">
+          <i class="fa-solid fa-file-excel text-emerald-600"></i> Tải Excel Mẫu (.xlsx)
+        </button>
       </div>
 
-      <!-- Báo cáo lỗi dữ liệu CSV (G6-FR09, Business Rule 4 & Luồng Demo 3) -->
+      <div class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-emerald-500 transition cursor-pointer mb-4 bg-slate-50/50" onclick="document.getElementById('csvFileInput').click()">
+        <i class="fa-solid fa-file-arrow-up text-3xl text-emerald-600 mb-2"></i>
+        <p class="text-xs font-bold text-slate-700">Bấm vào đây để chọn file .CSV hoặc .XLSX</p>
+        <p id="csvFileName" class="text-[11px] text-slate-400 mt-1">Hỗ trợ định dạng .csv, .xlsx, .xls</p>
+        <input type="file" id="csvFileInput" accept=".csv, .xlsx, .xls" onchange="handleCSVFileSelected(event)" class="hidden" />
+      </div>
+
+      <!-- Báo cáo lỗi dữ liệu CSV/Excel (G6-FR09, Business Rule 4 & Luồng Demo 3) -->
       <div id="csvValidationReport" class="hidden mb-4 p-3.5 bg-rose-50 border border-rose-200 rounded-2xl text-[11px]">
         <div class="flex items-center gap-1.5 font-bold text-rose-800 mb-1.5">
           <i class="fa-solid fa-triangle-exclamation"></i>
-          <span id="csvValidationTitle">Phát hiện dòng lỗi trong file CSV</span>
+          <span id="csvValidationTitle">Phát hiện dòng lỗi trong dữ liệu</span>
         </div>
         <div class="max-h-36 overflow-y-auto pr-1">
           <ul id="csvErrorList" class="space-y-1 text-slate-700 pl-4 list-disc font-medium"></ul>
         </div>
       </div>
 
-      <button onclick="submitCSVImport()" id="btnUploadCSV" disabled class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white rounded-xl text-xs font-bold transition">
+      <button onclick="submitCSVImport()" id="btnUploadCSV" disabled class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white rounded-xl text-xs font-bold transition shadow-sm cursor-pointer">
         Tiến Hành Nạp Dữ Liệu
       </button>
     </div>

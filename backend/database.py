@@ -582,16 +582,112 @@ def generate_sample_csv():
     ])
     return output.getvalue()
 
-def import_csv_data(csv_text, filename="uploaded_places.csv"):
+def generate_sample_excel():
+    """Tạo nội dung file Excel (.xlsx) mẫu chuẩn cho Admin tải về nạp dữ liệu (G6-FR09)"""
+    import openpyxl
+    from openpyxl.styles import Font, PatternFill, Alignment
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "DS_Dia_Diem_Mau"
+
+    headers = [
+        "name", "category", "address", "open_time", "close_time", 
+        "min_price", "max_price", "rating", "reviews_count", "peak_hours",
+        "best_review", "worst_review", "tags", "lat", "lon"
+    ]
+    ws.append(headers)
+
+    header_font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+    header_fill = PatternFill(start_color="E11D48", end_color="E11D48", fill_type="solid")
+    for col_num in range(1, len(headers) + 1):
+        cell = ws.cell(row=1, column=col_num)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = Alignment(horizontal="center", vertical="center")
+
+    sample_rows = [
+        [
+            "Hủ Tiếu Nam Vang Triều Châu", "an_uong", "85 Trần Bình Trọng, Phường 1, Quận 5", "06:30", "22:00",
+            40000, 75000, 4.6, 820, "18:00 - 19:30",
+            "Nước dùng ngọt xương tự nhiên, sườn mềm tôm tươi", "Quán giờ tan tầm hơi đông", "nhom_ban,di_1_minh", 10.7570, 106.6780
+        ],
+        [
+            "Cà Phê Trầm Chợ Lớn", "di_choi", "142 Triệu Quang Phục, Phường 11, Quận 5", "08:00", "22:30",
+            35000, 65000, 4.5, 430, "15:00 - 17:00",
+            "Không gian hoài cổ, nhạc nhẹ, rất hợp học bài và hẹn hò", "Hẻm hơi nhỏ", "hen_ho,di_1_minh", 10.7540, 106.6610
+        ]
+    ]
+    for r in sample_rows:
+        ws.append(r)
+
+    for col in ws.columns:
+        max_len = max(len(str(cell.value or '')) for cell in col)
+        col_letter = col[0].column_letter
+        ws.column_dimensions[col_letter].width = max(max_len + 3, 12)
+
+    buf = io.BytesIO()
+    wb.save(buf)
+    return buf.getvalue()
+
+
+def parse_rows_from_file_content(data, filename: str):
     """
-    Đọc dữ liệu từ file CSV tải lên và nạp vào CSDL với khả năng kiểm tra lỗi chặt chẽ (G6-FR09 & Business Rule 4):
+    Tự động nhận diện định dạng CSV hoặc Excel (.xlsx, .xls) và trích xuất danh sách row dictionaries
+    """
+    fname_lower = filename.lower()
+    is_excel = fname_lower.endswith(".xlsx") or fname_lower.endswith(".xls")
+
+    if is_excel or (isinstance(data, str) and ("base64," in data or (len(data) > 100 and "\n" not in data[:100] and "\r" not in data[:100]))):
+        import openpyxl
+        import base64
+        file_bytes = data
+        if isinstance(data, str):
+            if "base64," in data:
+                data = data.split("base64,")[1]
+            try:
+                file_bytes = base64.b64decode(data)
+            except Exception:
+                file_bytes = data.encode("utf-8")
+        elif isinstance(data, (bytes, bytearray)):
+            file_bytes = data
+
+        wb = openpyxl.load_workbook(io.BytesIO(file_bytes), data_only=True)
+        sheet = wb.active
+        raw_rows = list(sheet.iter_rows(values_only=True))
+        if not raw_rows:
+            return []
+
+        header_row = raw_rows[0]
+        headers = [str(h).strip().lower() if h is not None else f"col_{i}" for i, h in enumerate(header_row)]
+
+        parsed_rows = []
+        for r in raw_rows[1:]:
+            if not any(val is not None and str(val).strip() != "" for val in r):
+                continue
+            row_dict = {}
+            for i, val in enumerate(r):
+                if i < len(headers):
+                    key = headers[i]
+                    row_dict[key] = "" if val is None else str(val).strip()
+            parsed_rows.append(row_dict)
+        return parsed_rows
+    else:
+        csv_str = data if isinstance(data, str) else data.decode("utf-8", errors="replace")
+        f = io.StringIO(csv_str)
+        reader = csv.DictReader(f)
+        return list(reader)
+
+
+def import_file_data(data, filename="uploaded_places.csv"):
+    """
+    Đọc dữ liệu từ file CSV hoặc Excel (.xlsx) tải lên và nạp vào CSDL với kiểm tra lỗi chặt chẽ (G6-FR09 & Business Rule 4):
     - Phát hiện trường bắt buộc bị thiếu (Tên quán, Thể loại, Địa chỉ)
     - Phát hiện kiểu dữ liệu sai (Tọa độ không phải float, Giá tiền không phải số nguyên, Sao không hợp lệ)
     - Ghi nhận chi tiết dòng lỗi để Admin xem và chỉnh sửa (Demo Flow 3)
     - Ghi log lịch sử import vào bảng import_logs (Section 5)
     """
-    f = io.StringIO(csv_text)
-    reader = csv.DictReader(f)
+    parsed_rows = parse_rows_from_file_content(data, filename)
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -602,7 +698,7 @@ def import_csv_data(csv_text, filename="uploaded_places.csv"):
     errors = []
     row_idx = 1  # Header là dòng 1, dòng dữ liệu đầu tiên là dòng 2
 
-    for row in reader:
+    for row in parsed_rows:
         row_idx += 1
         name = (row.get("name") or "").strip()
         address = (row.get("address") or "").strip()
@@ -724,6 +820,17 @@ def import_csv_data(csv_text, filename="uploaded_places.csv"):
         "error_count": error_count,
         "errors": errors
     }
+
+
+def import_csv_data(csv_text, filename="uploaded_places.csv"):
+    """Wrapper tương thích ngược cho import CSV"""
+    return import_file_data(csv_text, filename=filename)
+
+
+def import_excel_data(excel_data, filename="uploaded_places.xlsx"):
+    """Wrapper chuyên dụng cho import Excel (.xlsx)"""
+    return import_file_data(excel_data, filename=filename)
+
 
 def save_itinerary(itin_data, stops_data):
     """Lưu lịch trình và các chặng dừng vào CSDL (Section 5 ERD)"""

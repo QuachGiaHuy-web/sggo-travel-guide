@@ -862,7 +862,7 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
         tier_pts, fit_tier = get_companion_tier_score(spot, mapped_comp_tag)
         rule_reasons = []
         if tier_pts > 0:
-            rule_reasons.append(f"Khớp bối cảnh '{companion_str}' (+{int(tier_pts)}đ {fit_tier})")
+            rule_reasons.append(f"Khớp bối cảnh '{companion_str}' (+{int(tier_pts)}đ Tier {fit_tier})")
         rule_reasons.append(f"Mở cửa ({spot.get('open_time')}-{spot.get('close_time')})")
         avg_cost = (p_min_cost + p_max_cost) // 2
         rule_reasons.append(f"Chi phí ~{avg_cost:,}đ")

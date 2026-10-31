@@ -385,17 +385,17 @@ def quick_recommend(req: QuickRecommendRequest):
         score += tier_pts
         p_dict["fit_tier"] = fit_tier
 
-        # 2.5 Kiểm tra trạng thái mở cửa (Business Rule 2: không gợi ý quán đóng cửa)
+        # 2.5 Kiểm tra trạng thái mở cửa (Business Rule 2: Loại trừ 100% quán đang đóng cửa)
         check_t = req.client_time
         if not check_t:
             now_vn = datetime.datetime.utcnow() + datetime.timedelta(hours=7)
             check_t = now_vn.strftime("%H:%M")
         is_open_now = is_place_open_at_time(p, check_t)
         p_dict["is_currently_open"] = is_open_now
-        if is_open_now:
-            score += 15.0
-        else:
-            score -= 40.0  # Ưu tiên dứt điểm các quán đang mở cửa lên trước
+        if not is_open_now:
+            # Loại bỏ hoàn toàn quán đóng cửa khỏi gợi ý khám phá
+            continue
+        score += 15.0
 
         # 3. Khớp Ngân sách (Loại trừ tuyệt đối các quán vi phạm giới hạn ngân sách)
         min_p = p.get("min_price", 0)
@@ -470,6 +470,18 @@ def quick_recommend(req: QuickRecommendRequest):
         score += (rating_score + review_score)
         scored_places.append((score, p_dict))
 
+    # Nếu vào giờ quá khuya không còn quán nào mở cửa trong danh mục
+    if not scored_places and req.price_level != "free":
+        for p in all_places:
+            if req.category and req.category != "all" and p.get("category") != req.category:
+                continue
+            p_dict = dict(p)
+            p_dict["is_currently_open"] = False
+            p_dict["closed_warning"] = "Hiện tại là đêm khuya, các địa điểm thuộc thể loại này đã đóng cửa. SGGo gợi ý các điểm sẽ mở cửa sớm nhất vào sáng mai cho bạn!"
+            tier_pts, fit_tier = get_companion_tier_score(p, mapped_tag)
+            p_dict["fit_tier"] = fit_tier
+            scored_places.append((tier_pts + float(p.get("rating", 4.0)), p_dict))
+
     # Xử lý trường hợp: Người dùng chọn Ẩm thực nhưng lại chọn Miễn phí (0đ).
     # Thực tế Sài Gòn không có quán ăn miễn phí 0đ, tự động chuyển hướng tìm các điểm tham quan/check-in 0đ!
     if not scored_places and req.price_level == "free":
@@ -489,7 +501,7 @@ def quick_recommend(req: QuickRecommendRequest):
     sorted_places = [item[1] for item in scored_places]
 
     if not sorted_places:
-        sorted_places = all_places
+        sorted_places = [dict(p, is_currently_open=False, closed_warning="Hiện tại là đêm khuya, các địa điểm đã đóng cửa.") for p in all_places]
 
     # Xử lý xoay vòng gợi ý (offset) để người dùng bấm "Đổi 3 quán khác"
     offset = req.offset or 0
@@ -559,11 +571,14 @@ def is_place_open_at_time(p: dict, check_time_str: str) -> bool:
             return True
         p_start = int(ot_parts[0][0]) * 60 + int(ot_parts[0][1] or 0)
         p_end = int(ct_parts[0][0]) * 60 + int(ct_parts[0][1] or 0)
-        if p_end <= p_start:
-            p_end += 24 * 60
-            if check_mins < p_start:
-                check_mins += 24 * 60
-        return p_start <= check_mins <= p_end
+
+        if p_start == p_end:
+            return True
+
+        if p_end < p_start:
+            return check_mins >= p_start or check_mins <= p_end
+        else:
+            return p_start <= check_mins <= p_end
     except Exception:
         return True
 
@@ -584,19 +599,37 @@ def is_place_open_during_window(p: dict, free_time_str: str) -> bool:
         else:
             return True
 
-        if req_end <= req_start:
-            req_end += 24 * 60
-
         ot_parts = re.findall(r'(\d{1,2})[:hH](\d{0,2})', ot)
         ct_parts = re.findall(r'(\d{1,2})[:hH](\d{0,2})', ct)
         if not ot_parts or not ct_parts:
             return True
         p_start = int(ot_parts[0][0]) * 60 + int(ot_parts[0][1] or 0)
         p_end = int(ct_parts[0][0]) * 60 + int(ct_parts[0][1] or 0)
-        if p_end <= p_start:
-            p_end += 24 * 60
 
-        return not (req_end < p_start or req_start > p_end)
+        if p_start == p_end:
+            return True
+
+        req_windows = []
+        if req_end < req_start:
+            req_windows.append((req_start, 1440))
+            req_windows.append((0, req_end))
+        else:
+            req_windows.append((req_start, req_end))
+
+        place_windows = []
+        if p_end < p_start:
+            place_windows.append((p_start, 1440))
+            place_windows.append((0, p_end))
+        else:
+            place_windows.append((p_start, p_end))
+
+        for rw_start, rw_end in req_windows:
+            for pw_start, pw_end in place_windows:
+                overlap_start = max(rw_start, pw_start)
+                overlap_end = min(rw_end, pw_end)
+                if overlap_end - overlap_start >= 15:
+                    return True
+        return False
     except Exception:
         return True
 
@@ -635,18 +668,42 @@ def generate_itinerary(req: ItineraryRequest):
             "recommended_budget": 100000
         }
 
+    # Ràng buộc giờ mở cửa (Business Rule 2 & 3): Địa điểm đóng cửa KHÔNG ĐƯỢC đưa vào lịch trình
+    open_pool = [p for p in all_places if is_place_open_during_window(p, req.free_time)]
+    
+    # Kiểm tra số lượng quán mở cửa theo mục đích
+    if req.purpose == "an_uong":
+        open_purpose_places = [p for p in open_pool if p.get("category") == "an_uong"]
+    elif req.purpose == "di_choi":
+        open_purpose_places = [p for p in open_pool if p.get("category") == "di_choi" or "cafe" in remove_accent(p.get("name", "")).lower() or "che" in remove_accent(p.get("name", "")).lower()]
+    else:
+        open_purpose_places = open_pool
+
+    if len(open_purpose_places) < 3:
+        return {
+            "feasible": False,
+            "error_code": "ALL_PLACES_CLOSED",
+            "message": f"Vào khung giờ rảnh '{req.free_time}', hầu như tất cả các địa điểm thuộc mục đích này đều đã đóng cửa (chỉ có {len(open_purpose_places)} điểm mở cửa).",
+            "suggestion": "Bạn hãy đổi sang khung giờ rảnh vào ban ngày hoặc buổi tối (ví dụ: '18:30 - 22:30' hoặc '14:00 - 18:30') để khám phá trọn vẹn nhé!",
+            "recommended_time": "18:30 - 22:30",
+            "recommended_budget": target_budget
+        }
+
+    # BẮT BUỘC: Toàn bộ quá trình chọn trạm (cả Gemini AI lẫn Rule-based) chỉ dùng các quán đang mở cửa!
+    available_places = open_pool
+
     # 1. Xác định toạ độ điểm xuất phát (Ưu tiên GPS chính xác từ Geolocation API của trình duyệt)
     if req.start_lat and req.start_lon:
         start_lat, start_lon = float(req.start_lat), float(req.start_lon)
     else:
         start_lat, start_lon = resolve_start_coords(req.start_location)
 
-    # Tạo bản đồ ID -> place để tra cứu nhanh
-    places_by_id = {p["id"]: p for p in all_places}
+    # Tạo bản đồ ID -> place để tra cứu nhanh (chỉ gồm quán đang mở cửa)
+    places_by_id = {p["id"]: p for p in available_places}
 
-    # 2. Tạo tóm tắt ngữ cảnh 40 địa điểm thực tế để đưa vào Gemini AI
+    # 2. Tạo tóm tắt ngữ cảnh địa điểm thực tế ĐANG MỞ CỬA để đưa vào Gemini AI
     places_lines = []
-    for p in all_places:
+    for p in available_places[:40]:
         cat = "Ẩm thực" if p.get("category") == "an_uong" else "Đi chơi/Di tích"
         dishes = p.get("must_try_dishes") or p.get("description") or ""
         places_lines.append(f"ID {p['id']}: {p['name']} | Thể loại: {cat} | Giờ mở: {p.get('open_time')}-{p.get('close_time')} | Đánh giá: {p.get('rating')} sao | Điểm nổi bật: {dishes[:80]}")
@@ -749,18 +806,8 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
 
     # 4. Fallback phòng hộ nếu Gemini AI không kết nối được hoặc dùng Rule-Based Heuristic
     if len(selected_ids) < 3:
-        # Lọc theo giờ mở cửa (Business Rule 2: địa điểm đóng cửa/ẩn không đưa vào lịch trình)
-        open_cands = [p for p in all_places if is_place_open_during_window(p, req.free_time)]
-        valid_pool = open_cands if len(open_cands) >= 10 else all_places
-
-        if req.purpose == "di_choi":
-            candidates = [p for p in valid_pool if p.get("category") == "di_choi"]
-            if len(candidates) < 3:
-                candidates += [p for p in valid_pool if "cafe" in remove_accent(p.get("name", "")).lower() or "che" in remove_accent(p.get("name", "")).lower()]
-        elif req.purpose == "an_uong":
-            candidates = [p for p in valid_pool if p.get("category") == "an_uong"]
-        else:
-            candidates = valid_pool
+        # 100% ứng viên đã được lọc mở cửa nghiêm ngặt từ open_purpose_places
+        candidates = list(open_purpose_places)
 
         # Lọc theo ngân sách (G6-FR05 MUST): Đảm bảo các trạm không có giá vượt quá ngân sách
         if req.budget_level == "free" or target_budget == 0:
@@ -868,7 +915,7 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
 
     chosen_places = [places_by_id[pid] for pid in selected_ids if pid in places_by_id]
     if len(chosen_places) < 3:
-        chosen_places = all_places[:3]
+        chosen_places = open_purpose_places[:3]
 
     # 5. Sắp xếp thứ tự các trạm:
     # Nếu Gemini AI đã lập lịch trình với mốc giờ cụ thể, tôn trọng thứ tự thời gian của Gemini.

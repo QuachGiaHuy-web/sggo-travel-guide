@@ -633,6 +633,12 @@ function buildRecommendCardHTML(p, idx) {
               ${p.is_admin_choice === 1 ? '<span class="text-[10px] bg-amber-100 text-amber-900 font-extrabold px-2 py-0.5 rounded-md border border-amber-300 flex items-center gap-1"><i class="fa-solid fa-crown text-amber-600"></i> Quán Đề Cử</span>' : ''}
             </div>
 
+            ${p.closed_warning ? `
+              <div class="mb-2.5 p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 flex items-start gap-2">
+                <i class="fa-solid fa-moon text-amber-600 mt-0.5"></i>
+                <span><strong>Lưu ý:</strong> ${p.closed_warning}</span>
+              </div>
+            ` : ''}
             <!-- Tên quán (Headline lớn, đậm nét) -->
             <h3 onclick="openPlaceDetailById(${p.id})" class="font-black text-slate-900 text-xl sm:text-2xl tracking-tight leading-snug mb-2 hover:text-[#E11D48] transition cursor-pointer" title="Bấm để xem chi tiết quán">
               ${p.name}
@@ -1146,7 +1152,15 @@ async function requestAIItinerary(isShuffle = false) {
       if (resultArea) resultArea.classList.add("hidden");
       if (constraintAlert) {
         constraintAlert.classList.remove("hidden");
-        document.getElementById("aiConstraintTitle").innerText = result.error_code === "TIME_TOO_SHORT" ? "Thời gian rảnh quá ngắn" : "Ngân sách không đủ cho lộ trình";
+        let constraintTitle = "Điều kiện không thể đáp ứng";
+        if (result.error_code === "TIME_TOO_SHORT") {
+          constraintTitle = "Thời gian rảnh quá ngắn";
+        } else if (result.error_code === "ALL_PLACES_CLOSED") {
+          constraintTitle = "Địa điểm đã đóng cửa trong khung giờ này";
+        } else if (result.error_code === "BUDGET_TOO_LOW") {
+          constraintTitle = "Ngân sách không đủ cho lộ trình";
+        }
+        document.getElementById("aiConstraintTitle").innerText = constraintTitle;
         document.getElementById("aiConstraintMessage").innerText = result.message;
         document.getElementById("aiConstraintSuggestionText").innerText = result.suggestion;
         window._currentRelaxAction = {

@@ -1093,6 +1093,28 @@ QUY TẮC BẮT BUỘC KHI LẬP LỘ TRÌNH:
 
 @app.post("/api/admin/places")
 def create_new_place(place: PlaceModel):
+    # Kiểm tra chống trùng lặp đa lớp ở cấp Backend (Tên + Địa chỉ, hoặc trùng link Maps)
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    clean_name = place.name.strip()
+    clean_addr = place.address.strip()
+    clean_maps = (place.google_maps_url or "").strip()
+
+    if clean_maps:
+        cursor.execute("SELECT id, name FROM places WHERE LOWER(TRIM(google_maps_url)) = LOWER(TRIM(?))", (clean_maps,))
+        dup_map = cursor.fetchone()
+        if dup_map:
+            conn.close()
+            raise HTTPException(status_code=400, detail=f"Địa điểm này đã tồn tại trong CSDL với cùng liên kết Google Maps (ID #{dup_map['id']} - {dup_map['name']})!")
+
+    cursor.execute("SELECT id, name, address FROM places WHERE LOWER(TRIM(name)) = LOWER(TRIM(?)) AND LOWER(TRIM(address)) = LOWER(TRIM(?))", 
+                   (clean_name, clean_addr))
+    dup_exact = cursor.fetchone()
+    conn.close()
+    if dup_exact:
+        raise HTTPException(status_code=400, detail=f"Địa điểm '{clean_name}' tại địa chỉ này đã tồn tại trong CSDL (ID #{dup_exact['id']})!")
+
     new_p = add_place(place.model_dump())
     return {"status": "ok", "place": new_p}
 
@@ -1138,9 +1160,10 @@ def extract_gmaps_info(req: ExtractGmapsRequest):
         raise HTTPException(status_code=400, detail="Vui lòng nhập link Google Maps hoặc tên quán.")
 
     extracted_name = ""
-    extracted_address = "Quận 5, TP.HCM"
-    extracted_lat = 10.7550
-    extracted_lon = 106.6650
+    extracted_address = ""
+    extracted_district = "TP.HCM"
+    extracted_lat = None
+    extracted_lon = None
     extracted_image = ""
 
     target_url = raw_input
@@ -1179,7 +1202,7 @@ def extract_gmaps_info(req: ExtractGmapsRequest):
                 if m_q:
                     extracted_name = urllib.parse.unquote_plus(m_q.group(1)).replace("+", " ").strip()
 
-            # 2. Trích xuất tọa độ GPS
+            # 2. Trích xuất tọa độ GPS thực tế
             m_coords = re.search(r'/@([0-9.]+),([0-9.]+)', final_url)
             if m_coords:
                 extracted_lat = float(m_coords.group(1))
@@ -1217,7 +1240,7 @@ def extract_gmaps_info(req: ExtractGmapsRequest):
     else:
         extracted_name = raw_input
 
-    # Nếu tên quán có chứa luôn địa chỉ dạng "Tên Quán, Số nhà, Phường, Quận 5..."
+    # Nếu tên quán có chứa luôn địa chỉ dạng "Tên Quán, Số nhà, Phường, Quận..."
     if "," in extracted_name and any(k in extracted_name for k in ["Quận", "Phường", "Đường"]):
         parts = extracted_name.split(",", 1)
         extracted_name = parts[0].strip()
@@ -1228,26 +1251,20 @@ def extract_gmaps_info(req: ExtractGmapsRequest):
 
     extracted_name = ' '.join(w.capitalize() for w in extracted_name.split())
 
-    # Quy chuẩn thông tin mặc định thông minh
+    # Bóc tách quận thực tế từ địa chỉ hoặc tên quán
+    for d in ["Quận 1", "Quận 3", "Quận 4", "Quận 5", "Quận 6", "Quận 7", "Quận 8", "Quận 10", "Quận 11", "Quận 12", "Bình Thạnh", "Gò Vấp", "Phú Nhuận", "Tân Bình", "Tân Phú", "Bình Tân", "Thủ Đức", "TP. Thủ Đức", "Bình Chánh", "Hóc Môn", "Củ Chi", "Nhà Bè", "Cần Giờ"]:
+        if d.lower() in extracted_address.lower() or d.lower() in extracted_name.lower():
+            extracted_district = d
+            break
+
     name_clean = remove_accent(extracted_name)
     is_food = any(k in name_clean for k in [
         "quan", "tiem", "com", "pho", "hu tieu", "sui cao", "dimsum", "lau", "banh",
         "che", "tra sua", "cafe", "coffee", "tea", "nuoc", "food", "an", "bun", "oc", "ga", "bo"
     ])
-    
     category = "an_uong" if is_food else "di_choi"
-    open_time = "06:30" if any(k in name_clean for k in ["cafe", "coffee", "pho", "hu tieu", "bun"]) else ("10:30" if category == "an_uong" else "07:30")
-    close_time = "22:30" if category == "an_uong" else "18:00"
-    min_price = 45000 if category == "an_uong" else 0
-    max_price = 95000 if category == "an_uong" else 30000
-    rating = 4.5
-    reviews_count = 150
-    peak_hours = "18:30 - 20:30" if category == "an_uong" else "09:00 - 11:00"
-    best_review = ""
-    worst_review = ""
-    tags = "nhom_ban,di_1_minh,hen_ho"
 
-    # Kiểm tra trước trong CSDL xem có khớp với quán nào sẵn có không (Tối ưu phản hồi < 5ms)
+    # Kiểm tra trước trong CSDL xem có khớp với quán nào sẵn có không
     conn = get_connection()
     cursor = conn.cursor()
     search_term = extracted_name if extracted_name and not extracted_name.startswith("http") else raw_input
@@ -1259,6 +1276,7 @@ def extract_gmaps_info(req: ExtractGmapsRequest):
         matched = dict(found)
         return {
             "status": "ok",
+            "message": f"Khớp chính xác với quán '{matched['name']}' đã có trong CSDL.",
             "place": {
                 "name": matched["name"],
                 "category": matched["category"],
@@ -1277,86 +1295,43 @@ def extract_gmaps_info(req: ExtractGmapsRequest):
                 "worst_review": matched["worst_review"],
                 "image_url": matched["image_url"],
                 "tags": matched["tags"],
-                "is_verified": 1
+                "is_verified": 1,
+                "google_maps_url": matched.get("google_maps_url") or (target_url if is_url else None)
             }
         }
 
-    # Gọi Gemini 3.8 Flash AI nếu là quán mới
-    if ai_client:
-        try:
-            prompt = (
-                f"Địa điểm: '{extracted_name}' tại Quận 5, TP.HCM (tọa độ tham khảo: {extracted_lat}, {extracted_lon}). "
-                f"Hãy phân tích và trả về đúng 1 JSON duy nhất có các trường: "
-                f"name (tên quán chuẩn tiếng Việt có dấu), "
-                f"category ('an_uong' hoặc 'di_choi'), "
-                f"address (địa chỉ thật cụ thể có số nhà, đường, phường, Quận 5), "
-                f"district ('Quận 5'), "
-                f"lat (float vĩ độ thực tế tại Quận 5), "
-                f"lon (float kinh độ thực tế tại Quận 5), "
-                f"open_time (định dạng HH:MM, VD '07:00'), "
-                f"close_time (định dạng HH:MM, VD '22:30'), "
-                f"min_price (số nguyên VNĐ), "
-                f"max_price (số nguyên VNĐ), "
-                f"rating (float từ 4.0 đến 4.8), "
-                f"reviews_count (số nguyên lượng đánh giá), "
-                f"peak_hours (chuỗi giờ cao điểm thật), "
-                f"best_review (Trích dẫn 1 câu nhận xét 5 sao thực tế của khách hàng trên Google Maps, kèm tên người đánh giá nếu có), "
-                f"worst_review (Trích dẫn 1 câu nhận xét 1-3 sao hoặc góp ý thực tế của khách về giờ chờ/bãi xe/hương vị trên Google Maps, kèm tên người đánh giá nếu có), "
-                f"tags (chuỗi phân cách dấu phẩy: di_1_minh, hen_ho, nhom_ban, gia_dinh)."
-                f"Chỉ trả về duy nhất khối JSON."
-            )
-            res = ai_client.models.generate_content(model="gemini-3.8-flash", contents=prompt)
-            if res.text:
-                json_match = re.search(r'\{.*\}', res.text, re.DOTALL)
-                if json_match:
-                    ai_data = json.loads(json_match.group(0))
-                    if ai_data.get("name"):
-                        extracted_name = ai_data["name"]
-                    category = ai_data.get("category", category)
-                    if ai_data.get("address"):
-                        extracted_address = ai_data["address"]
-                    if ai_data.get("lat"):
-                        extracted_lat = float(ai_data["lat"])
-                    if ai_data.get("lon"):
-                        extracted_lon = float(ai_data["lon"])
-                    open_time = ai_data.get("open_time", open_time)
-                    close_time = ai_data.get("close_time", close_time)
-                    min_price = int(ai_data.get("min_price", min_price))
-                    max_price = int(ai_data.get("max_price", max_price))
-                    rating = float(ai_data.get("rating", rating))
-                    reviews_count = int(ai_data.get("reviews_count", reviews_count))
-                    peak_hours = ai_data.get("peak_hours", peak_hours)
-                    best_review = ai_data.get("best_review", best_review)
-                    worst_review = ai_data.get("worst_review", worst_review)
-                    tags = ai_data.get("tags", tags)
-        except Exception:
-            pass
+    # Nếu là quán mới: Trả về những gì THỰC SỰ trích xuất được, TUYỆT ĐỐI không bịa số liệu ảo
+    has_real_coords = (extracted_lat is not None and extracted_lon is not None and extracted_lat > 0)
+    status = "ok" if (extracted_name and has_real_coords) else "partial"
+    msg = ("Đã trích xuất tên và tọa độ GPS thực tế từ liên kết Google Maps." 
+           if status == "ok" 
+           else "Chỉ trích xuất được một phần do liên kết bị giới hạn. Vui lòng tự chọn giờ mở cửa và mức giá thực tế cho quán bên dưới!")
 
     return {
-        "status": "ok",
+        "status": status,
+        "message": msg,
         "place": {
             "name": extracted_name,
             "category": category,
             "address": extracted_address,
-            "district": "Quận 5",
+            "district": extracted_district,
             "lat": extracted_lat,
             "lon": extracted_lon,
-            "open_time": open_time,
-            "close_time": close_time,
-            "min_price": min_price,
-            "max_price": max_price,
-            "rating": rating,
-            "reviews_count": reviews_count,
-            "peak_hours": peak_hours,
-            "best_review": best_review,
-            "worst_review": worst_review,
+            "open_time": None,
+            "close_time": None,
+            "min_price": None,
+            "max_price": None,
+            "rating": None,
+            "reviews_count": None,
+            "peak_hours": "",
+            "best_review": "",
+            "worst_review": "",
             "image_url": extracted_image if (extracted_image and str(extracted_image).strip()) else None,
-            "tags": tags,
-            "is_verified": 1
+            "tags": "nhom_ban,di_1_minh,hen_ho",
+            "is_verified": 1,
+            "google_maps_url": target_url if is_url else None
         }
     }
-
-
 
 class TagCreateRequest(BaseModel):
     tag_key: str

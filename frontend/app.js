@@ -2215,50 +2215,78 @@ async function handleExtractGmaps() {
     }
     
     const data = await res.json();
-    const p = data.place;
+    const p = data.place || {};
+    let extractedCount = 0;
 
-    // Tự động điền dữ liệu bóc tách vào form bên dưới
-    document.getElementById("formName").value = p.name || "";
-    document.getElementById("formCategory").value = p.category || "an_uong";
-    document.getElementById("formAddress").value = p.address || "";
+    // Tự động điền dữ liệu bóc tách THỰC TẾ vào form (Tuyệt đối không gán số liệu ảo)
+    if (p.name) {
+      document.getElementById("formName").value = p.name;
+      extractedCount++;
+    }
+    if (p.category) document.getElementById("formCategory").value = p.category;
+    if (p.address && !p.address.includes("Mặc định")) {
+      document.getElementById("formAddress").value = p.address;
+      extractedCount++;
+    }
+    if (p.district) document.getElementById("formDistrict").value = p.district;
+    if (p.lat && p.lat !== 10.7550) {
+      document.getElementById("formLat").value = p.lat;
+      extractedCount++;
+    }
+    if (p.lon && p.lon !== 106.6650) {
+      document.getElementById("formLon").value = p.lon;
+      extractedCount++;
+    }
+    if (p.open_time && p.open_time.includes(":")) document.getElementById("formOpenTime").value = p.open_time;
+    if (p.close_time && p.close_time.includes(":")) document.getElementById("formCloseTime").value = p.close_time;
+    if (p.min_price && p.min_price > 0) document.getElementById("formMinPrice").value = p.min_price;
+    if (p.max_price && p.max_price > 0) document.getElementById("formMaxPrice").value = p.max_price;
+    if (p.rating && p.rating > 0) document.getElementById("formRating").value = p.rating;
+    if (p.reviews_count && p.reviews_count > 0) document.getElementById("formReviewsCount").value = p.reviews_count;
+    if (p.peak_hours) document.getElementById("formPeakHours").value = p.peak_hours;
+
     const formGmapsUrl = document.getElementById("formGoogleMapsUrl");
     if (formGmapsUrl) {
-      formGmapsUrl.value = raw.startsWith("http") ? raw : "";
+      formGmapsUrl.value = raw.startsWith("http") ? raw : (p.google_maps_url || "");
     }
     const btnGmaps = document.getElementById("btnAdminOpenGmaps");
     if (btnGmaps) {
       btnGmaps.href = raw.startsWith("http") ? raw : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((p.name || '') + ' ' + (p.address || ''))}`;
       btnGmaps.classList.remove("hidden");
     }
-    document.getElementById("formDistrict").value = p.district || "TP.HCM";
-    document.getElementById("formOpenTime").value = p.open_time || "08:00";
-    document.getElementById("formCloseTime").value = p.close_time || "22:30";
-    document.getElementById("formMinPrice").value = p.min_price || 30000;
-    document.getElementById("formMaxPrice").value = p.max_price || 85000;
-    document.getElementById("formRating").value = p.rating || 4.5;
-    document.getElementById("formPeakHours").value = p.peak_hours || "Chưa rõ";
-    // Đổ dữ liệu phân tầng 2-Tier vào checkbox
-  const { tier1: curT1, tier2: curT2 } = parsePlaceTiers(p.tags || "");
-  ['di_1_minh', 'hen_ho', 'nhom_ban', 'gia_dinh'].forEach(t => {
-    const c1 = document.getElementById(`chk_t1_${t}`);
-    const c2 = document.getElementById(`chk_t2_${t}`);
-    if (c1) c1.checked = curT1.includes(t);
-    if (c2) c2.checked = curT2.includes(t);
-  });
-  syncAdminTagsInput();
-    document.getElementById("formBestReview").value = p.best_review || "";
-    document.getElementById("formWorstReview").value = p.worst_review || "";
+
+    // Đổ dữ liệu phân tầng 2-Tier vào checkbox nếu có
+    if (p.tags) {
+      const { tier1: curT1, tier2: curT2 } = parsePlaceTiers(p.tags || "");
+      ['di_1_minh', 'hen_ho', 'nhom_ban', 'gia_dinh'].forEach(t => {
+        const c1 = document.getElementById(`chk_t1_${t}`);
+        const c2 = document.getElementById(`chk_t2_${t}`);
+        if (c1) c1.checked = curT1.includes(t);
+        if (c2) c2.checked = curT2.includes(t);
+      });
+      syncAdminTagsInput();
+    }
+
+    if (p.best_review) document.getElementById("formBestReview").value = p.best_review;
+    if (p.worst_review) document.getElementById("formWorstReview").value = p.worst_review;
     
     const imgEl = document.getElementById("formImageUrl");
-    if (imgEl) {
-      imgEl.value = p.image_url || "";
+    if (imgEl && p.image_url) {
+      imgEl.value = p.image_url;
       updateImagePreview(p.image_url);
     }
 
     const chk = document.getElementById("formIsVerifiedReview");
     if (chk) chk.checked = true;
 
-    alert(`Đã tự động bóc tách thành công thông tin quán "${p.name}"! Bạn hãy kiểm tra lại và nhấn Lưu.`);
+    // Kích hoạt kiểm tra trùng lặp ngay sau khi trích xuất
+    updateDuplicateWarningUI();
+
+    if (data.status === "partial" || extractedCount <= 1) {
+      alert(`⚠️ ${data.message || 'Chỉ bóc tách được một phần thông tin do Google Maps chặn bot. Vui lòng tự chọn giờ mở cửa và mức giá thực tế cho quán bên dưới!'}`);
+    } else {
+      alert(`✔ Đã bóc tách thành công thông tin quán "${p.name || ''}". Vui lòng chọn giờ mở cửa và mức giá thực tế bên dưới!`);
+    }
   } catch (err) {
     if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {
       alert("Không thể kết nối tới Backend! Vui lòng kiểm tra xem bạn đã chạy file MO_WEB_SGGO.bat chưa.");

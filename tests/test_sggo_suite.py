@@ -738,6 +738,37 @@ Quán Sai Mức Giá,di_choi,222 Lương Nhữ Học,Quận 5,10.75,106.66,khong
             self.assertTrue(kpi.get("is_within_budget"), "Lịch trình phải đảm bảo nằm trong ngân sách dự kiến")
             self.assertLessEqual(kpi.get("total_min_cost", 0), 250000)
 
+    def test_rtm_fr01_05_create_place_prevents_duplicate(self):
+        """[TEST-FR01-05] Backend phát hiện và ngăn chặn thêm địa điểm trùng lặp (Tên + Địa chỉ)."""
+        places = db.get_all_places()
+        self.assertGreater(len(places), 0)
+        p = places[0]
+        dup_payload = {
+            "name": p["name"],
+            "address": p["address"],
+            "category": "an_uong",
+            "district": p.get("district", "Quận 1"),
+            "lat": 10.7725,
+            "lon": 106.6980,
+            "open_time": "08:00",
+            "close_time": "22:00",
+            "min_price": 30000,
+            "max_price": 70000
+        }
+        res = self.client.post("/api/admin/places", json=dup_payload)
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("đã tồn tại trong CSDL", res.json().get("detail", ""))
+
+    def test_rtm_fr01_06_extract_gmaps_clean_data(self):
+        """[TEST-FR01-06] Endpoint extract-gmaps minh bạch, không sinh dữ liệu giá/tọa độ ảo."""
+        res = self.client.post("/api/admin/extract-gmaps", json={"url_or_query": "Địa Điểm Kiểm Tra Tính Minh Bạch"})
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertIn("place", data)
+        # Giá và tọa độ không được gán số ảo
+        self.assertIsNone(data["place"]["min_price"])
+        self.assertIsNone(data["place"]["lat"])
+
 if __name__ == "__main__":
     unittest.main()
 

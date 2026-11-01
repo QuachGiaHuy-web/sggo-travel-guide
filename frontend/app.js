@@ -83,7 +83,7 @@ function updateAuthUI() {
     // NGƯỜI DÙNG THƯỜNG -> ẨN TUYỆT ĐỐI NÚT ADMIN
     authContainer.innerHTML = `
       <div class="flex items-center gap-1.5 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-xl shadow-sm whitespace-nowrap">
-        <span class="text-xs font-bold text-slate-800 truncate max-w-[90px]">👤 ${currentUser.username || 'User'}</span>
+        <span class="text-xs font-bold text-slate-800 truncate max-w-[90px] flex items-center gap-1"><i class="fa-solid fa-user text-slate-400 text-[10px]"></i> ${currentUser.username || 'User'}</span>
         <button onclick="handleLogout()" title="Đăng xuất" class="ml-1 text-[11px] font-bold px-2 py-0.5 rounded-lg bg-white hover:bg-rose-50 text-slate-600 hover:text-[#E11D48] border border-slate-200 transition flex items-center gap-1">
           <i class="fa-solid fa-arrow-right-from-bracket text-[10px]"></i> Thoát
         </button>
@@ -181,7 +181,7 @@ async function handleLogin(e) {
       switchMode("flow");
     }
   } catch (err) {
-    alert("❌ Lỗi: " + err.message);
+    alert("Lỗi: " + err.message);
   }
 }
 
@@ -206,7 +206,7 @@ async function handleRegister(e) {
     closeAuthModal();
     alert(`Đăng ký thành công! Chào mừng ${currentUser.full_name} đến với SGGo.`);
   } catch (err) {
-    alert("❌ Lỗi: " + err.message);
+    alert("Lỗi: " + err.message);
   }
 }
 
@@ -237,7 +237,7 @@ async function preloadPlaces() {
 function switchMode(mode) {
   const isAdmin = currentUser && currentUser.role === "admin";
   if (mode === "admin" && !isAdmin) {
-    alert("⛔ Quyền truy cập bị từ chối: Khu vực này chỉ dành riêng cho Quản trị viên (Admin)!");
+    alert("Quyền truy cập bị từ chối: Khu vực này chỉ dành riêng cho Quản trị viên (Admin)!");
     openAuthModal();
     switchMode("flow");
     return;
@@ -494,8 +494,8 @@ async function showFinishResults(offset = 0) {
   // Cập nhật badge tóm tắt tiêu chí khoa học
   const criteriaBadge = document.getElementById("finishCriteriaBadge");
   if (criteriaBadge) {
-    const catText = userChoices.category === "an_uong" ? "🍜 Ăn uống" : (userChoices.category === "di_choi" ? "📸 Vui chơi" : "Mục đích");
-    const ctxMap = { "di_1_minh": "🎧 Đi 1 mình", "nguoi_yeu": "💑 Cặp đôi", "ban_be": "🎉 Bạn bè", "gia_dinh": "👨‍👩‍👧 Gia đình" };
+    const catText = userChoices.category === "an_uong" ? "Ẩm thực" : (userChoices.category === "di_choi" ? "Điểm đến" : "Mục đích");
+    const ctxMap = { "di_1_minh": "Đi 1 mình", "nguoi_yeu": "Cặp đôi", "ban_be": "Bạn bè", "gia_dinh": "Gia đình" };
     const bdgMap = { "under_50k": "< 50k", "50k_100k": "50k-100k", "100k_250k": "100k-250k", "above_250k": "> 250k" };
     const ctxText = ctxMap[userChoices.context] || "Đồng hành";
     let bdgText = bdgMap[userChoices.price_level] || "Ngân sách";
@@ -506,7 +506,7 @@ async function showFinishResults(offset = 0) {
   }
 
   const resultsBox = document.getElementById("flowResults");
-  resultsBox.innerHTML = `<div class="p-8 text-center text-xs text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang phân tích ma trận dữ liệu và chọn lọc quán phù hợp...</div>`;
+  resultsBox.innerHTML = `<div class="p-8 text-center text-xs text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang tìm kiếm và chọn lọc địa điểm phù hợp nhất...</div>`;
 
   try {
     const payload = { ...userChoices, offset: currentFlowOffset };
@@ -948,9 +948,9 @@ function initLeafletTileLayers(mapInstance) {
   googleStreets.addTo(mapInstance);
 
   const baseLayers = {
-    "🗺️ Đường phố (Google)": googleStreets,
-    "🌐 OpenStreetMap": osmStandard,
-    "🛰️ Ảnh vệ tinh": googleHybrid
+    "Bản đồ đường phố (Google)": googleStreets,
+    "Bản đồ giao thông (OSM)": osmStandard,
+    "Ảnh vệ tinh Google": googleHybrid
   };
 
   // Tùy chọn: Nếu người dùng đã đăng ký key miễn phí tại carto.com/basemaps/apikey
@@ -961,7 +961,7 @@ function initLeafletTileLayers(mapInstance) {
       subdomains: "abcd",
       maxZoom: 20
     });
-    baseLayers["🏙️ CartoDB Voyager"] = cartoLayer;
+    baseLayers["Bản đồ CartoDB"] = cartoLayer;
   }
 
   try {
@@ -977,10 +977,10 @@ function initLeafletTileLayers(mapInstance) {
 window.setCartoApiKey = function(key) {
   if (key && key.trim()) {
     localStorage.setItem("CARTO_API_KEY", key.trim());
-    alert("✅ Đã lưu CARTO API Key thành công! Vui lòng tải lại trang (F5) để hiển thị thêm lớp CartoDB.");
+    alert("Đã lưu CARTO API Key thành công! Vui lòng tải lại trang (F5) để hiển thị thêm lớp CartoDB.");
   } else {
     localStorage.removeItem("CARTO_API_KEY");
-    alert("🗑️ Đã xóa CARTO API Key! Bản đồ tiếp tục dùng Google Maps mặc định.");
+    alert("Đã xóa CARTO API Key! Bản đồ tiếp tục dùng Google Maps mặc định.");
   }
 };
 
@@ -1039,7 +1039,7 @@ function renderItineraryMap(startCoords, steps) {
           <div style="font-weight: 800; font-size: 12px; color: #0F172A;">Trạm ${idx + 1}: ${s.action}</div>
           <div style="font-weight: 700; color: #E11D48; margin-top: 3px;">${s.location}</div>
           <div style="font-size: 11px; color: #64748B; margin-top: 2px;"><i class="fa-regular fa-clock" style="margin-right: 4px;"></i>${s.time}</div>
-          ${s.must_try_tip ? `<div style="font-size: 11px; color: #047857; margin-top: 3px; font-weight: 600;">💡 ${s.must_try_tip}</div>` : ''}
+          ${s.must_try_tip ? `<div style="font-size: 11px; color: #047857; margin-top: 3px; font-weight: 600;"><i class="fa-regular fa-lightbulb" style="margin-right: 4px;"></i>${s.must_try_tip}</div>` : ''}
         </div>
       `;
 
@@ -1134,7 +1134,7 @@ async function requestAIItinerary(isShuffle = false) {
 
   const startLoc = document.getElementById("aiStartLoc")?.value.trim();
   if (!startLoc && !userGPSCoords) {
-    alert("📍 Vui lòng nhập điểm xuất phát hoặc bấm 'Dùng GPS hiện tại'!");
+    alert("Vui lòng nhập điểm xuất phát hoặc bấm 'Dùng GPS hiện tại'!");
     document.getElementById("aiStartLoc")?.focus();
     btn.innerHTML = `<i class="fa-solid fa-route"></i> <span>Tạo Lịch Trình Khám Phá</span>`;
     btn.disabled = false;
@@ -1267,7 +1267,7 @@ async function requestAIItinerary(isShuffle = false) {
               <span>•</span>
               <span class="inline-flex items-center gap-1"><i class="fa-solid fa-clock text-slate-400"></i> ${s.open_hours}</span>
             </div>
-            ${s.traffic_warning ? `<p class="text-[11px] text-amber-900 bg-amber-50 border border-amber-200 p-2.5 rounded-xl mt-2 font-medium">⚠️ <strong>Lưu ý:</strong> ${s.traffic_warning}</p>` : ''}
+            ${s.traffic_warning ? `<p class="text-[11px] text-amber-900 bg-amber-50 border border-amber-200 p-2.5 rounded-xl mt-2 font-medium"><i class="fa-solid fa-triangle-exclamation text-amber-600 mr-1"></i><strong>Lưu ý:</strong> ${s.traffic_warning}</p>` : ''}
             
             <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
               <span class="text-[10px] text-slate-400 font-semibold">Trạm dừng #${idx + 1} trên lộ trình</span>
@@ -1284,7 +1284,7 @@ async function requestAIItinerary(isShuffle = false) {
 
     resultArea.scrollIntoView({ behavior: "smooth" });
   } catch (err) {
-    alert("❌ Lỗi: " + err.message);
+    alert("Lỗi: " + err.message);
   } finally {
     btn.innerHTML = `<i class="fa-solid fa-route"></i> <span>Tạo Lịch Trình Khám Phá</span>`;
     btn.disabled = false;
@@ -1520,8 +1520,8 @@ function clearExploreLocation() {
 function showLocationRequiredNotice(actionType) {
   const isSort = (actionType === "sort");
   const msg = isSort
-    ? "📍 Bạn chưa chọn vị trí!\n\nĐể sắp xếp các quán theo 'Khoảng cách: Gần nhất', bạn hãy bấm 'Dùng GPS hiện tại' hoặc bấm chọn một điểm mốc (Hồ Con Rùa, Chợ An Đông,...) ở khung định vị phía trên nhé!"
-    : "📍 Bạn chưa chọn vị trí!\n\nĐể lọc các quán trong bán kính mong muốn, bạn hãy bấm 'Dùng GPS hiện tại' hoặc nhập vị trí của bạn ở khung định vị phía trên nhé!";
+    ? "Bạn chưa chọn vị trí!\n\nĐể sắp xếp các quán theo 'Khoảng cách: Gần nhất', bạn hãy bấm 'Dùng GPS hiện tại' hoặc bấm chọn một điểm mốc (Hồ Con Rùa, Chợ An Đông,...) ở khung định vị phía trên nhé!"
+    : "Bạn chưa chọn vị trí!\n\nĐể lọc các quán trong bán kính mong muốn, bạn hãy bấm 'Dùng GPS hiện tại' hoặc nhập vị trí của bạn ở khung định vị phía trên nhé!";
 
   alert(msg);
 
@@ -1872,7 +1872,7 @@ function filterAllPlaces() {
   if (radiusNotice) {
     if (radiusNum !== null && exploreUserCoords) {
       const radiusLabel = radiusNum < 1000 ? `${radiusNum} mét` : `${(radiusNum / 1000).toFixed(0)} km`;
-      radiusNotice.innerHTML = `🎯 Đang lọc trong bán kính <strong>${radiusLabel}</strong> (${filtered.length} quán)`;
+      radiusNotice.innerHTML = `<i class="fa-solid fa-location-crosshairs text-emerald-600 mr-1.5"></i>Đang lọc trong bán kính <strong>${radiusLabel}</strong> (${filtered.length} quán)`;
       radiusNotice.classList.remove("hidden");
     } else {
       radiusNotice.classList.add("hidden");
@@ -2095,12 +2095,12 @@ function renderAdminPlacesTable(places) {
         </td>
         <td class="p-3 whitespace-nowrap">
           <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isEat ? 'bg-rose-50 text-[#E11D48]' : 'bg-teal-50 text-teal-700'}">
-            ${isEat ? '🍜 Ăn uống' : '📸 Đi chơi'}
+            ${isEat ? 'Ẩm thực' : 'Đi chơi'}
           </span>
         </td>
         <td class="p-3 font-medium whitespace-nowrap text-slate-600">${(p.min_price === 0 && p.max_price === 0) ? 'Miễn phí' : `${p.min_price.toLocaleString()}đ - ${p.max_price.toLocaleString()}đ`}</td>
         <td class="p-3 whitespace-nowrap">
-          <span class="font-bold text-amber-600">⭐ ${p.rating}</span>
+          <span class="font-bold text-amber-700 inline-flex items-center gap-1"><i class="fa-solid fa-star text-amber-500 text-[10px]"></i> ${p.rating}</span>
           <div class="text-[10px] text-slate-400 font-normal">${p.open_time} - ${p.close_time}</div>
         </td>
         <td class="p-3 text-center whitespace-nowrap bg-blue-50/30 border-l border-blue-100">
@@ -2258,12 +2258,12 @@ async function handleExtractGmaps() {
     const chk = document.getElementById("formIsVerifiedReview");
     if (chk) chk.checked = true;
 
-    alert(`✨ Đã tự động bóc tách thành công thông tin quán "${p.name}"! Bạn hãy kiểm tra lại và nhấn Lưu.`);
+    alert(`Đã tự động bóc tách thành công thông tin quán "${p.name}"! Bạn hãy kiểm tra lại và nhấn Lưu.`);
   } catch (err) {
     if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {
-      alert("❌ Không thể kết nối tới Backend! Vui lòng kiểm tra xem bạn đã chạy file MO_WEB_SGGO.bat chưa.");
+      alert("Không thể kết nối tới Backend! Vui lòng kiểm tra xem bạn đã chạy file MO_WEB_SGGO.bat chưa.");
     } else {
-      alert("❌ Lỗi bóc tách: " + err.message);
+      alert("Lỗi bóc tách: " + err.message);
     }
   } finally {
     btn.innerHTML = `<i class="fa-solid fa-bolt"></i> Tự Động Điền`;
@@ -2292,9 +2292,9 @@ function updateImagePreview(url) {
 }
 
 function openAddPlaceModal() {
-  document.getElementById("placeFormTitle").innerText = "➕ Thêm Địa Điểm Mới Vào CSDL";
+  document.getElementById("placeFormTitle").innerText = "Thêm Địa Điểm Mới Vào CSDL";
   document.getElementById("placeFormSubtitle").innerText = "Nhập dữ liệu địa điểm tại Sài Gòn vào CSDL SQLite";
-  document.getElementById("btnSubmitPlaceForm").innerText = "➕ Lưu Địa Điểm Mới Vào SQLite";
+  document.getElementById("btnSubmitPlaceForm").innerText = "Lưu Địa Điểm Mới Vào SQLite";
   const btnGmaps = document.getElementById("btnAdminOpenGmaps");
   if (btnGmaps) btnGmaps.classList.add("hidden");
   document.getElementById("gmapsExtractorBox").classList.remove("hidden");
@@ -2363,7 +2363,7 @@ function handleDeletePlaceById(id) {
 function openEditPlaceModal(p) {
   document.getElementById("placeFormTitle").innerHTML = `<i class="fa-solid fa-pen-to-square text-blue-600 mr-1.5"></i> Chỉnh Sửa Quán #${p.id} — ${p.name}`;
   document.getElementById("placeFormSubtitle").innerText = "Đang chỉnh sửa dữ liệu quán đã có trong CSDL SQLite";
-  document.getElementById("btnSubmitPlaceForm").innerText = `💾 Lưu Cập Nhật Cho Quán #${p.id}`;
+  document.getElementById("btnSubmitPlaceForm").innerText = `Lưu Cập Nhật Cho Quán #${p.id}`;
   
   // Đồng bộ liên kết Google Maps đối chiếu cho Admin
   const formGmapsUrl = document.getElementById("formGoogleMapsUrl");
@@ -2476,8 +2476,8 @@ async function handleSavePlace(e) {
     }
 
     alert(isEdit 
-      ? `✅ Đã cập nhật thành công quán "${payload.name}" (#${placeId}) vào CSDL SQLite!` 
-      : `✅ Đã thêm địa điểm mới "${payload.name}" vào CSDL SQLite!`
+      ? `Đã cập nhật thành công quán "${payload.name}" (#${placeId}) vào CSDL SQLite!` 
+      : `Đã thêm địa điểm mới "${payload.name}" vào CSDL SQLite!`
     );
     closePlaceFormModal();
     await preloadPlaces();
@@ -2490,7 +2490,7 @@ async function handleSavePlace(e) {
       renderAllPlaces(allPlacesCache);
     }
   } catch (err) {
-    alert("❌ Lỗi: " + err.message);
+    alert("Lỗi: " + err.message);
   }
 }
 
@@ -2502,11 +2502,11 @@ async function handleDeletePlace(placeId, name) {
   try {
     const res = await fetch(`${API_BASE}/admin/places/${placeId}`, { method: "DELETE" });
     if (!res.ok) throw new Error("Không thể xóa địa điểm.");
-    alert("✅ Đã xóa địa điểm thành công!");
+    alert("Đã xóa địa điểm thành công!");
     preloadPlaces();
     loadAdminDashboard();
   } catch (err) {
-    alert("❌ Lỗi: " + err.message);
+    alert("Lỗi: " + err.message);
   }
 }
 
@@ -2610,13 +2610,13 @@ async function submitCSVImport() {
       }
     } else {
       if (reportBox) reportBox.classList.add("hidden");
-      alert(`🎉 Toàn bộ ${data.imported_count} địa điểm hợp lệ và đã nạp thành công vào CSDL SQLite!`);
+      alert(`Toàn bộ ${data.imported_count} địa điểm hợp lệ và đã nạp thành công vào CSDL SQLite!`);
       closeImportModal();
       preloadPlaces();
       loadAdminDashboard();
     }
   } catch (e) {
-    alert("❌ Lỗi khi nạp file CSV: " + (e.message || "Không thể kết nối máy chủ."));
+    alert("Lỗi khi nạp file CSV: " + (e.message || "Không thể kết nối máy chủ."));
   } finally {
     btn.innerText = "Tiến Hành Nạp Dữ Liệu";
     btn.disabled = false;
@@ -2681,7 +2681,7 @@ function openPlaceDetailById(id) {
   if (titleEl) titleEl.innerText = p.name;
 
   const ratingBadge = document.getElementById("detailRatingBadge");
-  if (ratingBadge) ratingBadge.innerText = `⭐ ${p.rating}`;
+  if (ratingBadge) ratingBadge.innerHTML = `<i class="fa-solid fa-star text-amber-500 mr-1 text-xs"></i><span class="font-black text-amber-900">${p.rating}</span>`;
 
   // Đổ bóng sao vàng
   const starContainer = document.getElementById("detailStarIcons");
@@ -2751,10 +2751,10 @@ function openPlaceDetailById(id) {
   if (tagsContainer) {
     tagsContainer.innerHTML = "";
     const tagMap = {
-      di_1_minh: "🎧 Đi 1 mình",
-      hen_ho: "💑 Hẹn hò cặp đôi",
-      nhom_ban: "🎉 Nhóm bạn",
-      gia_dinh: "👨‍👩‍👧‍👦 Gia đình"
+      di_1_minh: `<i class="fa-solid fa-user text-slate-500 mr-1.5 text-[11px]"></i>Đi 1 mình`,
+      hen_ho: `<i class="fa-solid fa-heart text-rose-500 mr-1.5 text-[11px]"></i>Hẹn hò cặp đôi`,
+      nhom_ban: `<i class="fa-solid fa-users text-sky-600 mr-1.5 text-[11px]"></i>Nhóm bạn`,
+      gia_dinh: `<i class="fa-solid fa-people-roof text-amber-600 mr-1.5 text-[11px]"></i>Gia đình`
     };
     const { tier1, tier2 } = parsePlaceTiers(p.tags || "");
 
@@ -2762,14 +2762,14 @@ function openPlaceDetailById(id) {
     if (tier1.length > 0) {
       html += `
         <div class="flex items-center gap-1.5 flex-wrap">
-          ${tier1.map(t => `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-xs font-semibold">${tagMap[t] || t}</span>`).join("")}
+          ${tier1.map(t => `<span class="px-3 py-1 bg-slate-50 text-slate-700 border border-slate-200/90 rounded-xl text-xs font-semibold inline-flex items-center shadow-2xs">${tagMap[t] || t}</span>`).join("")}
         </div>
       `;
     }
     if (tier2.length > 0) {
       html += `
         <div class="flex items-center gap-1.5 flex-wrap">
-          ${tier2.map(t => `<span class="px-2.5 py-1 bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-xs font-semibold">${tagMap[t] || t}</span>`).join("")}
+          ${tier2.map(t => `<span class="px-3 py-1 bg-slate-50 text-slate-700 border border-slate-200/90 rounded-xl text-xs font-semibold inline-flex items-center shadow-2xs">${tagMap[t] || t}</span>`).join("")}
         </div>
       `;
     }
@@ -2865,7 +2865,7 @@ function copyDetailAddress() {
   if (!currentDetailPlace) return;
   const text = `${currentDetailPlace.name}, ${currentDetailPlace.address}`;
   navigator.clipboard.writeText(text).then(() => {
-    alert(`📋 Đã sao chép địa chỉ:\n"${text}"\nBạn có thể dán vào Grab, Be hoặc ứng dụng bản đồ!`);
+    alert(`Đã sao chép địa chỉ:\n"${text}"\nBạn có thể dán vào Grab, Be hoặc ứng dụng bản đồ!`);
   }).catch(() => {
     prompt("Sao chép địa chỉ:", text);
   });

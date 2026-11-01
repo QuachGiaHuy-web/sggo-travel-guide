@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=4.6" />
+  <link rel="stylesheet" href="style.css?v=4.7" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- Leaflet Map Library CDN -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
@@ -339,7 +339,7 @@
         <div class="grid grid-cols-1 md:grid-cols-12 gap-3 mt-3 items-center">
           <div class="md:col-span-7">
             <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
-              <span>📍 Vị trí hoặc địa chỉ của bạn:</span>
+              <span><i class="fa-solid fa-location-dot text-rose-500 mr-1 text-xs"></i> Vị trí hoặc địa chỉ của bạn:</span>
               <span id="exploreGpsStatusBadge" class="hidden text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
                 <i class="fa-solid fa-circle-check text-emerald-600"></i> Đã nhận tọa độ
               </span>
@@ -653,7 +653,7 @@
               <i class="fa-solid fa-arrow-up-right-from-square text-xs ml-1 opacity-70"></i>
             </a>
             <p class="text-[11px] text-center text-slate-500 mt-2 font-medium">
-              💡 Bấm nút trên: Google Maps tự động lên tuyến đường 3 trạm liên hoàn thuận đường nhất, bạn chỉ cần bấm <strong>"Bắt đầu"</strong> là đi xe máy thẳng một mạch!
+              <i class="fa-regular fa-lightbulb text-amber-500 mr-1 text-xs"></i> <strong>Lưu ý:</strong> Google Maps tự động lên tuyến đường 3 trạm liên hoàn thuận đường nhất, bạn chỉ cần bấm <strong>"Bắt đầu"</strong> là đi xe máy thẳng một mạch!
             </p>
           </div>
 
@@ -930,11 +930,11 @@
         <p class="text-[10px] text-slate-400 font-semibold mb-2">PHÂN QUYỀN ĐỂ BẢO VỆ ĐỒ ÁN:</p>
         <div class="grid grid-cols-2 gap-2 text-left">
           <button type="button" onclick="fillDemoAccount('user1', '123456')" class="p-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition">
-            <span class="text-[11px] font-bold text-slate-700 block">👤 Người dùng (user1)</span>
+            <span class="text-[11px] font-bold text-slate-700 block flex items-center gap-1.5"><i class="fa-solid fa-user text-slate-400 text-[10px]"></i> Người dùng (user1)</span>
             <span class="text-[10px] text-slate-400 block mt-0.5">Không hiện tab Admin</span>
           </button>
           <button type="button" onclick="fillDemoAccount('admin', 'admin123')" class="p-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition">
-            <span class="text-[11px] font-bold text-rose-600 block">⚙️ Quản trị viên (admin)</span>
+            <span class="text-[11px] font-bold text-rose-600 block flex items-center gap-1.5"><i class="fa-solid fa-gear text-rose-500 text-[10px]"></i> Quản trị viên (admin)</span>
             <span class="text-[10px] text-rose-400 block mt-0.5">Mở quyền Quản trị hệ thống</span>
           </button>
         </div>
@@ -1325,8 +1325,8 @@
         <div>
           <div class="flex items-start justify-between gap-3">
             <h2 id="detailTitle" class="text-xl font-black text-slate-900 leading-snug">Tên quán ăn</h2>
-            <span id="detailRatingBadge" class="text-sm font-extrabold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-xl whitespace-nowrap flex items-center gap-1 shadow-xs flex-shrink-0">
-              ⭐ 4.6
+            <span id="detailRatingBadge" class="text-sm font-extrabold text-amber-800 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-xl whitespace-nowrap flex items-center gap-1.5 shadow-xs flex-shrink-0">
+              <i class="fa-solid fa-star text-amber-500 text-xs"></i> <span>4.6</span>
             </span>
           </div>
           
@@ -1478,6 +1478,6 @@
     </div>
   </aside>
 
-  <script src="app.js?v=4.6"></script>
+  <script src="app.js?v=4.7"></script>
 </body>
 </html>

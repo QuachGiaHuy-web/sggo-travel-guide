@@ -603,3 +603,46 @@ select option {
   color: #BE123C;
   font-weight: 800;
 }
+
+
+/* ==================== FROSTED GLASS STATUS BADGES (APPLE / AIRBNB LUXURY) ==================== */
+.glass-badge-dark {
+  background-color: rgba(15, 23, 42, 0.65) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.glass-badge-dark:hover {
+  background-color: rgba(15, 23, 42, 0.8) !important;
+}
+
+.glow-dot-open {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: #34D399;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.8), 0 0 2px rgba(52, 211, 153, 1);
+  animation: pulseDot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.glow-dot-closed {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: #FB7185;
+  box-shadow: 0 0 6px rgba(251, 113, 133, 0.7);
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.15);
+  }
+}

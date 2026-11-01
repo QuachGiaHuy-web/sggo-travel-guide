@@ -1573,11 +1573,25 @@ function buildCatalogCardHTML(p) {
   const isOpen = isPlaceCurrentlyOpen(p.open_time, p.close_time);
   const gmapsUrl = p.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + p.address)}`;
 
-  const priceText = p.price_display
+  const rawPrice = p.price_display
     ? p.price_display
     : ((p.min_price === 0 && p.max_price === 0)
       ? "Miễn phí vé"
       : `${p.min_price ? p.min_price.toLocaleString() + 'đ' : ''} – ${p.max_price ? p.max_price.toLocaleString() + 'đ' : ''}`);
+
+  let cleanPrice = rawPrice;
+  let priceUnit = "";
+  if (cleanPrice.toLowerCase().includes("/người") || cleanPrice.toLowerCase().includes("/ người")) {
+    cleanPrice = cleanPrice.replace(/\/\s*người/gi, "").trim();
+    priceUnit = "/ người";
+  } else if (cleanPrice.toLowerCase().includes("/vé") || cleanPrice.toLowerCase().includes("/ vé")) {
+    cleanPrice = cleanPrice.replace(/\/\s*vé/gi, "").trim();
+    priceUnit = "/ vé";
+  }
+
+  const displayHours = (p.peak_hours && p.peak_hours !== 'Chưa rõ')
+    ? p.peak_hours.split('(')[0].trim()
+    : ((p.open_time && p.close_time) ? `${p.open_time} – ${p.close_time}` : '08:00 – 22:30');
 
   let distanceHTML = "";
   if (typeof p.distanceKm === "number" && !isNaN(p.distanceKm) && exploreUserCoords) {
@@ -1608,12 +1622,12 @@ function buildCatalogCardHTML(p) {
         </span>
       </div>
 
-      <!-- 2. Thân thẻ thông tin (Đã xóa địa chỉ ngoài thẻ; Tiền & Giờ tách thành 2 dòng riêng to rõ ràng) -->
+      <!-- 2. Thân thẻ thông tin (Phương án 1: Airbnb Luxury / Minimalist) -->
       <div class="p-4 flex-1 flex flex-col justify-between">
         <div>
-          <!-- Tên quán + Badge Số sao nổi bật ngay bên cạnh -->
-          <div class="flex items-start justify-between gap-2 mb-2.5">
-            <h4 onclick="openPlaceDetailById(${p.id})" class="font-black text-slate-900 text-sm leading-snug line-clamp-1 hover:text-[#E11D48] transition cursor-pointer" title="${p.name}">
+          <!-- Tên quán + Badge Số sao nổi bật -->
+          <div class="flex items-start justify-between gap-2 mb-2">
+            <h4 onclick="openPlaceDetailById(${p.id})" class="font-black text-slate-900 text-sm sm:text-[15px] leading-snug line-clamp-1 hover:text-[#E11D48] transition cursor-pointer" title="${p.name}">
               ${p.name}
             </h4>
             <div class="rating-pill-prominent py-0.5 px-2 text-xs flex-shrink-0">
@@ -1622,20 +1636,25 @@ function buildCatalogCardHTML(p) {
             </div>
           </div>
 
-          <!-- DÒNG 1: MỨC GIÁ THAM KHẢO (1 dòng riêng, chữ to nổi bật) -->
-          <div class="flex items-center justify-between py-2 px-3 bg-slate-50/90 rounded-xl mb-2 border border-slate-100">
-            <div class="flex items-center gap-2 min-w-0">
-              <i class="fa-solid fa-receipt text-slate-400 text-xs flex-shrink-0"></i>
-              <span class="font-black text-slate-900 text-xs sm:text-[13px] tracking-tight truncate">${priceText}</span>
+          <!-- Mức giá tham khảo (Điểm nhấn chính: chữ to rõ, thanh lịch, sang trọng phong cách Airbnb) -->
+          <div class="flex items-baseline justify-between gap-2 mb-1.5">
+            <div class="flex items-baseline gap-1 text-slate-900 truncate">
+              <span class="text-sm sm:text-base font-black tracking-tight text-slate-900 truncate">${cleanPrice}</span>
+              ${priceUnit ? `<span class="text-xs text-slate-400 font-normal whitespace-nowrap">${priceUnit}</span>` : ''}
             </div>
             ${distanceHTML}
           </div>
 
-          <!-- DÒNG 2: GIỜ HOẠT ĐỘNG / GIỜ CAO ĐIỂM (1 dòng riêng, chữ to nổi bật) -->
-          <div class="flex items-center gap-2 py-2 px-3 bg-amber-50/70 rounded-xl mb-2.5 border border-amber-100/90">
-            <i class="fa-regular fa-clock text-amber-600 text-xs flex-shrink-0"></i>
-            <span class="font-bold text-amber-950 text-xs sm:text-[13px] truncate">
-              ${(p.peak_hours && p.peak_hours !== 'Chưa rõ') ? p.peak_hours.split('(')[0].trim() : ((p.open_time && p.close_time) ? `${p.open_time} – ${p.close_time}` : '08:00 – 22:30')}
+          <!-- Dòng thông tin phụ: Khung giờ & Khu vực (Quận) thanh mảnh, tinh tế -->
+          <div class="flex items-center gap-2 text-xs text-slate-500 font-medium mb-3 truncate">
+            <span class="flex items-center gap-1.5 truncate text-slate-600">
+              <i class="fa-regular fa-clock text-slate-400 text-[11px] flex-shrink-0"></i>
+              <span class="truncate">${displayHours}</span>
+            </span>
+            <span class="text-slate-300 font-normal flex-shrink-0">•</span>
+            <span class="flex items-center gap-1 text-slate-600 whitespace-nowrap flex-shrink-0">
+              <i class="fa-solid fa-location-dot text-rose-500 text-[10px]"></i>
+              <span class="font-semibold">${p.district || 'TP.HCM'}</span>
             </span>
           </div>
         </div>

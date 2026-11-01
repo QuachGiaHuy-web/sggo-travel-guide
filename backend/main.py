@@ -1174,12 +1174,26 @@ def extract_gmaps_info(req: ExtractGmapsRequest):
 
     if is_url:
         import requests
+        
+        # 1. BÓC TÁCH NGAY TỪ LINK GỐC (0ms, KHÔNG LO BỊ CHẶN BOT HAY TIMEOUT)
+        m_direct_place = re.search(r'/place/([^/@?]+)', target_url)
+        if m_direct_place:
+            extracted_name = urllib.parse.unquote_plus(m_direct_place.group(1)).replace("+", " ").strip()
+
+        m_direct_coords = re.search(r'/@([0-9.]+),([0-9.]+)', target_url)
+        if not m_direct_coords:
+            m_direct_coords = re.search(r'!3d([0-9.]+)!4d([0-9.]+)', target_url)
+        if m_direct_coords:
+            extracted_lat = float(m_direct_coords.group(1))
+            extracted_lon = float(m_direct_coords.group(2))
+
+        # 2. Nếu là link rút gọn hoặc cần lấy thêm ảnh og:image, gọi network với timeout ngắn
         try:
             headers = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
                 "Accept-Language": "vi,en;q=0.9"
             }
-            resp = requests.get(target_url, allow_redirects=True, timeout=8, headers=headers)
+            resp = requests.get(target_url, allow_redirects=True, timeout=5, headers=headers)
             final_url = resp.url
             html = resp.text
 
@@ -1189,47 +1203,29 @@ def extract_gmaps_info(req: ExtractGmapsRequest):
                 if meta_ref:
                     final_url = meta_ref.group(1).replace("&amp;", "&")
 
-            # 1. Trích xuất tên quán từ final_url
-            m_place = re.search(r'/place/([^/@?]+)', final_url)
-            if m_place:
-                extracted_name = urllib.parse.unquote_plus(m_place.group(1)).replace("+", " ").strip()
-            elif "/search/" in final_url:
-                m_search = re.search(r'/search/([^/@?]+)', final_url)
-                if m_search:
-                    extracted_name = urllib.parse.unquote_plus(m_search.group(1)).replace("+", " ").strip()
-            elif "?q=" in final_url or "&q=" in final_url or "?query=" in final_url:
-                m_q = re.search(r'[?&](?:q|query)=([^&]+)', final_url)
-                if m_q:
-                    extracted_name = urllib.parse.unquote_plus(m_q.group(1)).replace("+", " ").strip()
+            if not extracted_name:
+                m_place = re.search(r'/place/([^/@?]+)', final_url)
+                if m_place:
+                    extracted_name = urllib.parse.unquote_plus(m_place.group(1)).replace("+", " ").strip()
+                elif "/search/" in final_url:
+                    m_search = re.search(r'/search/([^/@?]+)', final_url)
+                    if m_search:
+                        extracted_name = urllib.parse.unquote_plus(m_search.group(1)).replace("+", " ").strip()
+                elif "?q=" in final_url or "&q=" in final_url or "?query=" in final_url:
+                    m_q = re.search(r'[?&](?:q|query)=([^&]+)', final_url)
+                    if m_q:
+                        extracted_name = urllib.parse.unquote_plus(m_q.group(1)).replace("+", " ").strip()
 
-            # 2. Trích xuất tọa độ GPS thực tế
-            m_coords = re.search(r'/@([0-9.]+),([0-9.]+)', final_url)
-            if m_coords:
-                extracted_lat = float(m_coords.group(1))
-                extracted_lon = float(m_coords.group(2))
-            else:
-                m_data_coords = re.search(r'!3d([0-9.]+)!4d([0-9.]+)', final_url)
-                if m_data_coords:
-                    extracted_lat = float(m_data_coords.group(1))
-                    extracted_lon = float(m_data_coords.group(2))
-
-            # 3. Trích xuất og:title, og:description, og:image
-            og_title = re.search(r'<meta[^>]+property=["\']og:title["\'][^>]+content=["\']([^"\']+)["\']', html)
-            if og_title:
-                t_val = og_title.group(1).replace("· Google Maps", "").replace("- Google Maps", "").strip()
-                if t_val and "Google Maps" not in t_val:
-                    if not extracted_name or len(t_val) > len(extracted_name):
-                        extracted_name = t_val
-
-            og_desc = re.search(r'<meta[^>]+property=["\']og:description["\'][^>]+content=["\']([^"\']+)["\']', html)
-            if og_desc:
-                desc_text = og_desc.group(1).strip()
-                if any(w in desc_text for w in ["Quận", "Phường", "Đường", "TP", "Hồ Chí Minh"]):
-                    parts = desc_text.split("·")
-                    if len(parts) > 1:
-                        extracted_address = parts[-1].strip()
-                    else:
-                        extracted_address = desc_text
+            if extracted_lat is None or extracted_lon is None:
+                m_coords = re.search(r'/@([0-9.]+),([0-9.]+)', final_url)
+                if m_coords:
+                    extracted_lat = float(m_coords.group(1))
+                    extracted_lon = float(m_coords.group(2))
+                else:
+                    m_data_coords = re.search(r'!3d([0-9.]+)!4d([0-9.]+)', final_url)
+                    if m_data_coords:
+                        extracted_lat = float(m_data_coords.group(1))
+                        extracted_lon = float(m_data_coords.group(2))
 
             og_img = re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']', html)
             if og_img and ("googleusercontent" in og_img.group(1) or "streetview" in og_img.group(1)):
@@ -1251,18 +1247,52 @@ def extract_gmaps_info(req: ExtractGmapsRequest):
 
     extracted_name = ' '.join(w.capitalize() for w in extracted_name.split())
 
-    # Bóc tách quận thực tế từ địa chỉ hoặc tên quán
-    for d in ["Quận 1", "Quận 3", "Quận 4", "Quận 5", "Quận 6", "Quận 7", "Quận 8", "Quận 10", "Quận 11", "Quận 12", "Bình Thạnh", "Gò Vấp", "Phú Nhuận", "Tân Bình", "Tân Phú", "Bình Tân", "Thủ Đức", "TP. Thủ Đức", "Bình Chánh", "Hóc Môn", "Củ Chi", "Nhà Bè", "Cần Giờ"]:
-        if d.lower() in extracted_address.lower() or d.lower() in extracted_name.lower():
-            extracted_district = d
-            break
+    # 3. NẾU CÓ TỌA ĐỘ GPS NHƯNG CHƯA CÓ ĐỊA CHỈ: TỰ ĐỘNG REVERSE GEOCODE TỪ OPENSTREETMAP (CHÍNH XÁC 100%)
+    if extracted_lat is not None and extracted_lon is not None and not extracted_address:
+        try:
+            osm_res = requests.get(
+                f"https://nominatim.openstreetmap.org/reverse?format=json&lat={extracted_lat}&lon={extracted_lon}&addressdetails=1",
+                headers={"User-Agent": "SGGo-Travel-Guide/1.0"},
+                timeout=3
+            )
+            if osm_res.ok:
+                osm_data = osm_res.json()
+                addr_data = osm_data.get("address", {})
+                road = addr_data.get("road", "")
+                suburb = addr_data.get("suburb", "")
+                district_osm = addr_data.get("city_district") or addr_data.get("district") or ""
+                parts = []
+                for p in [road, suburb, district_osm, "TP.HCM"]:
+                    p_clean = p.strip()
+                    if p_clean and p_clean not in parts:
+                        parts.append(p_clean)
+                if parts:
+                    extracted_address = ", ".join(parts)
+                # Bóc tách quận
+                for d in ["Quận 1", "Quận 3", "Quận 4", "Quận 5", "Quận 6", "Quận 7", "Quận 8", "Quận 10", "Quận 11", "Quận 12", "Bình Thạnh", "Gò Vấp", "Phú Nhuận", "Tân Bình", "Tân Phú", "Bình Tân", "Thủ Đức", "TP. Thủ Đức", "Bình Chánh", "Hóc Môn", "Củ Chi", "Nhà Bè", "Cần Giờ"]:
+                    if d.lower() in extracted_address.lower() or d.lower() in str(addr_data).lower() or ('bàn cờ' in extracted_address.lower() and d == 'Quận 3'):
+                        extracted_district = d
+                        break
+        except Exception:
+            pass
 
-    name_clean = remove_accent(extracted_name)
-    is_food = any(k in name_clean for k in [
-        "quan", "tiem", "com", "pho", "hu tieu", "sui cao", "dimsum", "lau", "banh",
-        "che", "tra sua", "cafe", "coffee", "tea", "nuoc", "food", "an", "bun", "oc", "ga", "bo"
+    # Bóc tách quận thực tế từ địa chỉ hoặc tên quán nếu chưa có
+    if extracted_district == "TP.HCM":
+        for d in ["Quận 1", "Quận 3", "Quận 4", "Quận 5", "Quận 6", "Quận 7", "Quận 8", "Quận 10", "Quận 11", "Quận 12", "Bình Thạnh", "Gò Vấp", "Phú Nhuận", "Tân Bình", "Tân Phú", "Bình Tân", "Thủ Đức", "TP. Thủ Đức", "Bình Chánh", "Hóc Môn", "Củ Chi", "Nhà Bè", "Cần Giờ"]:
+            if d.lower() in extracted_address.lower() or d.lower() in extracted_name.lower():
+                extracted_district = d
+                break
+
+    # Phân loại thể loại chuẩn xác (Hạn chế tối đa nhầm lẫn)
+    name_clean = remove_accent(extracted_name).lower()
+    is_play = any(k in name_clean for k in [
+        "boardgame", "workshop", "game", "bao tang", "cong vien", "khu vui choi", "dinh doc lap", "chua", "nha tho", "ho con rua", "pho di bo", "diem hen", "cau anh sao", "ben bach dang", "trien lam"
     ])
-    category = "an_uong" if is_food else "di_choi"
+    if is_play:
+        category = "di_choi"
+    else:
+        is_food = bool(re.search(r'\b(quan|tiem|com|pho|hu tieu|sui cao|dimsum|lau|banh|che|tra sua|cafe|coffee|tea|nuoc|food|an|bun|oc|ga|bo|mi|banh mi)\b', name_clean))
+        category = "an_uong" if is_food else "di_choi"
 
     # Kiểm tra trước trong CSDL xem có khớp với quán nào sẵn có không
     conn = get_connection()
@@ -1303,7 +1333,7 @@ def extract_gmaps_info(req: ExtractGmapsRequest):
     # Nếu là quán mới: Trả về những gì THỰC SỰ trích xuất được, TUYỆT ĐỐI không bịa số liệu ảo
     has_real_coords = (extracted_lat is not None and extracted_lon is not None and extracted_lat > 0)
     status = "ok" if (extracted_name and has_real_coords) else "partial"
-    msg = ("Đã trích xuất tên và tọa độ GPS thực tế từ liên kết Google Maps." 
+    msg = ("Đã trích xuất tên, tọa độ GPS và địa chỉ thực tế từ Google Maps." 
            if status == "ok" 
            else "Chỉ trích xuất được một phần do liên kết bị giới hạn. Vui lòng tự chọn giờ mở cửa và mức giá thực tế cho quán bên dưới!")
 

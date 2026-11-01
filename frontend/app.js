@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadSavedUser();
   preloadPlaces();
   updateSelectionSummaryUI();
+  initCustomSelects();
 });
 
 // ==============================================================================
@@ -417,6 +418,7 @@ function selectAnswer(key, value, nextStep) {
     userChoices.custom_budget = null;
   }
   updateSelectionSummaryUI();
+  initCustomSelects();
 
   if (nextStep === "finish") {
     showFinishResults(0);
@@ -444,6 +446,7 @@ function handleCustomBudgetSubmit() {
         userChoices.custom_budget = suggestVal;
         currentFlowOffset = 0;
         updateSelectionSummaryUI();
+  initCustomSelects();
         showFinishResults(0);
         return;
       }
@@ -455,6 +458,7 @@ function handleCustomBudgetSubmit() {
   userChoices.custom_budget = val;
   currentFlowOffset = 0;
   updateSelectionSummaryUI();
+  initCustomSelects();
   showFinishResults(0);
 }
 
@@ -470,6 +474,7 @@ function restartFlow() {
   const customInp = document.getElementById("customBudgetInput");
   if (customInp) customInp.value = "";
   updateSelectionSummaryUI();
+  initCustomSelects();
   document.querySelectorAll(".step-card").forEach(el => el.classList.add("hidden"));
   document.getElementById("step1").classList.remove("hidden");
 }
@@ -1603,11 +1608,11 @@ function buildCatalogCardHTML(p) {
         </span>
       </div>
 
-      <!-- 2. Thân thẻ thông tin -->
+      <!-- 2. Thân thẻ thông tin (Đã xóa địa chỉ ngoài thẻ; Tiền & Giờ tách thành 2 dòng riêng to rõ ràng) -->
       <div class="p-4 flex-1 flex flex-col justify-between">
         <div>
           <!-- Tên quán + Badge Số sao nổi bật ngay bên cạnh -->
-          <div class="flex items-start justify-between gap-2 mb-1.5">
+          <div class="flex items-start justify-between gap-2 mb-2.5">
             <h4 onclick="openPlaceDetailById(${p.id})" class="font-black text-slate-900 text-sm leading-snug line-clamp-1 hover:text-[#E11D48] transition cursor-pointer" title="${p.name}">
               ${p.name}
             </h4>
@@ -1617,30 +1622,22 @@ function buildCatalogCardHTML(p) {
             </div>
           </div>
 
-          <!-- Địa chỉ & Khoảng cách -->
-          <div class="text-[11px] text-slate-500 font-medium flex items-center justify-between gap-1.5 mb-2.5" title="${p.address}">
-            <span class="truncate flex items-center gap-1">
-              <i class="fa-solid fa-location-dot text-[#E11D48] text-[11px] flex-shrink-0"></i>
-              <span class="truncate">${p.address}</span>
-            </span>
+          <!-- DÒNG 1: MỨC GIÁ THAM KHẢO (1 dòng riêng, chữ to nổi bật) -->
+          <div class="flex items-center justify-between py-2 px-3 bg-slate-50/90 rounded-xl mb-2 border border-slate-100">
+            <div class="flex items-center gap-2 min-w-0">
+              <i class="fa-solid fa-receipt text-slate-400 text-xs flex-shrink-0"></i>
+              <span class="font-black text-slate-900 text-xs sm:text-[13px] tracking-tight truncate">${priceText}</span>
+            </div>
             ${distanceHTML}
           </div>
 
-          <!-- Mức giá & Giờ cao điểm (FontAwesome Icons tinh tế, thanh lịch) -->
-          <div class="flex items-center justify-between text-[11px] font-semibold py-1.5 px-2.5 bg-slate-50/90 rounded-xl mb-2 border border-slate-100">
-            <span class="text-slate-700 truncate mr-2 flex items-center gap-1.5">
-              <i class="fa-solid fa-receipt text-slate-400 text-[10px]"></i>
-              <span class="font-bold text-slate-800">${priceText}</span>
-            </span>
-            <span class="text-amber-700 whitespace-nowrap flex items-center gap-1.5">
-              <i class="fa-regular fa-clock text-amber-500/80 text-[10px]"></i>
-              <span>${(p.peak_hours && p.peak_hours !== 'Chưa rõ') ? p.peak_hours.split('(')[0].trim() : 'Chưa rõ'}</span>
+          <!-- DÒNG 2: GIỜ HOẠT ĐỘNG / GIỜ CAO ĐIỂM (1 dòng riêng, chữ to nổi bật) -->
+          <div class="flex items-center gap-2 py-2 px-3 bg-amber-50/70 rounded-xl mb-2.5 border border-amber-100/90">
+            <i class="fa-regular fa-clock text-amber-600 text-xs flex-shrink-0"></i>
+            <span class="font-bold text-amber-950 text-xs sm:text-[13px] truncate">
+              ${(p.peak_hours && p.peak_hours !== 'Chưa rõ') ? p.peak_hours.split('(')[0].trim() : ((p.open_time && p.close_time) ? `${p.open_time} – ${p.close_time}` : '08:00 – 22:30')}
             </span>
           </div>
-
-
-
-
         </div>
 
         <!-- 3. Chân thẻ hành động -->
@@ -2863,3 +2860,128 @@ function closeSideMap() {
 function copySideMapAddress() {
   copyDetailAddress();
 }
+
+
+// ==============================================================================
+// CUSTOM LUXURY DROPDOWN SYSTEM (THAY THẾ HOÀN TOÀN DROPDOWN MẶC ĐỊNH CỦA WINDOWS)
+// ==============================================================================
+function initCustomSelects() {
+  const targetIds = ["allCategoryFilter", "allTagFilter", "allPriceFilter", "allSortFilter", "allRadiusFilter"];
+  
+  targetIds.forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    
+    // Tránh khởi tạo trùng lặp
+    if (sel.nextElementSibling && sel.nextElementSibling.classList.contains("custom-dropdown-container")) {
+      return;
+    }
+    
+    // Ẩn select gốc (giữ nguyên DOM để kích hoạt event change và query value)
+    sel.style.display = "none";
+    
+    // Tạo container bao ngoài
+    const container = document.createElement("div");
+    container.className = "custom-dropdown-container";
+    container.dataset.forSelect = id;
+    
+    // Nút trigger
+    const trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "custom-dropdown-trigger";
+    
+    const labelSpan = document.createElement("span");
+    labelSpan.className = "truncate pr-2 custom-dropdown-label";
+    const selectedOpt = sel.options[sel.selectedIndex] || sel.options[0];
+    labelSpan.textContent = selectedOpt ? selectedOpt.text : "";
+    
+    const arrowIcon = document.createElement("i");
+    arrowIcon.className = "fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200 custom-dropdown-arrow";
+    
+    trigger.appendChild(labelSpan);
+    trigger.appendChild(arrowIcon);
+    
+    // Menu thả xuống sang trọng (Render vào trong DOM web, hoàn toàn không dính UI Windows)
+    const menu = document.createElement("div");
+    menu.className = "custom-dropdown-menu hidden";
+    
+    function renderItems() {
+      menu.innerHTML = "";
+      Array.from(sel.options).forEach(opt => {
+        const item = document.createElement("div");
+        const isSelected = opt.value === sel.value;
+        item.className = `custom-dropdown-item ${isSelected ? 'is-selected' : ''}`;
+        item.dataset.val = opt.value;
+        item.innerHTML = `
+          <span class="truncate">${opt.text}</span>
+          ${isSelected ? '<i class="fa-solid fa-check text-[10px] text-[#E11D48]"></i>' : ''}
+        `;
+        
+        item.addEventListener("click", (e) => {
+          e.stopPropagation();
+          sel.value = opt.value;
+          labelSpan.textContent = opt.text;
+          
+          menu.classList.add("hidden");
+          trigger.classList.remove("is-active");
+          arrowIcon.classList.remove("rotate-180");
+          
+          renderItems();
+          sel.dispatchEvent(new Event("change"));
+        });
+        
+        menu.appendChild(item);
+      });
+    }
+    
+    renderItems();
+    
+    trigger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isClosed = menu.classList.contains("hidden");
+      
+      // Đóng các dropdown khác
+      document.querySelectorAll(".custom-dropdown-menu").forEach(m => {
+        if (m !== menu) {
+          m.classList.add("hidden");
+          m.parentElement?.querySelector(".custom-dropdown-trigger")?.classList.remove("is-active");
+          m.parentElement?.querySelector(".custom-dropdown-arrow")?.classList.remove("rotate-180");
+        }
+      });
+      
+      if (isClosed) {
+        menu.classList.remove("hidden");
+        trigger.classList.add("is-active");
+        arrowIcon.classList.add("rotate-180");
+      } else {
+        menu.classList.add("hidden");
+        trigger.classList.remove("is-active");
+        arrowIcon.classList.remove("rotate-180");
+      }
+    });
+    
+    // Tự động đồng bộ khi code JS ngoài thay đổi select.value
+    sel.addEventListener("change", () => {
+      const curOpt = sel.options[sel.selectedIndex];
+      if (curOpt) {
+        labelSpan.textContent = curOpt.text;
+        renderItems();
+      }
+    });
+    
+    container.appendChild(trigger);
+    container.appendChild(menu);
+    sel.parentNode.insertBefore(container, sel.nextSibling);
+  });
+}
+
+// Đóng dropdown khi bấm ra ngoài
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".custom-dropdown-container")) {
+    document.querySelectorAll(".custom-dropdown-menu").forEach(m => {
+      m.classList.add("hidden");
+      m.parentElement?.querySelector(".custom-dropdown-trigger")?.classList.remove("is-active");
+      m.parentElement?.querySelector(".custom-dropdown-arrow")?.classList.remove("rotate-180");
+    });
+  }
+});

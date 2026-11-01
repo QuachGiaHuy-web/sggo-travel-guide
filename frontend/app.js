@@ -622,19 +622,19 @@ function buildRecommendCardHTML(p, idx) {
               ${imageHtml}
               <!-- Container 2 Badge Tránh Đè Lẫn Nhau -->
               <div class="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none">
-                <!-- Badge Thứ hạng (Kính mờ cao cấp) -->
-                <span class="glass-badge-dark text-[11px] font-extrabold uppercase text-white px-3 py-1 rounded-full shrink-0 flex items-center gap-1.5">
-                  <span class="text-[#FF4D6D] font-black">#${idx + 1}</span> Gợi ý
+                <!-- Badge Thứ hạng -->
+                <span class="text-xs font-black uppercase text-white bg-[#E11D48] px-3 py-1 rounded-xl shadow-md shrink-0">
+                  GỢI Ý #${idx + 1}
                 </span>
-                <!-- TRẠNG THÁI MỞ CỬA (Kính mờ cao cấp Frosted Glass — Apple/Airbnb Style) -->
+                <!-- TRẠNG THÁI MỞ CỬA: RÚT GỌN TINH TẾ, KHÔNG TRÀN LẤN -->
                 ${hasHours ? (isOpen ? `
-                  <span class="glass-badge-dark text-white text-[11px] font-bold px-3 py-1 rounded-full flex items-center gap-2 shrink-0">
-                    <span class="glow-dot-open"></span>
+                  <span class="bg-emerald-600/95 backdrop-blur-xs text-white text-[11px] font-black px-2.5 py-1 rounded-full shadow-md flex items-center gap-1.5 uppercase tracking-wide shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
                     <span>Đang mở cửa</span>
                   </span>
                 ` : `
-                  <span class="glass-badge-dark text-white text-[11px] font-bold px-3 py-1 rounded-full flex items-center gap-2 shrink-0">
-                    <span class="glow-dot-closed"></span>
+                  <span class="bg-rose-600/95 backdrop-blur-xs text-white text-[11px] font-black px-2.5 py-1 rounded-full shadow-md flex items-center gap-1.5 uppercase tracking-wide shrink-0">
+                    <span class="w-2 h-2 rounded-full bg-white"></span>
                     <span>Đã đóng cửa</span>
                   </span>
                 `) : ''}
@@ -1612,14 +1612,13 @@ function buildCatalogCardHTML(p) {
       <!-- 1. Header ảnh quán tỷ lệ vàng chuẩn -->
       <div onclick="openPlaceDetailById(${p.id})" class="card-image-box cursor-pointer group">
         ${imageHtml}
-        <!-- Badge thể loại (Kính mờ cao cấp) -->
-        <span class="glass-badge-dark absolute top-2.5 left-2.5 text-[10px] font-bold text-white px-2.5 py-0.5 rounded-full shadow-xs">
-          ${isEat ? 'Ẩm thực' : 'Đi chơi'}
+        <!-- Badge thể loại -->
+        <span class="absolute top-2.5 left-2.5 text-[10px] font-black uppercase text-[#E11D48] bg-white/95 backdrop-blur-xs px-2.5 py-0.5 rounded-lg shadow-sm">
+          ${isEat ? 'Ẩm Thực' : 'Đi Chơi'}
         </span>
-        <!-- Badge mở cửa (Kính mờ cao cấp Frosted Glass) -->
-        <span class="glass-badge-dark absolute top-2.5 right-2.5 text-[10px] font-bold text-white px-2.5 py-0.5 rounded-full shadow-xs flex items-center gap-1.5">
-          <span class="${isOpen ? 'glow-dot-open' : 'glow-dot-closed'}"></span>
-          <span>${isOpen ? 'Đang mở cửa' : 'Đã đóng cửa'}</span>
+        <!-- Badge mở cửa -->
+        <span class="absolute top-2.5 right-2.5 text-[10px] font-black uppercase ${isOpen ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'} px-2.5 py-0.5 rounded-lg shadow-sm">
+          ${isOpen ? '🟢 Mở cửa' : '🔴 Đóng cửa'}
         </span>
       </div>
 
@@ -2726,17 +2725,14 @@ function openPlaceDetailById(id) {
   const addrEl = document.getElementById("detailAddress");
   if (addrEl) addrEl.innerText = p.address;
 
-  // 6. Trạng thái hoạt động (Frosted Glass & Glowing Soft Dot)
+  // 6. Trạng thái hoạt động
   const isOpen = isPlaceCurrentlyOpen(p.open_time, p.close_time);
   const statusBadge = document.getElementById("detailStatusBadge");
   if (statusBadge) {
-    if (isOpen) {
-      statusBadge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200/80 inline-flex items-center gap-1.5";
-      statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span><span>Đang mở cửa</span>`;
-    } else {
-      statusBadge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-800 border border-rose-200/80 inline-flex items-center gap-1.5";
-      statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span><span>Đã đóng cửa</span>`;
-    }
+    statusBadge.className = isOpen
+      ? "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800"
+      : "px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800";
+    statusBadge.innerText = isOpen ? "🟢 Đang mở cửa" : "🔴 Đã đóng cửa";
   }
 
   const openHoursEl = document.getElementById("detailOpenHours");

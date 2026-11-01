@@ -470,6 +470,24 @@ class TestSGGoTestSuite(unittest.TestCase):
             # Dim Tu Tac đóng cửa lúc 22:00 tuyệt đối không được xuất hiện
             self.assertNotIn("Dim Tu Tac", p.get("name", ""), "Quán đóng cửa lúc 22:00 không được xuất hiện lúc 03:00")
 
+    def test_rtm_fr05_04_quick_recommend_custom_budget_too_low_redirects_to_free(self):
+        """[TEST-FR05-04] Ngân sách tự nhập quá thấp (< 20.000đ) cho ẩm thực: Tự động chuyển hướng điểm 0đ, không ra quán đắt tiền."""
+        payload = {
+            "category": "an_uong",
+            "context": "ban_be",
+            "price_level": "custom",
+            "custom_budget": 100,
+            "offset": 0
+        }
+        res = self.client.post("/api/quick-recommend", json=payload).json()
+        places = res if isinstance(res, list) else res.get("places", [])
+        self.assertGreater(len(places), 0, "Phải gợi ý được điểm tham quan 0đ thay thế")
+        for p in places:
+            # Tuyệt đối không được gợi ý quán ăn đắt tiền
+            self.assertEqual(p.get("min_price", 0), 0)
+            self.assertEqual(p.get("max_price", 0), 0)
+            self.assertIn("không đủ", p.get("free_fallback_notice", "").lower())
+
     # ==========================================================================
     # NHÓM 8: G6-FR06 - CHỨC NĂNG XÁO TRỘN / ĐỔI PHƯƠNG ÁN KHÁC (Ít nhất 2 phương án)
     # ==========================================================================

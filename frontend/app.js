@@ -433,6 +433,24 @@ function handleCustomBudgetSubmit() {
     alert("Vui lòng nhập một số tiền hợp lệ (ví dụ: 75000)!");
     return;
   }
+  // Nếu người dùng nhập số tiền quá nhỏ dưới 20.000đ
+  if (val < 20000) {
+    // Hỗ trợ trường hợp người dùng gõ tắt số tròn nghìn (ví dụ gõ 100 với ý 100.000đ)
+    if (val >= 20 && val <= 999) {
+      const suggestVal = val * 1000;
+      if (confirm(`Bạn vừa nhập "${val.toLocaleString()}đ". Có phải bạn muốn tìm quán với ngân sách "${suggestVal.toLocaleString()}đ" không?`)) {
+        input.value = suggestVal;
+        userChoices.price_level = "custom";
+        userChoices.custom_budget = suggestVal;
+        currentFlowOffset = 0;
+        updateSelectionSummaryUI();
+        showFinishResults(0);
+        return;
+      }
+    }
+    alert("Ngân sách tự nhập tối thiểu cho ăn uống tại TP.HCM là 20.000đ (hoặc chọn '0đ' để xem địa điểm tham quan miễn phí). Vui lòng nhập số tiền từ 20.000đ trở lên nhé!");
+    return;
+  }
   userChoices.price_level = "custom";
   userChoices.custom_budget = val;
   currentFlowOffset = 0;
@@ -549,7 +567,7 @@ function buildRecommendCardHTML(p, idx) {
   const isEat = p.category === "an_uong";
   const hasHours = Boolean(p.hours_display || (p.open_time && p.close_time));
   const isOpen = isPlaceCurrentlyOpen(p.open_time, p.close_time);
-  const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + p.address)}`;
+  const gmapsUrl = p.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + p.address)}`;
 
   const isFree = (p.min_price === 0 && p.max_price === 0);
   const cleanPrice = p.price_display ? p.price_display.replace(/Khoảng\s*/gi, "").replace(/\(.*?\)/g, "").trim() : null;
@@ -1232,32 +1250,17 @@ async function requestAIItinerary(isShuffle = false) {
             </div>
             <p class="font-black text-sm text-slate-900 mt-1.5">${s.location}</p>
 
-            ${s.rule_explanation ? `
-              <div class="mt-2.5 text-[11px] bg-amber-50/80 border border-amber-200/90 text-amber-900 p-2.5 rounded-xl flex items-start gap-2 shadow-2xs font-semibold">
-                <i class="fa-solid fa-scale-balanced text-amber-600 text-xs mt-0.5 flex-shrink-0"></i>
-                <div class="leading-relaxed">
-                  <span class="font-extrabold uppercase text-[10px] tracking-wider text-amber-700 block mb-0.5">Tiêu chí Rule-based (G6-FR10):</span>
-                  <span>${s.rule_explanation}</span>
-                </div>
-              </div>
-            ` : ''}
+            <div class="mt-2.5 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-700 shadow-2xs">
+              <div class="leading-relaxed font-medium text-slate-800">${s.ai_reason || s.rule_explanation || 'Điểm đến phù hợp khung giờ và lộ trình di chuyển.'}</div>
+              ${s.must_try_tip ? `<div class="mt-2 text-[11px] font-bold text-emerald-800 flex items-start gap-1.5 pt-2 border-t border-slate-200/80"><i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i> <span>Gợi ý trải nghiệm: ${s.must_try_tip}</span></div>` : ''}
+            </div>
 
-            ${s.ai_reason ? `
-              <div class="mt-2.5 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-700 shadow-2xs">
-                <div class="text-[10px] font-bold text-[#E11D48] uppercase flex items-center gap-1 mb-1">
-                  <i class="fa-solid fa-sparkles text-[#E11D48]"></i> Trợ lý AI Curation & Mẹo trải nghiệm (G6-FR11):
-                </div>
-                <div class="leading-relaxed font-medium">${s.ai_reason}</div>
-                ${s.must_try_tip ? `<div class="mt-2 text-[11px] font-bold text-emerald-800 flex items-start gap-1 pt-1.5 border-t border-slate-200"><i class="fa-solid fa-lightbulb text-amber-500 mt-0.5"></i> <span>Gợi ý trải nghiệm: ${s.must_try_tip}</span></div>` : ''}
-              </div>
-            ` : ''}
-
-            <div class="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 mt-2.5">
-              <span>🛵 ${s.travel_info}</span>
+            <div class="flex flex-wrap items-center gap-2.5 text-[11px] text-slate-600 mt-2.5 font-semibold">
+              <span class="inline-flex items-center gap-1"><i class="fa-solid fa-motorcycle text-slate-400"></i> ${s.travel_info}</span>
               <span>•</span>
-              <span>💰 ${s.price_range}</span>
+              <span class="inline-flex items-center gap-1"><i class="fa-solid fa-receipt text-slate-400"></i> ${s.price_range}</span>
               <span>•</span>
-              <span>🕒 ${s.open_hours}</span>
+              <span class="inline-flex items-center gap-1"><i class="fa-solid fa-clock text-slate-400"></i> ${s.open_hours}</span>
             </div>
             ${s.traffic_warning ? `<p class="text-[11px] text-amber-900 bg-amber-50 border border-amber-200 p-2.5 rounded-xl mt-2 font-medium">⚠️ <strong>Lưu ý:</strong> ${s.traffic_warning}</p>` : ''}
             
@@ -1563,7 +1566,7 @@ function onRadiusFilterChange() {
 function buildCatalogCardHTML(p) {
   const isEat = p.category === "an_uong";
   const isOpen = isPlaceCurrentlyOpen(p.open_time, p.close_time);
-  const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + p.address)}`;
+  const gmapsUrl = p.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + p.address)}`;
 
   const priceText = p.price_display
     ? p.price_display
@@ -1647,8 +1650,8 @@ function buildCatalogCardHTML(p) {
             ` : ''}
           </div>
 
-          <a href="${gmapsUrl}" target="_blank" title="Xem 100% đánh giá & ảnh trên Google Maps" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 whitespace-nowrap shadow-xs">
-            <i class="fa-brands fa-google text-xs"></i> <span>Maps thật</span> <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+          <a href="${gmapsUrl}" target="_blank" title="Xem thông tin & đánh giá trên Google Maps" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 whitespace-nowrap shadow-xs">
+            <i class="fa-brands fa-google text-xs"></i> <span>Google Maps</span> <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
           </a>
         </div>
       </div>
@@ -1863,13 +1866,11 @@ function switchAdminSubTab(subTab) {
   currentAdminSubTab = subTab;
   const btnPlaces = document.getElementById("adminSubTabPlaces");
   const btnUsers = document.getElementById("adminSubTabUsers");
-  const btnTags = document.getElementById("adminSubTabTags");
   const secPlaces = document.getElementById("adminSectionPlaces");
   const secUsers = document.getElementById("adminSectionUsers");
-  const secTags = document.getElementById("adminSectionTags");
 
-  [btnPlaces, btnUsers, btnTags].forEach(b => { if (b) b.className = "admin-subtab-btn"; });
-  [secPlaces, secUsers, secTags].forEach(s => { if (s) s.classList.add("hidden"); });
+  [btnPlaces, btnUsers].forEach(b => { if (b) b.className = "admin-subtab-btn"; });
+  [secPlaces, secUsers].forEach(s => { if (s) s.classList.add("hidden"); });
 
   if (subTab === "places") {
     if (btnPlaces) btnPlaces.className = "admin-subtab-btn active";
@@ -1878,10 +1879,6 @@ function switchAdminSubTab(subTab) {
     if (btnUsers) btnUsers.className = "admin-subtab-btn active";
     if (secUsers) secUsers.classList.remove("hidden");
     loadAdminUsers();
-  } else if (subTab === "tags") {
-    if (btnTags) btnTags.className = "admin-subtab-btn active";
-    if (secTags) secTags.classList.remove("hidden");
-    loadAdminTags();
   }
 }
 
@@ -2114,10 +2111,11 @@ async function handleToggleHidePlace(placeId, targetHidden) {
   }
 }
 
-// BỘ LỌC TỪ A ĐẾN Z CHO ADMIN (BAO GỒM LỌC REVIEW THẬT / MẪU VÀ TRẠNG THÁI ẨN / HIỆN)
+// BỘ LỌC TỪ A ĐẾN Z CHO ADMIN (BAO GỒM LỌC REVIEW THẬT / MẪU, TAG BỐI CẢNH VÀ TRẠNG THÁI ẨN / HIỆN)
 function filterAdminTable() {
   const q = document.getElementById("adminSearchInput")?.value.trim() || "";
   const cat = document.getElementById("adminCategoryFilter")?.value || "all";
+  const tag = document.getElementById("adminTagFilter")?.value || "all";
   const rating = document.getElementById("adminRatingFilter")?.value || "all";
   const price = document.getElementById("adminPriceFilter")?.value || "all";
   const status = document.getElementById("adminStatusFilter")?.value || "all";
@@ -2133,6 +2131,14 @@ function filterAdminTable() {
     }
 
     const matchCat = (cat === "all") || (p.category === cat);
+    
+    // Lọc theo Thẻ bối cảnh (Context Tag - Tier 1 & Tier 2)
+    let matchTag = true;
+    if (tag !== "all") {
+      const pTiers = parsePlaceTiers(p.tags || "");
+      matchTag = pTiers.tier1.includes(tag) || pTiers.tier2.includes(tag) || (p.tags && p.tags.includes(tag));
+    }
+
     const matchRating = (rating === "all") || (p.rating >= parseFloat(rating));
     
     let matchPrice = true;
@@ -2145,7 +2151,7 @@ function filterAdminTable() {
     if (status === "visible") matchStatus = (!p.is_hidden || p.is_hidden === 0);
     else if (status === "hidden") matchStatus = (p.is_hidden === 1);
 
-    return matchQ && matchCat && matchRating && matchPrice && matchStatus;
+    return matchQ && matchCat && matchTag && matchRating && matchPrice && matchStatus;
   });
 
   renderAdminPlacesTable(filtered);
@@ -2187,6 +2193,15 @@ async function handleExtractGmaps() {
     document.getElementById("formName").value = p.name || "";
     document.getElementById("formCategory").value = p.category || "an_uong";
     document.getElementById("formAddress").value = p.address || "";
+    const formGmapsUrl = document.getElementById("formGoogleMapsUrl");
+    if (formGmapsUrl) {
+      formGmapsUrl.value = raw.startsWith("http") ? raw : "";
+    }
+    const btnGmaps = document.getElementById("btnAdminOpenGmaps");
+    if (btnGmaps) {
+      btnGmaps.href = raw.startsWith("http") ? raw : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((p.name || '') + ' ' + (p.address || ''))}`;
+      btnGmaps.classList.remove("hidden");
+    }
     document.getElementById("formDistrict").value = p.district || "TP.HCM";
     document.getElementById("formOpenTime").value = p.open_time || "08:00";
     document.getElementById("formCloseTime").value = p.close_time || "22:30";
@@ -2252,6 +2267,8 @@ function openAddPlaceModal() {
   document.getElementById("placeFormTitle").innerText = "➕ Thêm Địa Điểm Mới Vào CSDL";
   document.getElementById("placeFormSubtitle").innerText = "Nhập dữ liệu địa điểm tại Sài Gòn vào CSDL SQLite";
   document.getElementById("btnSubmitPlaceForm").innerText = "➕ Lưu Địa Điểm Mới Vào SQLite";
+  const btnGmaps = document.getElementById("btnAdminOpenGmaps");
+  if (btnGmaps) btnGmaps.classList.add("hidden");
   document.getElementById("gmapsExtractorBox").classList.remove("hidden");
   document.getElementById("gmapsExtractInput").value = "";
   document.getElementById("placeAdminForm").reset();
@@ -2260,6 +2277,8 @@ function openAddPlaceModal() {
   document.getElementById("formCategory").value = "an_uong";
   document.getElementById("formDistrict").value = "TP.HCM";
   document.getElementById("formAddress").value = "";
+  const formGmapsUrl = document.getElementById("formGoogleMapsUrl");
+  if (formGmapsUrl) formGmapsUrl.value = "";
   document.getElementById("formLat").value = "10.7550";
   document.getElementById("formLon").value = "106.6650";
   document.getElementById("formReviewsCount").value = "100";
@@ -2317,6 +2336,17 @@ function openEditPlaceModal(p) {
   document.getElementById("placeFormTitle").innerHTML = `<i class="fa-solid fa-pen-to-square text-blue-600 mr-1.5"></i> Chỉnh Sửa Quán #${p.id} — ${p.name}`;
   document.getElementById("placeFormSubtitle").innerText = "Đang chỉnh sửa dữ liệu quán đã có trong CSDL SQLite";
   document.getElementById("btnSubmitPlaceForm").innerText = `💾 Lưu Cập Nhật Cho Quán #${p.id}`;
+  
+  // Đồng bộ liên kết Google Maps đối chiếu cho Admin
+  const formGmapsUrl = document.getElementById("formGoogleMapsUrl");
+  if (formGmapsUrl) formGmapsUrl.value = p.google_maps_url || "";
+
+  const btnGmaps = document.getElementById("btnAdminOpenGmaps");
+  if (btnGmaps) {
+    btnGmaps.href = p.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ', ' + (p.address || p.district || 'TP.HCM'))}`;
+    btnGmaps.classList.remove("hidden");
+  }
+
   document.getElementById("gmapsExtractorBox").classList.add("hidden");
   document.getElementById("formPlaceId").value = p.id;
   document.getElementById("formName").value = p.name || "";
@@ -2335,6 +2365,17 @@ function openEditPlaceModal(p) {
   const pDispEl = document.getElementById("formPriceDisplay");
   if (pDispEl) pDispEl.value = p.price_display || "";
   document.getElementById("formTags").value = p.tags || "nhom_ban";
+  
+  // Đổ dữ liệu phân tầng 2-Tier vào checkbox trên giao diện
+  const { tier1: curT1, tier2: curT2 } = parsePlaceTiers(p.tags || "nhom_ban");
+  ['di_1_minh', 'hen_ho', 'nhom_ban', 'gia_dinh'].forEach(t => {
+    const c1 = document.getElementById(`chk_t1_${t}`);
+    const c2 = document.getElementById(`chk_t2_${t}`);
+    if (c1) c1.checked = curT1.includes(t);
+    if (c2) c2.checked = curT2.includes(t);
+  });
+  syncAdminTagsInput();
+
   document.getElementById("formBestReview").value = p.best_review || "";
   document.getElementById("formWorstReview").value = p.worst_review || "";
   const chkRev = document.getElementById("formIsVerifiedReview");
@@ -2365,8 +2406,10 @@ async function handleSavePlace(e) {
   const isHidden = chkHidden ? (chkHidden.checked ? 1 : 0) : 0;
 
   const rawImg = document.getElementById("formImageUrl").value.trim();
+  const rawGmapsUrl = document.getElementById("formGoogleMapsUrl")?.value.trim() || null;
   const payload = {
     name: document.getElementById("formName").value.trim(),
+    google_maps_url: rawGmapsUrl,
     category: document.getElementById("formCategory").value,
     address: document.getElementById("formAddress").value.trim(),
     district: document.getElementById("formDistrict").value.trim() || "TP.HCM",
@@ -2599,7 +2642,7 @@ function openPlaceDetailById(id) {
             <i class="fa-solid fa-camera"></i>
           </div>
           <span class="text-slate-600 font-extrabold text-sm">Chưa có ảnh thực tế</span>
-          <span class="text-[11px] text-slate-400 font-normal">SGGo cam kết chỉ hiển thị ảnh thật, không dùng ảnh mạng giả lập</span>
+          <span class="text-[11px] text-slate-400 font-normal">Hình ảnh đang được cập nhật</span>
         </div>
       `;
     }
@@ -2639,7 +2682,7 @@ function openPlaceDetailById(id) {
 
   // 4. Link Google Maps
   const queryEnc = encodeURIComponent(`${p.name} ${p.address}`);
-  const gmapsRouteUrl = `https://www.google.com/maps/search/?api=1&query=${queryEnc}`;
+  const gmapsRouteUrl = p.google_maps_url || `https://www.google.com/maps/search/?api=1&query=${queryEnc}`;
 
   const realPageBtn = document.getElementById("detailGmapsRealPageBtn");
   if (realPageBtn) realPageBtn.href = gmapsRouteUrl;
@@ -2813,139 +2856,4 @@ function closeSideMap() {
 
 function copySideMapAddress() {
   copyDetailAddress();
-}
-
-// ==========================================
-// QUẢN LÝ TAG & BỘ LỌC (G6-FR08 & Section 5 ERD)
-// ==========================================
-async function loadAdminTags() {
-  const tbody = document.getElementById("adminTagsTable");
-  if (!tbody) return;
-  tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 font-semibold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang tải danh mục tag...</td></tr>`;
-
-  try {
-    const res = await fetch(`${API_BASE}/admin/tags`);
-    const data = await res.json();
-    const tags = data.tags || [];
-    const countBadge = document.getElementById("adminTagCountBadge");
-    if (countBadge) countBadge.innerText = tags.length;
-    renderAdminTagsTable(tags);
-  } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-rose-500 font-semibold">❌ Lỗi tải tags: ${err.message}</td></tr>`;
-  }
-}
-
-function renderAdminTagsTable(tags) {
-  const tbody = document.getElementById("adminTagsTable");
-  if (!tbody) return;
-  if (!tags || tags.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 font-medium">Chưa có tag nào trong hệ thống.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = tags.map(t => {
-    const isActive = (t.is_active === 1);
-    const tierBadge = t.tier_type === 'companion' 
-      ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-rose-50 text-[#E11D48] border border-rose-200">Bạn đồng hành (Tier 1/2)</span>`
-      : `<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-blue-50 text-blue-700 border border-blue-200">Tiện ích / Không gian</span>`;
-
-    return `
-      <tr class="hover:bg-slate-50/80 transition">
-        <td class="p-3.5 font-bold text-slate-400">#${t.id}</td>
-        <td class="p-3.5 font-mono font-bold text-slate-800 text-xs">${t.tag_key}</td>
-        <td class="p-3.5 font-bold text-slate-900">${t.name}</td>
-        <td class="p-3.5">${tierBadge}</td>
-        <td class="p-3.5">
-          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
-            <i class="fa-solid fa-store text-[9px] text-[#E11D48]"></i> ${t.place_count || 0} quán
-          </span>
-        </td>
-        <td class="p-3.5">
-          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold ${isActive ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500 border border-slate-200'}">
-            <span class="w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-400'}"></span>
-            ${isActive ? 'Đang kích hoạt' : 'Đã ẩn'}
-          </span>
-        </td>
-        <td class="p-3.5 text-center bg-slate-50/50 border-l border-slate-200">
-          <div class="inline-flex items-center gap-1.5">
-            <button onclick="handleToggleTag(${t.id}, ${isActive ? 0 : 1})" title="${isActive ? 'Tắt tag' : 'Bật tag'}" class="px-2.5 py-1 rounded-lg text-[11px] font-bold ${isActive ? 'bg-amber-100 hover:bg-amber-200 text-amber-900' : 'bg-emerald-100 hover:bg-emerald-200 text-emerald-900'} transition cursor-pointer">
-              ${isActive ? 'Tắt' : 'Bật'}
-            </button>
-            <button onclick="handleDeleteTag(${t.id}, '${t.name}')" title="Xóa tag" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer">
-              <i class="fa-regular fa-trash-can text-xs"></i>
-            </button>
-          </div>
-        </td>
-      </tr>
-    `;
-  }).join("");
-}
-
-function openAddTagModal() {
-  const m = document.getElementById("modalAddTag");
-  if (m) m.classList.remove("hidden");
-}
-
-function closeAddTagModal() {
-  const m = document.getElementById("modalAddTag");
-  if (m) m.classList.add("hidden");
-}
-
-async function handleSaveTag(e) {
-  e.preventDefault();
-  const tagKey = document.getElementById("newTagKey")?.value.trim();
-  const tagName = document.getElementById("newTagName")?.value.trim();
-  const tierType = document.getElementById("newTagTierType")?.value || "companion";
-
-  if (!tagKey || !tagName) {
-    alert("Vui lòng điền đầy đủ mã tag và tên hiển thị!");
-    return;
-  }
-
-  try {
-    const res = await fetch(`${API_BASE}/admin/tags`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tag_key: tagKey, name: tagName, tier_type: tierType })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || "Không thể thêm tag");
-
-    alert("✅ Đã thêm tag mới thành công!");
-    closeAddTagModal();
-    document.getElementById("newTagKey").value = "";
-    document.getElementById("newTagName").value = "";
-    loadAdminTags();
-  } catch (err) {
-    alert("❌ Lỗi: " + err.message);
-  }
-}
-
-async function handleToggleTag(tagId, targetActive) {
-  try {
-    const res = await fetch(`${API_BASE}/admin/tags/${tagId}/toggle`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ is_active: targetActive })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || "Không thể đổi trạng thái tag");
-    loadAdminTags();
-  } catch (err) {
-    alert("❌ Lỗi: " + err.message);
-  }
-}
-
-async function handleDeleteTag(tagId, tagName) {
-  if (!confirm(`Bạn có chắc chắn muốn xóa tag "${tagName}"?`)) return;
-  try {
-    const res = await fetch(`${API_BASE}/admin/tags/${tagId}`, {
-      method: "DELETE"
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || "Không thể xóa tag");
-    loadAdminTags();
-  } catch (err) {
-    alert("❌ Lỗi: " + err.message);
-  }
 }

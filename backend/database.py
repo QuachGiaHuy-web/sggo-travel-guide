@@ -66,7 +66,8 @@ def init_db():
         is_verified INTEGER NOT NULL DEFAULT 1, -- 1: Đã xác thực, 0: Chưa duyệt
         is_verified_review INTEGER NOT NULL DEFAULT 1,
         is_admin_choice INTEGER NOT NULL DEFAULT 0, -- 1: Quán Admin yêu thích, 0: Thường
-        is_hidden INTEGER NOT NULL DEFAULT 0 -- 1: Quán bị ẩn, 0: Bình thường
+        is_hidden INTEGER NOT NULL DEFAULT 0, -- 1: Quán bị ẩn, 0: Bình thường
+        google_maps_url TEXT                  -- Link Google Maps thực tế để đối chiếu và điều hướng
     );
     """)
 
@@ -78,6 +79,9 @@ def init_db():
         conn.commit()
     if "is_hidden" not in existing_cols:
         cursor.execute("ALTER TABLE places ADD COLUMN is_hidden INTEGER DEFAULT 0")
+        conn.commit()
+    if "google_maps_url" not in existing_cols:
+        cursor.execute("ALTER TABLE places ADD COLUMN google_maps_url TEXT")
         conn.commit()
 
     # 3. BẢNG FAVORITES (Địa điểm yêu thích của người dùng)
@@ -435,17 +439,57 @@ def get_place_by_id(place_id):
     conn.close()
     return dict(row) if row else None
 
+def sync_place_tags_record(cursor, place_id: int, tags_str: str):
+    """Đồng bộ quan hệ N-N giữa place và tags vào bảng place_tags (Section 5 ERD)"""
+    if not place_id or not tags_str:
+        return
+    cursor.execute("SELECT id, tag_key FROM tags")
+    tag_map = {row[1]: row[0] for row in cursor.fetchall()}
+    if not tag_map:
+        return
+
+    cursor.execute("DELETE FROM place_tags WHERE place_id = ?", (place_id,))
+    
+    t1_list = []
+    t2_list = []
+    if "tier1:" in tags_str or "tier2:" in tags_str:
+        parts = tags_str.split("|")
+        for p in parts:
+            p = p.strip()
+            if p.startswith("tier1:"):
+                t1_list = [x.strip() for x in p.replace("tier1:", "").split(",") if x.strip()]
+            elif p.startswith("tier2:"):
+                t2_list = [x.strip() for x in p.replace("tier2:", "").split(",") if x.strip()]
+    else:
+        all_tags = [x.strip() for x in tags_str.split(",") if x.strip()]
+        t1_list = all_tags[:2]
+        t2_list = all_tags[2:]
+
+    for k in t1_list:
+        tid = tag_map.get(k)
+        if tid:
+            cursor.execute("INSERT OR IGNORE INTO place_tags (place_id, tag_id, tier) VALUES (?, ?, 1)", (place_id, tid))
+    for k in t2_list:
+        tid = tag_map.get(k)
+        if tid:
+            cursor.execute("INSERT OR IGNORE INTO place_tags (place_id, tag_id, tier) VALUES (?, ?, 2)", (place_id, tid))
+
 def add_place(data):
     """Thêm một địa điểm mới vào CSDL"""
     conn = get_connection()
     cursor = conn.cursor()
+    gmaps_val = data.get("google_maps_url")
+    if not gmaps_val and data.get("name") and data.get("address"):
+        import urllib.parse
+        gmaps_val = f"https://www.google.com/maps/search/?api=1&query={urllib.parse.quote(str(data.get('name')) + ' ' + str(data.get('address')))}"
+
     cursor.execute("""
     INSERT INTO places (
         name, category, address, district, lat, lon, open_time, close_time,
         min_price, max_price, rating, reviews_count, peak_hours,
         best_review, worst_review, image_url, tags, is_verified, is_verified_review, is_admin_choice,
-        price_display, hours_display, is_hidden
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        price_display, hours_display, is_hidden, google_maps_url
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         data.get("name"),
         data.get("category", "an_uong"),
@@ -469,10 +513,12 @@ def add_place(data):
         int(data.get("is_admin_choice", 0)),
         data.get("price_display"),
         data.get("hours_display"),
-        int(data.get("is_hidden", 0))
+        int(data.get("is_hidden", 0)),
+        gmaps_val
     ))
-    conn.commit()
     new_id = cursor.lastrowid
+    sync_place_tags_record(cursor, new_id, data.get("tags", "nhom_ban"))
+    conn.commit()
     conn.close()
     sync_db_to_json()
     return get_place_by_id(new_id)
@@ -488,6 +534,11 @@ def update_place(place_id, data):
 
     conn = get_connection()
     cursor = conn.cursor()
+    gmaps_val = data.get("google_maps_url", existing.get("google_maps_url"))
+    if not gmaps_val and data.get("name") and data.get("address"):
+        import urllib.parse
+        gmaps_val = f"https://www.google.com/maps/search/?api=1&query={urllib.parse.quote(str(data.get('name')) + ' ' + str(data.get('address')))}"
+
     cursor.execute("""
     UPDATE places SET
         name = ?, category = ?, address = ?, district = ?,
@@ -495,7 +546,8 @@ def update_place(place_id, data):
         min_price = ?, max_price = ?, rating = ?, reviews_count = ?,
         peak_hours = ?, best_review = ?, worst_review = ?,
         image_url = ?, tags = ?, is_verified = ?, is_verified_review = ?,
-        is_admin_choice = ?, price_display = ?, hours_display = ?, is_hidden = ?
+        is_admin_choice = ?, price_display = ?, hours_display = ?, is_hidden = ?,
+        google_maps_url = ?
     WHERE id = ?
     """, (
         data.get("name", existing.get("name")),
@@ -521,8 +573,10 @@ def update_place(place_id, data):
         data.get("price_display", existing.get("price_display")),
         data.get("hours_display", existing.get("hours_display")),
         int(data.get("is_hidden", existing.get("is_hidden", 0))),
+        gmaps_val,
         place_id
     ))
+    sync_place_tags_record(cursor, place_id, data.get("tags", existing.get("tags", "nhom_ban")))
     conn.commit()
     conn.close()
     sync_db_to_json()
@@ -532,6 +586,7 @@ def delete_place(place_id):
     """Xóa một địa điểm"""
     conn = get_connection()
     cursor = conn.cursor()
+    cursor.execute("DELETE FROM place_tags WHERE place_id = ?", (place_id,))
     cursor.execute("DELETE FROM places WHERE id = ?", (place_id,))
     conn.commit()
     conn.close()
@@ -568,17 +623,19 @@ def generate_sample_csv():
     writer.writerow([
         "name", "category", "address", "open_time", "close_time", 
         "min_price", "max_price", "rating", "reviews_count", "peak_hours",
-        "best_review", "worst_review", "tags", "lat", "lon"
+        "best_review", "worst_review", "tags", "lat", "lon", "google_maps_url"
     ])
     writer.writerow([
         "Hủ Tiếu Nam Vang Triều Châu", "an_uong", "85 Trần Bình Trọng, Phường 1, Quận 5", "06:30", "22:00",
         40000, 75000, 4.6, 820, "18:00 - 19:30",
-        "Nước dùng ngọt xương tự nhiên, sườn mềm tôm tươi", "Quán giờ tan tầm hơi đông", "nhom_ban,di_1_minh", 10.7570, 106.6780
+        "Nước dùng ngọt xương tự nhiên, sườn mềm tôm tươi", "Quán giờ tan tầm hơi đông", "nhom_ban,di_1_minh", 10.7570, 106.6780,
+        "https://www.google.com/maps/search/?api=1&query=H%E1%BB%A7+Ti%E1%BA%BFu+Nam+Vang+Tri%E1%BB%81u+Ch%C3%A2u+Qu%E1%BA%ADn+5"
     ])
     writer.writerow([
         "Cà Phê Trầm Chợ Lớn", "di_choi", "142 Triệu Quang Phục, Phường 11, Quận 5", "08:00", "22:30",
         35000, 65000, 4.5, 430, "15:00 - 17:00",
-        "Không gian hoài cổ, nhạc nhẹ, rất hợp học bài và hẹn hò", "Hẻm hơi nhỏ", "hen_ho,di_1_minh", 10.7540, 106.6610
+        "Không gian hoài cổ, nhạc nhẹ, rất hợp học bài và hẹn hò", "Hẻm hơi nhỏ", "hen_ho,di_1_minh", 10.7540, 106.6610,
+        "https://www.google.com/maps/search/?api=1&query=C%C3%A0+Ph%C3%AA+Tr%E1%BA%A7m+Ch%E1%BB%A3+L%E1%BB%9Bn+Qu%E1%BA%ADn+5"
     ])
     return output.getvalue()
 
@@ -594,7 +651,7 @@ def generate_sample_excel():
     headers = [
         "name", "category", "address", "open_time", "close_time", 
         "min_price", "max_price", "rating", "reviews_count", "peak_hours",
-        "best_review", "worst_review", "tags", "lat", "lon"
+        "best_review", "worst_review", "tags", "lat", "lon", "google_maps_url"
     ]
     ws.append(headers)
 
@@ -610,12 +667,14 @@ def generate_sample_excel():
         [
             "Hủ Tiếu Nam Vang Triều Châu", "an_uong", "85 Trần Bình Trọng, Phường 1, Quận 5", "06:30", "22:00",
             40000, 75000, 4.6, 820, "18:00 - 19:30",
-            "Nước dùng ngọt xương tự nhiên, sườn mềm tôm tươi", "Quán giờ tan tầm hơi đông", "nhom_ban,di_1_minh", 10.7570, 106.6780
+            "Nước dùng ngọt xương tự nhiên, sườn mềm tôm tươi", "Quán giờ tan tầm hơi đông", "nhom_ban,di_1_minh", 10.7570, 106.6780,
+            "https://www.google.com/maps/search/?api=1&query=H%E1%BB%A7+Ti%E1%BA%BFu+Nam+Vang+Tri%E1%BB%81u+Ch%C3%A2u+Qu%E1%BA%ADn+5"
         ],
         [
             "Cà Phê Trầm Chợ Lớn", "di_choi", "142 Triệu Quang Phục, Phường 11, Quận 5", "08:00", "22:30",
             35000, 65000, 4.5, 430, "15:00 - 17:00",
-            "Không gian hoài cổ, nhạc nhẹ, rất hợp học bài và hẹn hò", "Hẻm hơi nhỏ", "hen_ho,di_1_minh", 10.7540, 106.6610
+            "Không gian hoài cổ, nhạc nhẹ, rất hợp học bài và hẹn hò", "Hẻm hơi nhỏ", "hen_ho,di_1_minh", 10.7540, 106.6610,
+            "https://www.google.com/maps/search/?api=1&query=C%C3%A0+Ph%C3%AA+Tr%E1%BA%A7m+Ch%E1%BB%A3+L%E1%BB%9Bn+Qu%E1%BA%ADn+5"
         ]
     ]
     for r in sample_rows:
@@ -770,12 +829,17 @@ def import_file_data(data, filename="uploaded_places.csv"):
             errors.append({"row": row_idx, "field": "name", "reason": f"Địa điểm '{name}' đã tồn tại trong CSDL (bị trùng lặp)"})
             continue
 
+        gmaps_url = (row.get("google_maps_url") or row.get("maps_url") or "").strip()
+        if not gmaps_url:
+            import urllib.parse
+            gmaps_url = f"https://www.google.com/maps/search/?api=1&query={urllib.parse.quote(name + ' ' + address)}"
+
         cursor.execute("""
         INSERT INTO places (
             name, category, address, district, lat, lon, open_time, close_time,
             min_price, max_price, rating, reviews_count, peak_hours,
-            best_review, worst_review, image_url, tags, is_verified, is_hidden
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 0)
+            best_review, worst_review, image_url, tags, is_verified, is_hidden, google_maps_url
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 0, ?)
         """, (
             name,
             category,
@@ -793,7 +857,8 @@ def import_file_data(data, filename="uploaded_places.csv"):
             row.get("best_review") or "",
             row.get("worst_review") or "",
             row.get("image_url") or None,
-            row.get("tags") or "nhom_ban"
+            row.get("tags") or "nhom_ban",
+            gmaps_url
         ))
         existing_names.add(name.lower())
         success_count += 1

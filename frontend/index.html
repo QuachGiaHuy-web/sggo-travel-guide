@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=3.5" />
+  <link rel="stylesheet" href="style.css?v=4.0" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- Leaflet Map Library CDN -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
@@ -312,7 +312,7 @@
 
     <!-- 2. TỰ CHỌN ĐỊA ĐIỂM (TAB 2: 40 QUÁN VỚI ẢNH CHUẨN, GIỜ MỞ CỬA & ĐÁNH GIÁ THỰC TẾ) -->
     <main id="viewAll" class="w-full max-w-6xl mx-auto py-2 hidden">
-      <!-- Khối Định Vị GPS & Lọc Theo Bán Kính -->
+      <!-- Khối Tìm Quán Gần Bạn (GPS & Khoảng Cách) -->
       <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 mb-5 shadow-xs">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
           <div class="flex items-center gap-3">
@@ -321,9 +321,8 @@
             </div>
             <div>
               <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wide">
-                Định Vị Vị Trí Của Bạn & Lọc Theo Bán Kính
+                Tìm Quán Gần Bạn
               </h3>
-              <p class="text-[11px] text-slate-500 font-medium">Bổ sung vị trí của bạn để tìm quán ăn, điểm đến gần nhất tại Sài Gòn (tính theo mét/km)</p>
             </div>
           </div>
           <div class="flex items-center gap-2 flex-wrap">
@@ -515,16 +514,16 @@
             <label class="block text-xs font-bold text-slate-800 mb-2">3. Bạn đi chơi với ai? (Để lựa chọn không gian phù hợp)</label>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
               <button type="button" onclick="selectAICompanion('di_1_minh')" id="comp_di_1_minh" class="companion-chip py-2 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-slate-300 transition flex items-center justify-center gap-1.5 cursor-pointer text-center">
-                <span>🎧 Đi một mình</span>
+                <span>Đi một mình</span>
               </button>
               <button type="button" onclick="selectAICompanion('nguoi_yeu')" id="comp_nguoi_yeu" class="companion-chip py-2 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-slate-300 transition flex items-center justify-center gap-1.5 cursor-pointer text-center">
-                <span>💑 Cặp đôi</span>
+                <span>Cặp đôi</span>
               </button>
               <button type="button" onclick="selectAICompanion('ban_be')" id="comp_ban_be" class="companion-chip active py-2 px-3 rounded-xl border-2 border-[#E11D48] bg-rose-50 font-bold text-[#E11D48] shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer text-center">
-                <span>🎉 Nhóm bạn</span>
+                <span>Nhóm bạn</span>
               </button>
               <button type="button" onclick="selectAICompanion('gia_dinh')" id="comp_gia_dinh" class="companion-chip py-2 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-slate-300 transition flex items-center justify-center gap-1.5 cursor-pointer text-center">
-                <span>👨‍👩‍👧 Gia đình</span>
+                <span>Gia đình</span>
               </button>
             </div>
           </div>
@@ -534,13 +533,13 @@
             <label class="block text-xs font-bold text-slate-800 mb-2">4. Bạn muốn đi đâu hôm nay? (Mục đích chuyến đi)</label>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
               <button type="button" onclick="selectAIPurpose('an_uong')" id="purp_an_uong" class="purpose-chip py-2.5 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-slate-300 transition flex items-center justify-center gap-1.5 text-center cursor-pointer">
-                <span>🍜 Chỉ đi Ăn uống</span>
+                <span>Ăn uống</span>
               </button>
               <button type="button" onclick="selectAIPurpose('di_choi')" id="purp_di_choi" class="purpose-chip py-2.5 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-slate-300 transition flex items-center justify-center gap-1.5 text-center cursor-pointer">
-                <span>📸 Chỉ đi Tham quan</span>
+                <span>Tham quan & Vui chơi</span>
               </button>
               <button type="button" onclick="selectAIPurpose('ca_hai')" id="purp_ca_hai" class="purpose-chip active py-2.5 px-3 rounded-xl border-2 border-[#E11D48] bg-rose-50 font-bold text-[#E11D48] shadow-xs transition flex items-center justify-center gap-1.5 text-center cursor-pointer">
-                <span>🍴 Cả hai (Ăn uống & Tham quan)</span>
+                <span>Kết hợp cả hai</span>
               </button>
             </div>
           </div>
@@ -553,7 +552,7 @@
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-2.5">
               <button type="button" onclick="selectAIBudget('free', 0)" id="aibudget_free" class="companion-chip py-2 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-slate-300 transition text-center cursor-pointer">
-                <span>🎁 0đ (Miễn phí)</span>
+                <span>Miễn phí (0đ)</span>
               </button>
               <button type="button" onclick="selectAIBudget('under_100k', 100000)" id="aibudget_under_100k" class="companion-chip py-2 px-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-600 hover:border-slate-300 transition text-center cursor-pointer">
                 <span>Dưới 100k</span>
@@ -580,9 +579,9 @@
             <input type="text" id="aiTakeNote" value="" placeholder="VD: Không ăn cay; Thích chỗ mát mẻ có máy lạnh; Dễ gửi xe..." class="pop-input bg-white" />
             <div class="flex gap-1.5 mt-2 flex-wrap text-[11px]">
               <span class="text-slate-400 font-semibold text-[10px] uppercase">Gợi ý mẫu:</span>
-              <button type="button" onclick="appendTakeNote('Ưu tiên chỗ có máy lạnh mát mẻ')" class="px-2 py-0.5 rounded-lg bg-white hover:bg-rose-50 text-slate-600 hover:text-[#E11D48] border border-slate-200 transition font-medium">❄️ Ưu tiên có máy lạnh</button>
-              <button type="button" onclick="appendTakeNote('Không ăn cay / Không ăn dầu mỡ')" class="px-2 py-0.5 rounded-lg bg-white hover:bg-rose-50 text-slate-600 hover:text-[#E11D48] border border-slate-200 transition font-medium">🌶️ Không ăn cay</button>
-              <button type="button" onclick="appendTakeNote('Quán có chỗ gửi xe máy thuận tiện')" class="px-2 py-0.5 rounded-lg bg-white hover:bg-rose-50 text-slate-600 hover:text-[#E11D48] border border-slate-200 transition font-medium">🛵 Dễ gửi xe máy</button>
+              <button type="button" onclick="appendTakeNote('Ưu tiên chỗ có máy lạnh mát mẻ')" class="px-2 py-0.5 rounded-lg bg-white hover:bg-rose-50 text-slate-600 hover:text-[#E11D48] border border-slate-200 transition font-medium">Ưu tiên máy lạnh</button>
+              <button type="button" onclick="appendTakeNote('Không ăn cay / Không ăn dầu mỡ')" class="px-2 py-0.5 rounded-lg bg-white hover:bg-rose-50 text-slate-600 hover:text-[#E11D48] border border-slate-200 transition font-medium">Không ăn cay</button>
+              <button type="button" onclick="appendTakeNote('Quán có chỗ gửi xe máy thuận tiện')" class="px-2 py-0.5 rounded-lg bg-white hover:bg-rose-50 text-slate-600 hover:text-[#E11D48] border border-slate-200 transition font-medium">Gửi xe thuận tiện</button>
             </div>
           </div>
 
@@ -605,7 +604,7 @@
               <div id="aiConstraintSuggestionBox" class="mt-2.5 p-3 bg-white/95 rounded-xl border border-amber-200 text-xs text-amber-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 shadow-2xs">
                 <span id="aiConstraintSuggestionText" class="font-medium leading-relaxed"></span>
                 <button type="button" onclick="handleAutoRelaxConstraint()" class="px-3.5 py-1.5 bg-[#E11D48] hover:bg-[#BE123C] text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 flex-shrink-0 cursor-pointer shadow-xs">
-                  <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Tự động nới điều kiện</span>
+                  <i class="fa-solid fa-sliders"></i> <span>Mở rộng phạm vi tìm kiếm</span>
                 </button>
               </div>
             </div>
@@ -658,7 +657,7 @@
             </p>
           </div>
 
-          <!-- Bản Đồ Tương Tác Leaflet (Google Maps & OSM - Hoàn Toàn Không Cần API Key) -->
+          <!-- Bản Đồ Tương Tác Tuyến Đường 3 Trạm -->
           <div class="mb-6 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
             <div class="flex items-center justify-between mb-2 px-1">
               <div>
@@ -695,7 +694,7 @@
             </h3>
             <button type="button" onclick="shuffleAIItinerary()" class="px-3.5 py-2 bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] text-slate-700 border border-slate-300 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-2xs cursor-pointer">
               <i class="fa-solid fa-shuffle text-xs text-[#E11D48]"></i>
-              <span>🎲 Xáo Trộn Lịch Trình Khác</span>
+              <span>Đổi Phương Án Khác</span>
             </button>
           </div>
 
@@ -769,24 +768,29 @@
             <button type="button" onclick="switchAdminSubTab('users')" id="adminSubTabUsers" class="admin-subtab-btn">
               <i class="fa-solid fa-user-shield mr-1.5"></i> Quản Lý Tài Khoản (<span id="adminUserCountBadge">2</span>)
             </button>
-            <button type="button" onclick="switchAdminSubTab('tags')" id="adminSubTabTags" class="admin-subtab-btn">
-              <i class="fa-solid fa-tags mr-1.5"></i> Quản Lý Tag & Bộ Lọc (<span id="adminTagCountBadge">4</span>)
-            </button>
           </div>
           <span id="adminFilteredCount" class="text-[11px] text-slate-500 font-bold">Hiển thị 40 địa điểm</span>
         </div>
 
         <!-- SECTION 1: QUẢN LÝ ĐỊA ĐIỂM -->
         <div id="adminSectionPlaces">
-          <!-- BỘ LỌC TỪ A ĐẾN Z CHO ADMIN -->
+          <!-- BỘ LỌC TỪ A ĐẾN Z CHO ADMIN (BAO GỒM LỌC THEO TAG BỐI CẢNH) -->
           <div class="mt-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
-              <input type="text" id="adminSearchInput" onkeyup="filterAdminTable()" placeholder="Gõ tên quán hoặc đường để lọc..." class="pop-input py-2 bg-white font-medium text-xs" />
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5">
+              <input type="text" id="adminSearchInput" onkeyup="filterAdminTable()" placeholder="Gõ tên quán / đường..." class="pop-input py-2 bg-white font-medium text-xs" />
               
               <select id="adminCategoryFilter" onchange="filterAdminTable()" class="pop-input py-2 bg-white font-semibold text-xs">
                 <option value="all">Tất cả thể loại</option>
                 <option value="an_uong">Ẩm thực Sài Gòn</option>
                 <option value="di_choi">Điểm đến & Vui chơi</option>
+              </select>
+
+              <select id="adminTagFilter" onchange="filterAdminTable()" class="pop-input py-2 bg-white font-semibold text-xs">
+                <option value="all">Mọi thẻ bối cảnh (Tag)</option>
+                <option value="di_1_minh">🙋 Đi 1 mình</option>
+                <option value="hen_ho">💕 Hẹn hò đôi</option>
+                <option value="nhom_ban">👥 Nhóm bạn</option>
+                <option value="gia_dinh">👨‍👩‍👧‍👦 Gia đình</option>
               </select>
 
               <select id="adminRatingFilter" onchange="filterAdminTable()" class="pop-input py-2 bg-white font-semibold text-xs">
@@ -862,45 +866,13 @@
           </div>
         </div>
 
-        <!-- SECTION 3: QUẢN LÝ TAG & BỘ LỌC (G6-FR08 & SECTION 5 ERD) -->
-        <div id="adminSectionTags" class="hidden mt-4">
-          <div class="p-3.5 bg-rose-50 border border-rose-200 rounded-2xl mb-4 text-xs text-rose-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-tags text-[#E11D48] text-sm"></i>
-              <span>Cấu hình danh mục thẻ ngữ cảnh (Context Tags) và tiêu chí bộ lọc hệ thống theo yêu cầu G6-FR08 & Section 5 ERD.</span>
-            </div>
-            <button onclick="openAddTagModal()" class="px-3.5 py-1.5 bg-[#E11D48] hover:bg-[#BE123C] text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer whitespace-nowrap">
-              <i class="fa-solid fa-plus text-[10px]"></i> Thêm Tag Mới
-            </button>
-          </div>
-
-          <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-xs bg-white">
-            <table class="w-full min-w-[650px] text-left text-xs text-slate-600">
-              <thead class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider text-[10px]">
-                <tr>
-                  <th class="p-3.5 whitespace-nowrap">ID</th>
-                  <th class="p-3.5 whitespace-nowrap">Mã Tag (Key)</th>
-                  <th class="p-3.5 whitespace-nowrap">Tên Hiển Thị</th>
-                  <th class="p-3.5 whitespace-nowrap">Phân Loại / Tầng</th>
-                  <th class="p-3.5 whitespace-nowrap">Số Quán Gắn Tag</th>
-                  <th class="p-3.5 whitespace-nowrap">Trạng Thái</th>
-                  <th class="p-3.5 text-center whitespace-nowrap bg-slate-50 border-l border-slate-200">Hành Động</th>
-                </tr>
-              </thead>
-              <tbody id="adminTagsTable" class="divide-y divide-stone-100">
-                <!-- Render từ JS -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
       </div>
     </main>
 
     <!-- FOOTER -->
     <footer class="mt-12 pt-6 border-t border-slate-200/70 text-center text-xs text-slate-400 font-medium">
-      <p>Đồ án Công nghệ Phần mềm (COMP1044) • SGGo! Travel Guide & Smart Itinerary</p>
-      <p class="mt-1 text-[11px] text-slate-400">Dữ liệu thực tế Sài Gòn (TP.HCM) • Thuật toán Tối Ưu Lộ Trình & Hỗ Trợ AI</p>
+      <p>Đồ án Công nghệ Phần mềm (COMP1044) • SGGo! Cẩm Nang Ẩm Thực & Lịch Trình Sài Gòn</p>
+      <p class="mt-1 text-[11px] text-slate-400">Dữ liệu thực tế TP. Hồ Chí Minh • Tối Ưu Tuyến Đường Khám Phá</p>
     </footer>
 
   </div>
@@ -971,129 +943,170 @@
   </div>
 
   <!-- 2. MODAL THÊM / SỬA ĐỊA ĐIỂM (CÓ BÓC TÁCH LINK GOOGLE MAPS & CHỈNH ẢNH) -->
-  <div id="modalPlaceForm" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 relative max-h-[90vh] overflow-y-auto">
-      <button onclick="closePlaceFormModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full flex items-center justify-center bg-slate-50">
-        <i class="fa-solid fa-xmark"></i>
+  <div id="modalPlaceForm" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-3xl max-w-2xl sm:max-w-3xl w-full p-5 sm:p-7 shadow-2xl border border-slate-200 relative max-h-[92vh] overflow-y-auto">
+      <button onclick="closePlaceFormModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 w-8 h-8 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition cursor-pointer">
+        <i class="fa-solid fa-xmark text-sm"></i>
       </button>
 
-      <h3 id="placeFormTitle" class="text-lg font-black text-slate-900">Thêm Địa Điểm Mới</h3>
-      <p id="placeFormSubtitle" class="text-[11px] text-slate-500 mb-3">Nhập dữ liệu địa điểm tại Sài Gòn vào CSDL SQLite</p>
+      <!-- Modal Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pr-8 pb-4 mb-4 border-b border-slate-100">
+        <div>
+          <h3 id="placeFormTitle" class="text-lg sm:text-xl font-black text-slate-900 flex items-center gap-2">Thêm Địa Điểm Mới</h3>
+          <p id="placeFormSubtitle" class="text-xs text-slate-500 mt-0.5">Nhập và quản lý dữ liệu địa điểm thực tế tại Sài Gòn vào CSDL SQLite</p>
+        </div>
+        <a id="btnAdminOpenGmaps" target="_blank" href="#" class="hidden px-3.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-2xs whitespace-nowrap cursor-pointer self-start sm:self-auto" title="Mở trang quán này trên Google Maps để đối chiếu">
+          <i class="fa-brands fa-google text-emerald-600"></i>
+          <span>Xem trên Google Maps</span>
+          <i class="fa-solid fa-arrow-up-right-from-square text-[9px] opacity-70"></i>
+        </a>
+      </div>
 
       <!-- HỘP BÓC TÁCH TỰ ĐỘNG TỪ GOOGLE MAPS -->
-      <div id="gmapsExtractorBox" class="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200/90 rounded-2xl p-3 mb-4">
-        <label class="block text-[11px] font-extrabold text-orange-800 mb-1 flex items-center gap-1.5">
+      <div id="gmapsExtractorBox" class="bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50/50 border border-orange-200 rounded-2xl p-3.5 mb-5 shadow-2xs">
+        <label class="block text-xs font-extrabold text-orange-900 mb-1.5 flex items-center gap-1.5">
           <i class="fa-brands fa-google text-rose-500"></i> Bóc tách nhanh từ link Google Maps hoặc Tên quán:
         </label>
         <div class="flex gap-2">
-          <input type="text" id="gmapsExtractInput" placeholder="Dán link Google Maps hoặc tên quán..." class="pop-input flex-1 py-1.5 text-xs bg-white" />
-          <button type="button" onclick="handleExtractGmaps()" id="btnExtractGmaps" class="px-3.5 py-1.5 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl text-xs transition flex items-center gap-1 whitespace-nowrap shadow-sm">
+          <input type="text" id="gmapsExtractInput" placeholder="Dán link Google Maps (maps.app.goo.gl/...) hoặc tên quán..." class="pop-input flex-1 py-2 text-xs bg-white" />
+          <button type="button" onclick="handleExtractGmaps()" id="btnExtractGmaps" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl text-xs transition flex items-center gap-1.5 whitespace-nowrap shadow-sm cursor-pointer">
             <i class="fa-solid fa-bolt"></i> Tự Động Điền
           </button>
         </div>
-        <p class="text-[10px] text-orange-700/80 mt-1 italic">* Hệ thống sẽ tự động bóc tách tên, tọa độ, địa chỉ, giờ mở cửa và gợi ý thông tin vào form bên dưới.</p>
+        <p class="text-[10px] text-orange-700/80 mt-1.5 italic font-medium">* Hệ thống sẽ tự động bóc tách tên, tọa độ, địa chỉ, giờ mở cửa và gợi ý thông tin vào form bên dưới.</p>
       </div>
 
-      <form id="placeAdminForm" onsubmit="handleSavePlace(event)" class="space-y-3 text-xs">
+      <form id="placeAdminForm" onsubmit="handleSavePlace(event)" class="space-y-4 text-xs">
         <input type="hidden" id="formPlaceId" value="" />
-        
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Tên địa điểm / Quán</label>
-          <input type="text" id="formName" required class="pop-input" placeholder="VD: Sủi Cảo Thiên Thiên" />
-        </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Thể loại</label>
-            <select id="formCategory" class="pop-input font-medium">
-              <option value="an_uong">Ẩm thực Sài Gòn</option>
-              <option value="di_choi">Điểm đến & Vui chơi</option>
-            </select>
+        <!-- KHỐI 1: THÔNG TIN CƠ BẢN & ĐỊA CHỈ -->
+        <div class="bg-slate-50/70 border border-slate-200/90 rounded-2xl p-4 space-y-3">
+          <div class="text-[11px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-store text-[#E11D48]"></i> 1. Thông Tin Cơ Bản & Địa Chỉ
           </div>
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Quận</label>
-            <input type="text" id="formDistrict" value="TP.HCM" class="pop-input" />
-          </div>
-        </div>
 
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Địa chỉ cụ thể</label>
-          <input type="text" id="formAddress" required class="pop-input" placeholder="VD: 197 Hà Tôn Quyền, Phường 4, TP.HCM" />
-        </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Tên địa điểm / Quán <span class="text-rose-500">*</span></label>
+            <input type="text" id="formName" required class="pop-input" placeholder="VD: Sủi Cảo Thiên Thiên" />
+          </div>
 
-        <div class="grid grid-cols-3 gap-3">
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Vĩ độ (Lat)</label>
-            <input type="number" step="any" id="formLat" value="10.7550" class="pop-input" />
-          </div>
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Kinh độ (Lon)</label>
-            <input type="number" step="any" id="formLon" value="106.6650" class="pop-input" />
-          </div>
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Lượt review</label>
-            <input type="number" id="formReviewsCount" value="100" class="pop-input" />
-          </div>
-        </div>
-
-        <!-- Chỉnh sửa Link Ảnh với xem trước trực tiếp -->
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Link ảnh (Để trống nếu chưa có ảnh thật)</label>
-          <input type="text" id="formImageUrl" oninput="updateImagePreview(this.value)" class="pop-input" placeholder="Dán link ảnh thật hoặc để trống nếu chưa có ảnh" />
-          <div class="mt-2 flex items-center gap-3">
-            <div id="formImagePreviewWrapper" class="w-16 h-14 rounded-xl overflow-hidden border border-slate-200 shadow-sm flex-shrink-0 bg-slate-100 flex items-center justify-center">
-              <img id="formImagePreview" src="" class="w-full h-full object-cover hidden" />
-              <span id="formImageNoPreview" class="text-[10px] text-slate-400 font-bold flex flex-col items-center"><i class="fa-solid fa-camera text-slate-300 mb-0.5"></i> Chưa có ảnh</span>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Thể loại chính</label>
+              <select id="formCategory" class="pop-input font-bold text-slate-800">
+                <option value="an_uong">🍜 Ẩm thực Sài Gòn (Ăn uống)</option>
+                <option value="di_choi">📸 Điểm đến & Vui chơi (Tham quan / Workshop)</option>
+              </select>
             </div>
-            <span class="text-[11px] text-slate-500">Xem trước ảnh thật (Nếu để trống hoặc ảnh lỗi, hệ thống sẽ hiển thị "Chưa có ảnh" - cấm dùng ảnh stock/ảo)</span>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Khu vực / Quận</label>
+              <input type="text" id="formDistrict" value="TP.HCM" class="pop-input" placeholder="VD: Quận 1, Quận 5, Bình Thạnh..." />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Địa chỉ cụ thể <span class="text-rose-500">*</span></label>
+              <input type="text" id="formAddress" required class="pop-input" placeholder="VD: 197 Hà Tôn Quyền, Phường 4, Quận 11, TP.HCM" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1 flex items-center justify-between">
+                <span><i class="fa-brands fa-google text-rose-500 mr-1"></i> Link Google Maps</span>
+                <span class="text-[10px] text-slate-400 font-normal italic">Tùy chọn</span>
+              </label>
+              <input type="text" id="formGoogleMapsUrl" class="pop-input" placeholder="https://maps.app.goo.gl/... (để trống sẽ tự tạo)" />
+            </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Giờ mở cửa</label>
-            <input type="text" id="formOpenTime" value="08:00" class="pop-input" placeholder="08:00" />
+        <!-- KHỐI 2: TỌA ĐỘ GPS & ĐÁNH GIÁ -->
+        <div class="bg-slate-50/70 border border-slate-200/90 rounded-2xl p-4 space-y-3">
+          <div class="text-[11px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-map-pin text-rose-500"></i> 2. Tọa Độ GPS & Số Liệu Đánh Giá
           </div>
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Giờ đóng cửa</label>
-            <input type="text" id="formCloseTime" value="22:30" class="pop-input" placeholder="22:30" />
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Vĩ độ (Lat)</label>
+              <input type="number" step="any" id="formLat" value="10.7550" class="pop-input font-bold" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Kinh độ (Lon)</label>
+              <input type="number" step="any" id="formLon" value="106.6650" class="pop-input font-bold" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Đánh giá sao (1-5)</label>
+              <input type="number" step="0.1" min="1" max="5" id="formRating" value="4.5" class="pop-input font-bold text-amber-700" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Lượt review</label>
+              <input type="number" id="formReviewsCount" value="100" class="pop-input" />
+            </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Giá tối thiểu (VNĐ)</label>
-            <input type="number" id="formMinPrice" value="30000" class="pop-input" />
+        <!-- KHỐI 3: THỜI GIAN & CHI PHÍ -->
+        <div class="bg-slate-50/70 border border-slate-200/90 rounded-2xl p-4 space-y-3">
+          <div class="text-[11px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-clock text-sky-600"></i> 3. Giờ Hoạt Động & Mức Giá
           </div>
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Giá tối đa (VNĐ)</label>
-            <input type="number" id="formMaxPrice" value="85000" class="pop-input" />
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Giờ mở cửa</label>
+              <input type="text" id="formOpenTime" value="08:00" class="pop-input font-bold" placeholder="08:00" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Giờ đóng cửa</label>
+              <input type="text" id="formCloseTime" value="22:30" class="pop-input font-bold" placeholder="22:30" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Giờ cao điểm</label>
+              <input type="text" id="formPeakHours" value="" placeholder="VD: 18:30 - 20:30" class="pop-input" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Giá tối thiểu (VNĐ)</label>
+              <input type="number" id="formMinPrice" value="30000" class="pop-input" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Giá tối đa (VNĐ)</label>
+              <input type="number" id="formMaxPrice" value="85000" class="pop-input" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Text giá trên thẻ</label>
+              <input type="text" id="formPriceDisplay" class="pop-input" placeholder="VD: 30.000đ – 85.000đ" />
+            </div>
           </div>
         </div>
 
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Mức giá hiển thị trên thẻ (Tùy chỉnh text giá)</label>
-          <input type="text" id="formPriceDisplay" class="pop-input" placeholder="VD: 30.000đ – 85.000đ, hoặc 60.000đ/vé (để trống để tự động)" />
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Số sao (1 - 5)</label>
-            <input type="number" step="0.1" id="formRating" value="4.5" class="pop-input" />
+        <!-- KHỐI 4: HÌNH ẢNH THỰC TẾ -->
+        <div class="bg-slate-50/70 border border-slate-200/90 rounded-2xl p-4 space-y-3">
+          <div class="text-[11px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-camera text-emerald-600"></i> 4. Hình Ảnh Thực Tế
           </div>
           <div>
-            <label class="block font-bold text-slate-700 mb-1">Giờ cao điểm</label>
-            <input type="text" id="formPeakHours" value="" placeholder="Ví dụ: 18:30 - 20:30 hoặc để Chưa rõ" class="pop-input" />
+            <label class="block font-bold text-slate-700 mb-1">Link ảnh (Để trống nếu chưa có ảnh thật)</label>
+            <input type="text" id="formImageUrl" oninput="updateImagePreview(this.value)" class="pop-input" placeholder="Dán link ảnh thật từ Google Maps hoặc CDN..." />
+            <div class="mt-2.5 flex items-center gap-3">
+              <div id="formImagePreviewWrapper" class="w-20 h-16 rounded-xl overflow-hidden border border-slate-200 shadow-xs flex-shrink-0 bg-slate-100 flex items-center justify-center">
+                <img id="formImagePreview" src="" class="w-full h-full object-cover hidden" />
+                <span id="formImageNoPreview" class="text-[10px] text-slate-400 font-bold flex flex-col items-center"><i class="fa-solid fa-camera text-slate-300 mb-0.5"></i> Chưa có ảnh</span>
+              </div>
+              <span class="text-[11px] text-slate-500 leading-relaxed">Xem trước ảnh thật (Nếu để trống hoặc ảnh lỗi, hệ thống sẽ hiển thị "Chưa có ảnh" - cấm dùng ảnh stock/ảo).</span>
+            </div>
           </div>
         </div>
 
-        <!-- CHỌN BỐI CẢNH 2-TIER (BẤM CHỌN TRỰC TIẾP, PHÂN ĐỊNH RÕ TIER 1 VÀ TIER 2) -->
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-3">
+        <!-- KHỐI 5: CHỌN BỐI CẢNH 2-TIER (2-TIER FIT MODEL) -->
+        <div class="bg-slate-50/70 border border-slate-200/90 rounded-2xl p-4 space-y-3">
           <div class="flex items-center justify-between">
-            <label class="block font-black text-slate-800 text-xs uppercase tracking-wide">
-              Bối cảnh phù hợp (2-Tier Fit Model)
-            </label>
-            <span class="text-[10px] text-slate-500 font-semibold italic">* Bấm để chọn trực tiếp Tier 1 hoặc Tier 2</span>
+            <div class="text-[11px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+              <i class="fa-solid fa-layer-group text-indigo-600"></i> 5. Bối Cảnh Phù Hợp (2-Tier Fit Model)
+            </div>
+            <span class="text-[10px] text-slate-500 font-semibold italic">* Bấm chọn trực tiếp Tier 1 hoặc Tier 2</span>
           </div>
 
           <!-- Nhóm Tier 1: Cốt lõi -->
@@ -1153,84 +1166,56 @@
           <input type="hidden" id="formTags" value="" />
         </div>
 
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Đánh giá tiêu biểu nhất (5 sao)</label>
-          <textarea id="formBestReview" rows="2" class="pop-input" placeholder="Nhận xét 5 sao thực tế (để trống nếu chưa có)..."></textarea>
-        </div>
-
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Lưu ý / Góp ý (Giờ đông khách, xếp hàng)</label>
-          <textarea id="formWorstReview" rows="2" class="pop-input" placeholder="Lưu ý thực tế (để trống nếu chưa có)..."></textarea>
-        </div>
-
-
-
-        <div class="bg-amber-50/80 border border-amber-200/80 p-3 rounded-xl flex items-center justify-between">
-          <div>
-            <span class="block text-xs font-bold text-amber-900 flex items-center gap-1.5">
-              <span>👑 Quán Admin Yêu Thích</span>
-              <span class="text-[10px] bg-amber-200 text-amber-800 font-extrabold px-1.5 py-0.5 rounded">Nổi bật</span>
-            </span>
-            <span class="text-[10px] text-amber-700">Đánh dấu quán được Admin đề xuất đặc biệt, hiển thị huy hiệu trên thẻ quán</span>
+        <!-- KHỐI 6: ĐÁNH GIÁ & LƯU Ý -->
+        <div class="bg-slate-50/70 border border-slate-200/90 rounded-2xl p-4 space-y-3">
+          <div class="text-[11px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-comments text-amber-600"></i> 6. Đánh Giá & Lưu Ý Thực Tế
           </div>
-          <label class="cursor-pointer flex items-center gap-1.5 flex-shrink-0">
-            <input type="checkbox" id="formIsAdminChoice" class="w-4 h-4 accent-amber-600 rounded" />
-            <span class="text-xs font-bold text-amber-900">Yêu thích</span>
-          </label>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Đánh giá tiêu biểu (5 sao)</label>
+            <textarea id="formBestReview" rows="2" class="pop-input" placeholder="Nhận xét 5 sao thực tế (để trống nếu chưa có)..."></textarea>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Lưu ý / Góp ý (Giờ đông khách, gửi xe, xếp hàng)</label>
+            <textarea id="formWorstReview" rows="2" class="pop-input" placeholder="Lưu ý thực tế (để trống nếu chưa có)..."></textarea>
+          </div>
         </div>
 
-        <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl flex items-center justify-between">
-          <div>
-            <span class="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
-              <span>👁️‍🗨️ Trạng thái hiển thị</span>
-            </span>
-            <span class="text-[10px] text-slate-500">Ẩn quán này khỏi Tab Khám Phá & Tab Tự Chọn (Chỉ Admin mới thấy trong bảng quản lý)</span>
+        <!-- KHỐI 7: TRẠNG THÁI HIỂN THỊ -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="bg-amber-50/80 border border-amber-200/80 p-3 rounded-2xl flex items-center justify-between">
+            <div>
+              <span class="block text-xs font-bold text-amber-900 flex items-center gap-1.5">
+                <span>👑 Quán Admin Đề Cử</span>
+                <span class="text-[10px] bg-amber-200 text-amber-800 font-extrabold px-1.5 py-0.5 rounded">Nổi bật</span>
+              </span>
+              <span class="text-[10px] text-amber-700">Hiển thị huy hiệu đề cử trên thẻ</span>
+            </div>
+            <label class="cursor-pointer flex items-center gap-1.5 flex-shrink-0 ml-2">
+              <input type="checkbox" id="formIsAdminChoice" class="w-4 h-4 accent-amber-600 rounded" />
+              <span class="text-xs font-bold text-amber-900">Đề cử</span>
+            </label>
           </div>
-          <label class="cursor-pointer flex items-center gap-1.5 flex-shrink-0">
-            <input type="checkbox" id="formIsHidden" class="w-4 h-4 accent-slate-800 rounded" />
-            <span class="text-xs font-bold text-slate-700">Ẩn quán</span>
-          </label>
+
+          <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl flex items-center justify-between">
+            <div>
+              <span class="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <span>👁️‍🗨️ Trạng thái hiển thị</span>
+              </span>
+              <span class="text-[10px] text-slate-500">Ẩn quán khỏi trang tìm kiếm công khai</span>
+            </div>
+            <label class="cursor-pointer flex items-center gap-1.5 flex-shrink-0 ml-2">
+              <input type="checkbox" id="formIsHidden" class="w-4 h-4 accent-slate-800 rounded" />
+              <span class="text-xs font-bold text-slate-700">Ẩn quán</span>
+            </label>
+          </div>
         </div>
 
         <div class="pt-3">
-          <button type="submit" id="btnSubmitPlaceForm" class="w-full py-3 bg-[#E11D48] hover:bg-[#BE123C] text-white rounded-xl font-bold transition shadow-sm">
+          <button type="submit" id="btnSubmitPlaceForm" class="w-full py-3.5 bg-[#E11D48] hover:bg-[#BE123C] text-white rounded-2xl font-bold transition shadow-md shadow-[#E11D48]/20 text-xs sm:text-sm cursor-pointer">
             Lưu Vào Cơ Sở Dữ Liệu SQLite
           </button>
         </div>
-      </form>
-    </div>
-  </div>
-
-    <!-- 3.1 MODAL THÊM TAG MỚI (G6-FR08) -->
-  <div id="modalAddTag" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 relative animate-in fade-in zoom-in duration-200">
-      <button onclick="closeAddTagModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full flex items-center justify-center bg-slate-50 cursor-pointer">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-
-      <h3 class="text-base font-black text-slate-900 mb-1">Thêm Tag Ngữ Cảnh Mới</h3>
-      <p class="text-xs text-slate-500 mb-4">Cấu hình tiêu chí bộ lọc và thẻ bối cảnh cho các địa điểm.</p>
-
-      <form onsubmit="handleSaveTag(event)" class="space-y-3">
-        <div>
-          <label class="block text-[11px] font-bold text-slate-700 mb-1">Mã Tag (viết liền, không dấu)</label>
-          <input type="text" id="newTagKey" required placeholder="VD: song_ao, an_dem, yen_tinh" class="pop-input text-xs font-semibold" />
-        </div>
-        <div>
-          <label class="block text-[11px] font-bold text-slate-700 mb-1">Tên hiển thị (Tiếng Việt)</label>
-          <input type="text" id="newTagName" required placeholder="VD: Sống ảo / Chụp hình đẹp" class="pop-input text-xs font-semibold" />
-        </div>
-        <div>
-          <label class="block text-[11px] font-bold text-slate-700 mb-1">Nhóm phân loại</label>
-          <select id="newTagTierType" class="pop-input text-xs font-semibold">
-            <option value="companion">Bối cảnh / Bạn đồng hành</option>
-            <option value="vibe">Không gian / Tiện ích</option>
-            <option value="feature">Đặc trưng trải nghiệm</option>
-          </select>
-        </div>
-        <button type="submit" class="w-full py-2.5 bg-[#E11D48] hover:bg-[#BE123C] text-white rounded-xl text-xs font-bold transition shadow-sm mt-3 cursor-pointer">
-          Lưu Tag Vào Hệ Thống
-        </button>
       </form>
     </div>
   </div>
@@ -1401,9 +1386,6 @@
             <h3 class="text-sm font-black text-slate-900 flex items-center gap-2">
               <i class="fa-solid fa-comments text-[#E11D48]"></i> Đánh Giá & Nhận Xét Của Khách Hàng
             </h3>
-            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full flex items-center gap-1">
-              <i class="fa-solid fa-circle-check text-emerald-500"></i> Đã kiểm chứng
-            </span>
           </div>
 
           <!-- Bình luận 5 sao tiêu biểu -->
@@ -1414,7 +1396,7 @@
                   5⭐
                 </div>
                 <div>
-                  <h4 class="font-black text-slate-800 text-xs">Đánh giá 5 sao thực tế</h4>
+                  <h4 class="font-black text-slate-800 text-xs">Đánh giá nổi bật</h4>
                   <div class="flex text-amber-400 text-[10px] mt-0.5">
                     <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                   </div>
@@ -1434,8 +1416,8 @@
                   <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
                 <div>
-                  <h4 class="font-black text-slate-800 text-xs">Lưu ý & Góp ý thực tế</h4>
-                  <span class="text-[10px] text-slate-400 font-medium">Trải nghiệm thực tế</span>
+                  <h4 class="font-black text-slate-800 text-xs">Lưu ý khi trải nghiệm</h4>
+                  <span class="text-[10px] text-slate-400 font-medium">Kinh nghiệm thực tế</span>
                 </div>
               </div>
               <span class="text-[10px] text-slate-500 bg-slate-100 font-medium px-2 py-0.5 rounded-full flex items-center gap-1"><i class="fa-solid fa-circle-info text-[9px]"></i> Ghi nhận</span>
@@ -1445,20 +1427,17 @@
           </div>
         </div>
 
-        <!-- 6. Vị trí trên Bản Đồ Trực Quan (Leaflet OSM / Google Maps Không Bị Chặn) -->
+        <!-- 6. Vị trí trên Bản Đồ Trực Quan -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <h3 class="text-sm font-black text-slate-900 flex items-center gap-2">
               <i class="fa-solid fa-map-location-dot text-blue-600"></i> Bản Đồ Vị Trí Trực Quan
             </h3>
-            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-              🟢 100% Không cần API key
-            </span>
           </div>
           <div id="drawerLeafletMap" class="w-full h-52 rounded-2xl overflow-hidden border border-slate-200 shadow-xs relative bg-slate-100 z-0"></div>
           <a id="detailExternalMapLink" href="#" target="_blank" class="w-full mt-2.5 py-2.5 px-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition">
             <i class="fa-solid fa-location-arrow text-[11px]"></i>
-            <span>Mở chỉ đường trên ứng dụng Google Maps</span>
+            <span>Mở chỉ đường trên Google Maps</span>
             <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
           </a>
         </div>
@@ -1475,6 +1454,6 @@
     </div>
   </aside>
 
-  <script src="app.js?v=3.5"></script>
+  <script src="app.js?v=4.0"></script>
 </body>
 </html>

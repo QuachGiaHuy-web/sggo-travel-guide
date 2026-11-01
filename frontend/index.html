@@ -370,8 +370,7 @@
         </div>
 
         <div class="flex items-center gap-1.5 mt-3 flex-wrap text-[11px]">
-          <span class="text-slate-400 font-bold text-[10px] uppercase">Gợi ý mốc nhanh:</span>
-          <button type="button" onclick="setExploreLocationPreset('Chợ Bến Thành, Quận 1', 10.7725, 106.6980)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">Chợ Bến Thành</button>
+                    <button type="button" onclick="setExploreLocationPreset('Chợ Bến Thành, Quận 1', 10.7725, 106.6980)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">Chợ Bến Thành</button>
           <button type="button" onclick="setExploreLocationPreset('Nhà Thờ Đức Bà, Quận 1', 10.7798, 106.6990)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">Nhà Thờ Đức Bà</button>
           <button type="button" onclick="setExploreLocationPreset('Phố Đi Bộ Nguyễn Huệ, Quận 1', 10.7744, 106.7032)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">Phố Đi Bộ Nguyễn Huệ</button>
           <button type="button" onclick="setExploreLocationPreset('Hồ Con Rùa, Quận 3', 10.7828, 106.6958)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">Hồ Con Rùa</button>
@@ -445,15 +444,14 @@
             </select>
           </div>
           <span id="tab2PlacesCountBadge" class="text-[11px] font-extrabold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
-            Đang hiển thị 201 địa điểm
+            Đang hiển thị <span id="filteredPlacesCount" class="font-black text-[#E11D48]">0</span> địa điểm
           </span>
         </div>
       </div>
 
-      <!-- Thanh đếm kết quả & Thông báo bán kính -->
-      <div id="allPlacesCountBar" class="flex items-center justify-between px-2 mb-4 text-xs text-slate-500 font-semibold">
-        <div>Hiển thị <span id="filteredPlacesCount" class="font-black text-[#E11D48]">40</span> địa điểm tại Sài Gòn</div>
-        <div id="activeRadiusNotice" class="text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full font-bold hidden"></div>
+      <!-- Thông báo bán kính (nếu có lọc khoảng cách GPS) -->
+      <div id="allPlacesCountBar" class="mb-4">
+        <div id="activeRadiusNotice" class="text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full font-bold inline-block hidden"></div>
       </div>
 
       <!-- Danh sách thẻ quán 3 cột dọc thanh lịch -->
@@ -652,9 +650,6 @@
               <span>MỞ TOÀN BỘ LỘ TRÌNH 3 TRẠM TRÊN GOOGLE MAPS (CHẾ ĐỘ DẪN ĐƯỜNG XE MÁY)</span>
               <i class="fa-solid fa-arrow-up-right-from-square text-xs ml-1 opacity-70"></i>
             </a>
-            <p class="text-[11px] text-center text-slate-500 mt-2 font-medium">
-              <i class="fa-regular fa-lightbulb text-amber-500 mr-1 text-xs"></i> <strong>Lưu ý:</strong> Google Maps tự động lên tuyến đường 3 trạm liên hoàn thuận đường nhất, bạn chỉ cần bấm <strong>"Bắt đầu"</strong> là đi xe máy thẳng một mạch!
-            </p>
           </div>
 
           <!-- Bản Đồ Tương Tác Tuyến Đường 3 Trạm -->
@@ -664,8 +659,7 @@
                 <h4 class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
                   <i class="fa-solid fa-map-location-dot text-[#E11D48]"></i> Bản Đồ Tuyến Đường 3 Trạm
                 </h4>
-                <p class="text-[10px] text-slate-500 font-medium">Bản đồ số trực quan độ nét cao (Google Maps / OpenStreetMap)</p>
-              </div>
+                              </div>
               <button type="button" onclick="toggleItineraryMap()" id="btnToggleMap" class="text-[11px] font-bold px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-[#E11D48] transition flex items-center gap-1 shadow-2xs cursor-pointer">
                 <i class="fa-regular fa-eye-slash text-xs"></i> <span>Thu gọn bản đồ</span>
               </button>
@@ -953,7 +947,7 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pr-8 pb-4 mb-4 border-b border-slate-100">
         <div>
           <h3 id="placeFormTitle" class="text-lg sm:text-xl font-black text-slate-900 flex items-center gap-2">Thêm Địa Điểm Mới</h3>
-          <p id="placeFormSubtitle" class="text-xs text-slate-500 mt-0.5">Nhập và quản lý dữ liệu địa điểm thực tế tại Sài Gòn vào CSDL SQLite</p>
+          <p id="placeFormSubtitle" class="text-xs text-slate-500 mt-0.5">Quản lý thông tin địa điểm tại Sài Gòn</p>
         </div>
         <a id="btnAdminOpenGmaps" target="_blank" href="#" class="hidden px-3.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-2xs whitespace-nowrap cursor-pointer self-start sm:self-auto" title="Mở trang quán này trên Google Maps để đối chiếu">
           <i class="fa-brands fa-google text-emerald-600"></i>
@@ -973,8 +967,7 @@
             <i class="fa-solid fa-bolt"></i> Tự Động Điền
           </button>
         </div>
-        <p class="text-[10px] text-orange-700/80 mt-1.5 italic font-medium">* Hệ thống sẽ tự động bóc tách tên, tọa độ, địa chỉ, giờ mở cửa và gợi ý thông tin vào form bên dưới.</p>
-      </div>
+              </div>
 
       <form id="placeAdminForm" onsubmit="handleSavePlace(event)" class="space-y-4 text-xs">
         <input type="hidden" id="formPlaceId" value="" />
@@ -1095,7 +1088,7 @@
                 <img id="formImagePreview" src="" class="w-full h-full object-cover hidden" />
                 <span id="formImageNoPreview" class="text-[10px] text-slate-400 font-bold flex flex-col items-center"><i class="fa-solid fa-camera text-slate-300 mb-0.5"></i> Chưa có ảnh</span>
               </div>
-              <span class="text-[11px] text-slate-500 leading-relaxed">Xem trước ảnh thật (Nếu để trống hoặc ảnh lỗi, hệ thống sẽ hiển thị "Chưa có ảnh" - cấm dùng ảnh stock/ảo).</span>
+              <span class="text-[11px] text-slate-500 leading-relaxed">Xem trước ảnh hiển thị trên thẻ</span>
             </div>
           </div>
         </div>
@@ -1106,14 +1099,13 @@
             <div class="text-[11px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
               <i class="fa-solid fa-layer-group text-indigo-600"></i> 5. Bối Cảnh Phù Hợp (2-Tier Fit Model)
             </div>
-            <span class="text-[10px] text-slate-500 font-semibold italic">* Bấm chọn trực tiếp Tier 1 hoặc Tier 2</span>
-          </div>
+                      </div>
 
           <!-- Nhóm Tier 1: Cốt lõi -->
           <div>
             <div class="flex items-center gap-1.5 mb-1.5">
               <span class="text-[11px] font-black text-amber-900 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md flex items-center gap-1">
-                <i class="fa-solid fa-crown text-amber-600"></i> Tier 1 (Cốt lõi - Ưu tiên hàng đầu)
+                <i class="fa-solid fa-crown text-amber-600"></i> Bối cảnh chính (Tier 1)
               </span>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
@@ -1140,7 +1132,7 @@
           <div>
             <div class="flex items-center gap-1.5 mb-1.5">
               <span class="text-[11px] font-bold text-slate-700 bg-slate-200/80 border border-slate-300 px-2 py-0.5 rounded-md flex items-center gap-1">
-                <i class="fa-solid fa-layer-group text-slate-500"></i> Tier 2 (Khả dụng / Thứ cấp)
+                <i class="fa-solid fa-layer-group text-slate-500"></i> Bối cảnh phụ (Tier 2)
               </span>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
@@ -1223,7 +1215,7 @@
 
         <div class="pt-3">
           <button type="submit" id="btnSubmitPlaceForm" class="w-full py-3.5 bg-[#E11D48] hover:bg-[#BE123C] text-white rounded-2xl font-bold transition shadow-md shadow-[#E11D48]/20 text-xs sm:text-sm cursor-pointer">
-            Lưu Vào Cơ Sở Dữ Liệu SQLite
+            Lưu Địa Điểm
           </button>
         </div>
       </form>
@@ -1238,7 +1230,7 @@
       </button>
 
       <h3 class="text-base font-black text-slate-900 mb-1">Nhập Hàng Loạt CSV / Excel</h3>
-      <p class="text-xs text-slate-500 mb-3 leading-relaxed">Chọn file <strong>.CSV</strong> hoặc <strong>.XLSX</strong> có cấu trúc chuẩn để nạp hàng loạt địa điểm vào CSDL SQLite.</p>
+      <p class="text-xs text-slate-500 mb-3 leading-relaxed">Chọn file <strong>.CSV</strong> hoặc <strong>.XLSX</strong> có cấu trúc chuẩn để nạp hàng loạt địa điểm.</p>
 
       <div class="flex items-center justify-center gap-3 mb-3 text-[11px] bg-slate-50 p-2 rounded-xl border border-slate-200">
         <button type="button" onclick="downloadCSVTemplate()" class="text-rose-700 hover:underline font-bold flex items-center gap-1">
@@ -1411,7 +1403,6 @@
                   </div>
                 </div>
               </div>
-              <span class="text-[10px] text-slate-500 bg-slate-100 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1"><i class="fa-brands fa-google text-[10px] text-[#4285F4]"></i> Google Maps</span>
             </div>
             <p id="detailBestReview" class="text-xs text-slate-700 leading-relaxed pl-2.5 border-l-2 border-emerald-500 font-medium">
             </p>
@@ -1429,7 +1420,6 @@
                   <span class="text-[10px] text-slate-400 font-medium">Kinh nghiệm thực tế</span>
                 </div>
               </div>
-              <span class="text-[10px] text-slate-500 bg-slate-100 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1"><i class="fa-brands fa-google text-[10px] text-[#4285F4]"></i> Google Maps</span>
             </div>
             <p id="detailWorstReview" class="text-xs text-slate-700 leading-relaxed pl-2.5 border-l-2 border-rose-500 font-medium">
             </p>

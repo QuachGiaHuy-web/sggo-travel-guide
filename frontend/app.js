@@ -2292,9 +2292,9 @@ function updateImagePreview(url) {
 }
 
 function openAddPlaceModal() {
-  document.getElementById("placeFormTitle").innerText = "Thêm Địa Điểm Mới Vào CSDL";
-  document.getElementById("placeFormSubtitle").innerText = "Nhập dữ liệu địa điểm tại Sài Gòn vào CSDL SQLite";
-  document.getElementById("btnSubmitPlaceForm").innerText = "Lưu Địa Điểm Mới Vào SQLite";
+  document.getElementById("placeFormTitle").innerText = "Thêm Địa Điểm Mới";
+  document.getElementById("placeFormSubtitle").innerText = "Nhập dữ liệu địa điểm tại Sài Gòn";
+  document.getElementById("btnSubmitPlaceForm").innerText = "Lưu Địa Điểm Mới";
   const btnGmaps = document.getElementById("btnAdminOpenGmaps");
   if (btnGmaps) btnGmaps.classList.add("hidden");
   document.getElementById("gmapsExtractorBox").classList.remove("hidden");
@@ -2362,7 +2362,7 @@ function handleDeletePlaceById(id) {
 
 function openEditPlaceModal(p) {
   document.getElementById("placeFormTitle").innerHTML = `<i class="fa-solid fa-pen-to-square text-blue-600 mr-1.5"></i> Chỉnh Sửa Quán #${p.id} — ${p.name}`;
-  document.getElementById("placeFormSubtitle").innerText = "Đang chỉnh sửa dữ liệu quán đã có trong CSDL SQLite";
+  document.getElementById("placeFormSubtitle").innerText = "Chỉnh sửa thông tin địa điểm";
   document.getElementById("btnSubmitPlaceForm").innerText = `Lưu Cập Nhật Cho Quán #${p.id}`;
   
   // Đồng bộ liên kết Google Maps đối chiếu cho Admin
@@ -2476,8 +2476,8 @@ async function handleSavePlace(e) {
     }
 
     alert(isEdit 
-      ? `Đã cập nhật thành công quán "${payload.name}" (#${placeId}) vào CSDL SQLite!` 
-      : `Đã thêm địa điểm mới "${payload.name}" vào CSDL SQLite!`
+      ? `Đã cập nhật thành công quán "${payload.name}" (#${placeId})!` 
+      : `Đã thêm địa điểm mới "${payload.name}"!`
     );
     closePlaceFormModal();
     await preloadPlaces();
@@ -2495,7 +2495,7 @@ async function handleSavePlace(e) {
 }
 
 async function handleDeletePlace(placeId, name) {
-  if (!confirm(`Bạn có chắc chắn muốn xóa địa điểm "${name}" khỏi CSDL SQLite không?`)) {
+  if (!confirm(`Bạn có chắc chắn muốn xóa địa điểm "${name}" không?`)) {
     return;
   }
 
@@ -2610,7 +2610,7 @@ async function submitCSVImport() {
       }
     } else {
       if (reportBox) reportBox.classList.add("hidden");
-      alert(`Toàn bộ ${data.imported_count} địa điểm hợp lệ và đã nạp thành công vào CSDL SQLite!`);
+      alert(`Toàn bộ ${data.imported_count} địa điểm hợp lệ và đã nạp thành công!`);
       closeImportModal();
       preloadPlaces();
       loadAdminDashboard();

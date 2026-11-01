@@ -497,7 +497,7 @@ async function showFinishResults(offset = 0) {
     if (userChoices.price_level === "custom" && userChoices.custom_budget) {
       bdgText = `${userChoices.custom_budget.toLocaleString()}đ`;
     }
-    criteriaBadge.innerHTML = `<span class="bg-rose-100 text-[#E11D48] px-2.5 py-0.5 rounded-md font-extrabold text-[10px]">🎯 TIÊU CHÍ: ${catText} • ${ctxText} • 💰 ${bdgText}</span>`;
+    criteriaBadge.innerHTML = "";
   }
 
   const resultsBox = document.getElementById("flowResults");
@@ -714,7 +714,7 @@ function buildRecommendCardHTML(p, idx) {
                 <div class="flex items-center justify-between mb-1.5">
                   <span class="font-black text-emerald-950 uppercase text-xs tracking-wider flex items-center gap-1.5">
                     <i class="fa-solid fa-thumbs-up text-emerald-600 text-sm"></i>
-                    <span>Đánh giá khen ngợi (5 sao):</span>
+                    <span>Đánh giá tiêu biểu từ Google Maps (5★):</span>
                   </span>
                 </div>
                 <p class="font-medium italic text-emerald-950 text-[13px] leading-relaxed">
@@ -727,7 +727,7 @@ function buildRecommendCardHTML(p, idx) {
                 <div class="flex items-center justify-between mb-1.5">
                   <span class="font-black text-rose-950 uppercase text-xs tracking-wider flex items-center gap-1.5">
                     <i class="fa-solid fa-triangle-exclamation text-[#E11D48] text-sm"></i>
-                    <span>Lưu ý trải nghiệm & Góp ý:</span>
+                    <span>Lưu ý & phản hồi thực tế từ Google Maps:</span>
                   </span>
                 </div>
                 <p class="font-medium italic text-slate-800 text-[13px] leading-relaxed">
@@ -1033,7 +1033,7 @@ function renderItineraryMap(startCoords, steps) {
         <div style="min-width: 170px; font-family: sans-serif; line-height: 1.4;">
           <div style="font-weight: 800; font-size: 12px; color: #0F172A;">Trạm ${idx + 1}: ${s.action}</div>
           <div style="font-weight: 700; color: #E11D48; margin-top: 3px;">${s.location}</div>
-          <div style="font-size: 11px; color: #64748B; margin-top: 2px;">🕒 ${s.time}</div>
+          <div style="font-size: 11px; color: #64748B; margin-top: 2px;"><i class="fa-regular fa-clock" style="margin-right: 4px;"></i>${s.time}</div>
           ${s.must_try_tip ? `<div style="font-size: 11px; color: #047857; margin-top: 3px; font-weight: 600;">💡 ${s.must_try_tip}</div>` : ''}
         </div>
       `;
@@ -1626,10 +1626,16 @@ function buildCatalogCardHTML(p) {
             ${distanceHTML}
           </div>
 
-          <!-- Mức giá & Giờ cao điểm -->
-          <div class="flex items-center justify-between text-[11px] font-bold py-1.5 px-2.5 bg-slate-50 rounded-xl mb-2 border border-slate-100">
-            <span class="text-slate-800 truncate mr-2">💰 ${priceText}</span>
-            <span class="text-amber-800 whitespace-nowrap">🕒 ${(p.peak_hours && p.peak_hours !== 'Chưa rõ') ? p.peak_hours.split('(')[0].trim() : 'Chưa rõ'}</span>
+          <!-- Mức giá & Giờ cao điểm (FontAwesome Icons tinh tế, thanh lịch) -->
+          <div class="flex items-center justify-between text-[11px] font-semibold py-1.5 px-2.5 bg-slate-50/90 rounded-xl mb-2 border border-slate-100">
+            <span class="text-slate-700 truncate mr-2 flex items-center gap-1.5">
+              <i class="fa-solid fa-receipt text-slate-400 text-[10px]"></i>
+              <span class="font-bold text-slate-800">${priceText}</span>
+            </span>
+            <span class="text-amber-700 whitespace-nowrap flex items-center gap-1.5">
+              <i class="fa-regular fa-clock text-amber-500/80 text-[10px]"></i>
+              <span>${(p.peak_hours && p.peak_hours !== 'Chưa rõ') ? p.peak_hours.split('(')[0].trim() : 'Chưa rõ'}</span>
+            </span>
           </div>
 
 

@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=4.0" />
+  <link rel="stylesheet" href="style.css?v=4.1" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- Leaflet Map Library CDN -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
@@ -283,10 +283,10 @@
       <div id="stepFinish" class="step-card hidden max-w-5xl mx-auto">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200">
           <div>
-            <div id="finishCriteriaBadge" class="text-[11px] font-extrabold text-[#E11D48] uppercase tracking-wider flex items-center gap-1.5">
-              <span>🎯 KẾT QUẢ GỢI Ý PHÙ HỢP NHẤT</span>
-            </div>
-            <h2 class="text-xl sm:text-2xl font-black text-slate-900 mt-1">3 Gợi Ý Tinh Tuyển Dành Cho Bạn</h2>
+            <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-sparkles text-[#E11D48] text-xs"></i> Gợi ý trải nghiệm phù hợp
+            </span>
+            <h2 class="text-xl sm:text-2xl font-black text-slate-900 mt-1">3 Địa Điểm Dành Riêng Cho Bạn</h2>
           </div>
           <div class="flex items-center gap-2">
             <button onclick="prevFlowResults()" id="btnPrevFlow" title="Quay lại 3 quán trước đó" class="text-xs font-bold text-slate-700 hover:text-[#E11D48] bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-300 px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-slate-700 disabled:hover:bg-white disabled:hover:border-slate-200" disabled>
@@ -355,28 +355,28 @@
 
           <div class="md:col-span-5">
             <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
-              <span>📏 Giới hạn bán kính:</span>
+              <span>Giới hạn bán kính:</span>
               <span id="exploreRadiusInfo" class="text-[10px] text-slate-400 font-medium">Tất cả khoảng cách</span>
             </label>
             <select id="allRadiusFilter" onchange="onRadiusFilterChange()" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-[#E11D48] cursor-pointer">
-              <option value="all">🌐 Tất cả bán kính (Không giới hạn)</option>
-              <option value="500">🚶 Dưới 500 mét (Đi bộ ~5-7 phút)</option>
-              <option value="1000">🛵 Dưới 1 km (~2-3 phút xe máy)</option>
-              <option value="2000">🛵 Dưới 2 km (~5 phút xe máy)</option>
-              <option value="3000">🛵 Dưới 3 km (~8 phút xe máy)</option>
-              <option value="5000">🛵 Dưới 5 km (Khu vực trung tâm Sài Gòn)</option>
+              <option value="all">Tất cả bán kính (Không giới hạn)</option>
+              <option value="500">Dưới 500 mét (Đi bộ ~5-7 phút)</option>
+              <option value="1000">Dưới 1 km (~2-3 phút xe máy)</option>
+              <option value="2000">Dưới 2 km (~5 phút xe máy)</option>
+              <option value="3000">Dưới 3 km (~8 phút xe máy)</option>
+              <option value="5000">Dưới 5 km (Khu vực trung tâm TP)</option>
             </select>
           </div>
         </div>
 
         <div class="flex items-center gap-1.5 mt-3 flex-wrap text-[11px]">
           <span class="text-slate-400 font-bold text-[10px] uppercase">Gợi ý mốc nhanh:</span>
-          <button type="button" onclick="setExploreLocationPreset('Chợ Bến Thành, Quận 1', 10.7725, 106.6980)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">🏛️ Chợ Bến Thành</button>
-          <button type="button" onclick="setExploreLocationPreset('Nhà Thờ Đức Bà, Quận 1', 10.7798, 106.6990)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">⛪ Nhà Thờ Đức Bà</button>
-          <button type="button" onclick="setExploreLocationPreset('Phố Đi Bộ Nguyễn Huệ, Quận 1', 10.7744, 106.7032)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">🚶 Phố Đi Bộ</button>
-          <button type="button" onclick="setExploreLocationPreset('Hồ Con Rùa, Quận 3', 10.7828, 106.6958)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">🐢 Hồ Con Rùa</button>
-          <button type="button" onclick="setExploreLocationPreset('Chợ An Đông, TP.HCM', 10.7573, 106.6713)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">🏮 Chợ An Đông</button>
-          <button type="button" onclick="setExploreLocationPreset('280 An Dương Vương, TP.HCM', 10.7601, 106.6823)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">🏫 ĐH Sư Phạm</button>
+          <button type="button" onclick="setExploreLocationPreset('Chợ Bến Thành, Quận 1', 10.7725, 106.6980)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">Chợ Bến Thành</button>
+          <button type="button" onclick="setExploreLocationPreset('Nhà Thờ Đức Bà, Quận 1', 10.7798, 106.6990)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">Nhà Thờ Đức Bà</button>
+          <button type="button" onclick="setExploreLocationPreset('Phố Đi Bộ Nguyễn Huệ, Quận 1', 10.7744, 106.7032)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">Phố Đi Bộ Nguyễn Huệ</button>
+          <button type="button" onclick="setExploreLocationPreset('Hồ Con Rùa, Quận 3', 10.7828, 106.6958)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">Hồ Con Rùa</button>
+          <button type="button" onclick="setExploreLocationPreset('Chợ An Đông, TP.HCM', 10.7573, 106.6713)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">Chợ An Đông</button>
+          <button type="button" onclick="setExploreLocationPreset('280 An Dương Vương, TP.HCM', 10.7601, 106.6823)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-[#E11D48] border border-slate-200 text-slate-700 transition text-[11px] font-semibold cursor-pointer">ĐH Sư Phạm</button>
         </div>
       </div>
 
@@ -397,8 +397,8 @@
               <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 pl-1">Thể loại</label>
               <select id="allCategoryFilter" onchange="filterAllPlaces()" class="editorial-select text-xs truncate w-full">
                 <option value="all">Tất cả thể loại</option>
-                <option value="an_uong">🍜 Ẩm thực Sài Gòn</option>
-                <option value="di_choi">📸 Điểm đến & Vui chơi</option>
+                <option value="an_uong">Ẩm thực Sài Gòn</option>
+                <option value="di_choi">Điểm đến & Vui chơi</option>
               </select>
             </div>
 
@@ -407,10 +407,10 @@
               <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 pl-1">Bối cảnh</label>
               <select id="allTagFilter" onchange="filterAllPlaces()" class="editorial-select text-xs truncate w-full">
                 <option value="all">Mọi bối cảnh</option>
-                <option value="di_1_minh">🎧 Đi 1 mình (Solo)</option>
-                <option value="hen_ho">💑 Hẹn hò cặp đôi</option>
-                <option value="nhom_ban">🎉 Nhóm bạn</option>
-                <option value="gia_dinh">👨‍👩‍👧 Gia đình</option>
+                <option value="di_1_minh">Đi 1 mình (Solo)</option>
+                <option value="hen_ho">Hẹn hò cặp đôi</option>
+                <option value="nhom_ban">Tụ tập nhóm bạn</option>
+                <option value="gia_dinh">Gia đình & Người thân</option>
               </select>
             </div>
 
@@ -419,11 +419,11 @@
               <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 pl-1">Ngân sách</label>
               <select id="allPriceFilter" onchange="filterAllPlaces()" class="editorial-select text-xs truncate w-full">
                 <option value="all">Mọi mức giá</option>
-                <option value="free">🎁 Miễn phí (0đ)</option>
-                <option value="under_50k">Dưới 50k</option>
-                <option value="50k_100k">50k – 100k</option>
-                <option value="100k_250k">100k – 250k</option>
-                <option value="above_250k">Trên 250k</option>
+                <option value="free">Miễn phí vé vào (0đ)</option>
+                <option value="under_50k">Dưới 50.000đ</option>
+                <option value="50k_100k">50.000đ – 100.000đ</option>
+                <option value="100k_250k">100.000đ – 250.000đ</option>
+                <option value="above_250k">Trên 250.000đ</option>
               </select>
             </div>
           </div>
@@ -436,12 +436,12 @@
               <i class="fa-solid fa-arrow-down-short-wide text-[#E11D48]"></i> Sắp xếp kết quả:
             </span>
             <select id="allSortFilter" onchange="handleSortFilterChange()" class="editorial-select text-xs font-bold py-1.5 px-3 bg-white border border-slate-200 rounded-xl cursor-pointer">
-              <option value="default">⭐ Mặc định (Độ phù hợp)</option>
-              <option value="rating_desc">⭐ Đánh giá: Cao nhất</option>
-              <option value="price_asc">💰 Giá: Thấp đến cao</option>
-              <option value="price_desc">💰 Giá: Cao đến thấp</option>
-              <option value="distance_asc">📍 Khoảng cách: Gần tôi nhất</option>
-              <option value="admin_pick">👑 Quán Admin Đề Cử</option>
+              <option value="default">Độ phù hợp (Mặc định)</option>
+              <option value="rating_desc">Đánh giá sao: Cao nhất</option>
+              <option value="price_asc">Mức giá: Thấp đến cao</option>
+              <option value="price_desc">Mức giá: Cao đến thấp</option>
+              <option value="distance_asc">Khoảng cách: Gần tôi nhất</option>
+              <option value="admin_pick">Địa điểm Admin đề cử</option>
             </select>
           </div>
           <span id="tab2PlacesCountBadge" class="text-[11px] font-extrabold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
@@ -787,16 +787,16 @@
 
               <select id="adminTagFilter" onchange="filterAdminTable()" class="pop-input py-2 bg-white font-semibold text-xs">
                 <option value="all">Mọi thẻ bối cảnh (Tag)</option>
-                <option value="di_1_minh">🙋 Đi 1 mình</option>
-                <option value="hen_ho">💕 Hẹn hò đôi</option>
-                <option value="nhom_ban">👥 Nhóm bạn</option>
-                <option value="gia_dinh">👨‍👩‍👧‍👦 Gia đình</option>
+                <option value="di_1_minh">Đi 1 mình</option>
+                <option value="hen_ho">Hẹn hò cặp đôi</option>
+                <option value="nhom_ban">Tụ tập nhóm bạn</option>
+                <option value="gia_dinh">Gia đình & Người thân</option>
               </select>
 
               <select id="adminRatingFilter" onchange="filterAdminTable()" class="pop-input py-2 bg-white font-semibold text-xs">
                 <option value="all">Mọi số sao</option>
-                <option value="4.5">⭐ Từ 4.5 sao trở lên</option>
-                <option value="4.0">⭐ Từ 4.0 sao trở lên</option>
+                <option value="4.5">Từ 4.5 sao trở lên</option>
+                <option value="4.0">Từ 4.0 sao trở lên</option>
               </select>
 
               <select id="adminPriceFilter" onchange="filterAdminTable()" class="pop-input py-2 bg-white font-semibold text-xs">
@@ -809,8 +809,8 @@
 
               <select id="adminStatusFilter" onchange="filterAdminTable()" class="pop-input py-2 bg-white font-semibold text-xs">
                 <option value="all">Tất cả trạng thái</option>
-                <option value="visible">🟢 Đang hiển thị</option>
-                <option value="hidden">👁️‍🗨️ Đã ẩn</option>
+                <option value="visible">Đang hiển thị</option>
+                <option value="hidden">Đã ẩn</option>
               </select>
             </div>
           </div>
@@ -944,7 +944,7 @@
 
   <!-- 2. MODAL THÊM / SỬA ĐỊA ĐIỂM (CÓ BÓC TÁCH LINK GOOGLE MAPS & CHỈNH ẢNH) -->
   <div id="modalPlaceForm" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white rounded-3xl max-w-2xl sm:max-w-3xl w-full p-5 sm:p-7 shadow-2xl border border-slate-200 relative max-h-[92vh] overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 relative max-h-[92vh] overflow-y-auto">
       <button onclick="closePlaceFormModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 w-8 h-8 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition cursor-pointer">
         <i class="fa-solid fa-xmark text-sm"></i>
       </button>
@@ -994,8 +994,8 @@
             <div>
               <label class="block font-bold text-slate-700 mb-1">Thể loại chính</label>
               <select id="formCategory" class="pop-input font-bold text-slate-800">
-                <option value="an_uong">🍜 Ẩm thực Sài Gòn (Ăn uống)</option>
-                <option value="di_choi">📸 Điểm đến & Vui chơi (Tham quan / Workshop)</option>
+                <option value="an_uong">Ẩm thực Sài Gòn (Ăn uống)</option>
+                <option value="di_choi">Điểm đến & Vui chơi (Tham quan / Workshop)</option>
               </select>
             </div>
             <div>
@@ -1119,19 +1119,19 @@
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
               <label class="cursor-pointer border border-slate-200 rounded-xl p-2 bg-white flex items-center gap-2 hover:border-[#E11D48] transition">
                 <input type="checkbox" id="chk_t1_di_1_minh" onchange="onAdminTagChange('di_1_minh', 1)" class="w-4 h-4 accent-[#E11D48]" />
-                <span class="font-bold text-slate-800">🎧 Đi 1 mình</span>
+                <span class="font-bold text-slate-800 flex items-center gap-1.5"><i class="fa-solid fa-user text-slate-400 text-xs"></i> Đi 1 mình</span>
               </label>
               <label class="cursor-pointer border border-slate-200 rounded-xl p-2 bg-white flex items-center gap-2 hover:border-[#E11D48] transition">
                 <input type="checkbox" id="chk_t1_hen_ho" onchange="onAdminTagChange('hen_ho', 1)" class="w-4 h-4 accent-[#E11D48]" />
-                <span class="font-bold text-slate-800">💑 Hẹn hò</span>
+                <span class="font-bold text-slate-800 flex items-center gap-1.5"><i class="fa-solid fa-heart text-rose-500 text-xs"></i> Hẹn hò</span>
               </label>
               <label class="cursor-pointer border border-slate-200 rounded-xl p-2 bg-white flex items-center gap-2 hover:border-[#E11D48] transition">
                 <input type="checkbox" id="chk_t1_nhom_ban" onchange="onAdminTagChange('nhom_ban', 1)" class="w-4 h-4 accent-[#E11D48]" />
-                <span class="font-bold text-slate-800">🎉 Nhóm bạn</span>
+                <span class="font-bold text-slate-800 flex items-center gap-1.5"><i class="fa-solid fa-users text-sky-500 text-xs"></i> Nhóm bạn</span>
               </label>
               <label class="cursor-pointer border border-slate-200 rounded-xl p-2 bg-white flex items-center gap-2 hover:border-[#E11D48] transition">
                 <input type="checkbox" id="chk_t1_gia_dinh" onchange="onAdminTagChange('gia_dinh', 1)" class="w-4 h-4 accent-[#E11D48]" />
-                <span class="font-bold text-slate-800">👨‍👩‍👧‍👦 Gia đình</span>
+                <span class="font-bold text-slate-800 flex items-center gap-1.5"><i class="fa-solid fa-house-chimney-window text-amber-500 text-xs"></i> Gia đình</span>
               </label>
             </div>
           </div>
@@ -1146,19 +1146,19 @@
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
               <label class="cursor-pointer border border-slate-200 rounded-xl p-2 bg-white flex items-center gap-2 hover:border-slate-400 transition">
                 <input type="checkbox" id="chk_t2_di_1_minh" onchange="onAdminTagChange('di_1_minh', 2)" class="w-4 h-4 accent-slate-600" />
-                <span class="font-medium text-slate-700">🎧 Đi 1 mình</span>
+                <span class="font-medium text-slate-700 flex items-center gap-1.5"><i class="fa-solid fa-user text-slate-400 text-xs"></i> Đi 1 mình</span>
               </label>
               <label class="cursor-pointer border border-slate-200 rounded-xl p-2 bg-white flex items-center gap-2 hover:border-slate-400 transition">
                 <input type="checkbox" id="chk_t2_hen_ho" onchange="onAdminTagChange('hen_ho', 2)" class="w-4 h-4 accent-slate-600" />
-                <span class="font-medium text-slate-700">💑 Hẹn hò</span>
+                <span class="font-medium text-slate-700 flex items-center gap-1.5"><i class="fa-solid fa-heart text-rose-400 text-xs"></i> Hẹn hò</span>
               </label>
               <label class="cursor-pointer border border-slate-200 rounded-xl p-2 bg-white flex items-center gap-2 hover:border-slate-400 transition">
                 <input type="checkbox" id="chk_t2_nhom_ban" onchange="onAdminTagChange('nhom_ban', 2)" class="w-4 h-4 accent-slate-600" />
-                <span class="font-medium text-slate-700">🎉 Nhóm bạn</span>
+                <span class="font-medium text-slate-700 flex items-center gap-1.5"><i class="fa-solid fa-users text-sky-400 text-xs"></i> Nhóm bạn</span>
               </label>
               <label class="cursor-pointer border border-slate-200 rounded-xl p-2 bg-white flex items-center gap-2 hover:border-slate-400 transition">
                 <input type="checkbox" id="chk_t2_gia_dinh" onchange="onAdminTagChange('gia_dinh', 2)" class="w-4 h-4 accent-slate-600" />
-                <span class="font-medium text-slate-700">👨‍👩‍👧‍👦 Gia đình</span>
+                <span class="font-medium text-slate-700 flex items-center gap-1.5"><i class="fa-solid fa-house-chimney-window text-amber-400 text-xs"></i> Gia đình</span>
               </label>
             </div>
           </div>
@@ -1166,18 +1166,43 @@
           <input type="hidden" id="formTags" value="" />
         </div>
 
-        <!-- KHỐI 6: ĐÁNH GIÁ & LƯU Ý -->
-        <div class="bg-slate-50/70 border border-slate-200/90 rounded-2xl p-4 space-y-3">
-          <div class="text-[11px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-            <i class="fa-solid fa-comments text-amber-600"></i> 6. Đánh Giá & Lưu Ý Thực Tế
+        <!-- KHỐI 6: ĐÁNH GIÁ & LƯU Ý THỰC TẾ TỪ GOOGLE MAPS (RỘNG RÃI & THOÁNG MẮT) -->
+        <div class="bg-slate-50/80 border border-slate-200/90 rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200/70">
+            <div class="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
+              <i class="fa-brands fa-google text-[#4285F4] text-sm"></i> 6. Đánh Giá & Lưu Ý Thực Tế Từ Google Maps
+            </div>
+            <span class="text-[11px] text-slate-500 font-medium">Trích xuất trực tiếp từ nhận xét khách hàng</span>
           </div>
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Đánh giá tiêu biểu (5 sao)</label>
-            <textarea id="formBestReview" rows="2" class="pop-input" placeholder="Nhận xét 5 sao thực tế (để trống nếu chưa có)..."></textarea>
-          </div>
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Lưu ý / Góp ý (Giờ đông khách, gửi xe, xếp hàng)</label>
-            <textarea id="formWorstReview" rows="2" class="pop-input" placeholder="Lưu ý thực tế (để trống nếu chưa có)..."></textarea>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Cột trái: Đánh giá tiêu biểu 5 sao -->
+            <div class="bg-white border border-emerald-200 rounded-2xl p-4 shadow-2xs flex flex-col justify-between">
+              <div>
+                <label class="block font-bold text-slate-800 mb-1 flex items-center justify-between">
+                  <span class="flex items-center gap-1.5 text-emerald-800">
+                    <i class="fa-solid fa-star text-amber-400"></i> Đánh giá 5★ tiêu biểu
+                  </span>
+                  <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">Google Maps 5★</span>
+                </label>
+                <p class="text-[11px] text-slate-500 mb-2">Nhận xét khen ngợi nổi bật về hương vị, dịch vụ hoặc không gian</p>
+                <textarea id="formBestReview" rows="5" class="w-full p-3 bg-slate-50/60 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100 transition resize-y leading-relaxed" placeholder="Dán nhận xét 5 sao thực tế từ Google Maps..."></textarea>
+              </div>
+            </div>
+
+            <!-- Cột phải: Lưu ý / Góp ý thực tế -->
+            <div class="bg-white border border-rose-200 rounded-2xl p-4 shadow-2xs flex flex-col justify-between">
+              <div>
+                <label class="block font-bold text-slate-800 mb-1 flex items-center justify-between">
+                  <span class="flex items-center gap-1.5 text-rose-800">
+                    <i class="fa-solid fa-circle-exclamation text-rose-500"></i> Lưu ý & Góp ý thực tế
+                  </span>
+                  <span class="text-[10px] bg-rose-50 text-rose-700 font-bold px-2 py-0.5 rounded-full border border-rose-200">Kinh nghiệm thực tế</span>
+                </label>
+                <p class="text-[11px] text-slate-500 mb-2">Thông tin giờ cao điểm, chỗ để xe, thời gian chờ hoặc góp ý của khách</p>
+                <textarea id="formWorstReview" rows="5" class="w-full p-3 bg-slate-50/60 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-rose-500 focus:bg-white focus:ring-2 focus:ring-rose-100 transition resize-y leading-relaxed" placeholder="Dán lưu ý thực tế về gửi xe, giờ đông, xếp hàng..."></textarea>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1186,7 +1211,7 @@
           <div class="bg-amber-50/80 border border-amber-200/80 p-3 rounded-2xl flex items-center justify-between">
             <div>
               <span class="block text-xs font-bold text-amber-900 flex items-center gap-1.5">
-                <span>👑 Quán Admin Đề Cử</span>
+                <span>Địa Điểm Admin Đề Cử</span>
                 <span class="text-[10px] bg-amber-200 text-amber-800 font-extrabold px-1.5 py-0.5 rounded">Nổi bật</span>
               </span>
               <span class="text-[10px] text-amber-700">Hiển thị huy hiệu đề cử trên thẻ</span>
@@ -1200,7 +1225,7 @@
           <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl flex items-center justify-between">
             <div>
               <span class="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <span>👁️‍🗨️ Trạng thái hiển thị</span>
+                <span>Trạng thái hiển thị</span>
               </span>
               <span class="text-[10px] text-slate-500">Ẩn quán khỏi trang tìm kiếm công khai</span>
             </div>
@@ -1323,8 +1348,7 @@
             </div>
             <div class="text-left min-w-0">
               <div class="font-black text-xs sm:text-sm flex items-center gap-1.5 truncate">
-                <span>Mở Google Maps Thực Tế</span>
-                <span class="text-[9px] bg-white text-emerald-800 font-black px-1.5 py-0.5 rounded-full uppercase">100% Thực tế</span>
+                <span>Mở Google Maps</span>
               </div>
               <p class="text-[11px] text-emerald-100 font-medium truncate mt-0.5">Xem tất cả ảnh chụp, comment & số sao trên Google</p>
             </div>
@@ -1355,7 +1379,7 @@
             <div class="flex-1">
               <span class="text-slate-400 block text-[10px] font-semibold uppercase">Thời gian hoạt động</span>
               <div class="flex items-center gap-2 mt-0.5 flex-wrap">
-                <span id="detailStatusBadge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">🟢 Đang mở cửa</span>
+                <span id="detailStatusBadge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 flex items-center gap-1"><i class="fa-solid fa-circle text-[7px] text-emerald-600"></i> Đang mở cửa</span>
                 <span id="detailOpenHours" class="font-bold text-slate-700">08:00 - 22:30</span>
               </div>
             </div>
@@ -1384,7 +1408,7 @@
         <div>
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-sm font-black text-slate-900 flex items-center gap-2">
-              <i class="fa-solid fa-comments text-[#E11D48]"></i> Đánh Giá & Nhận Xét Của Khách Hàng
+              <i class="fa-brands fa-google text-[#4285F4] text-base"></i> Đánh Giá Từ Google Maps
             </h3>
           </div>
 
@@ -1393,7 +1417,7 @@
             <div class="flex items-center justify-between mb-2">
               <div class="flex items-center gap-2.5">
                 <div class="w-8 h-8 rounded-full bg-emerald-600 text-white font-black text-xs flex items-center justify-center shadow-xs">
-                  5⭐
+                  5★
                 </div>
                 <div>
                   <h4 class="font-black text-slate-800 text-xs">Đánh giá nổi bật</h4>
@@ -1402,7 +1426,7 @@
                   </div>
                 </div>
               </div>
-              <span class="text-[10px] text-slate-500 bg-slate-100 font-medium px-2 py-0.5 rounded-full flex items-center gap-1"><i class="fa-solid fa-comment-dots text-[9px]"></i> Đánh giá</span>
+              <span class="text-[10px] text-slate-500 bg-slate-100 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1"><i class="fa-brands fa-google text-[10px] text-[#4285F4]"></i> Google Maps</span>
             </div>
             <p id="detailBestReview" class="text-xs text-slate-700 leading-relaxed pl-2.5 border-l-2 border-emerald-500 font-medium">
             </p>
@@ -1420,7 +1444,7 @@
                   <span class="text-[10px] text-slate-400 font-medium">Kinh nghiệm thực tế</span>
                 </div>
               </div>
-              <span class="text-[10px] text-slate-500 bg-slate-100 font-medium px-2 py-0.5 rounded-full flex items-center gap-1"><i class="fa-solid fa-circle-info text-[9px]"></i> Ghi nhận</span>
+              <span class="text-[10px] text-slate-500 bg-slate-100 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1"><i class="fa-brands fa-google text-[10px] text-[#4285F4]"></i> Google Maps</span>
             </div>
             <p id="detailWorstReview" class="text-xs text-slate-700 leading-relaxed pl-2.5 border-l-2 border-rose-500 font-medium">
             </p>
@@ -1454,6 +1478,6 @@
     </div>
   </aside>
 
-  <script src="app.js?v=4.0"></script>
+  <script src="app.js?v=4.1"></script>
 </body>
 </html>

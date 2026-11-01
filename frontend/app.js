@@ -1622,11 +1622,11 @@ function buildCatalogCardHTML(p) {
         </span>
       </div>
 
-      <!-- 2. Thân thẻ thông tin (Phương án 1: Airbnb Luxury / Minimalist) -->
+      <!-- 2. Thân thẻ thông tin (Unified Highlight Box: 1 ô viền bao quát nổi bật Giá & Giờ) -->
       <div class="p-4 flex-1 flex flex-col justify-between">
         <div>
           <!-- Tên quán + Badge Số sao nổi bật -->
-          <div class="flex items-start justify-between gap-2 mb-2">
+          <div class="flex items-start justify-between gap-2 mb-2.5">
             <h4 onclick="openPlaceDetailById(${p.id})" class="font-black text-slate-900 text-sm sm:text-[15px] leading-snug line-clamp-1 hover:text-[#E11D48] transition cursor-pointer" title="${p.name}">
               ${p.name}
             </h4>
@@ -1636,26 +1636,32 @@ function buildCatalogCardHTML(p) {
             </div>
           </div>
 
-          <!-- Mức giá tham khảo (Điểm nhấn chính: chữ to rõ, thanh lịch, sang trọng phong cách Airbnb) -->
-          <div class="flex items-baseline justify-between gap-2 mb-1.5">
-            <div class="flex items-baseline gap-1 text-slate-900 truncate">
-              <span class="text-sm sm:text-base font-black tracking-tight text-slate-900 truncate">${cleanPrice}</span>
-              ${priceUnit ? `<span class="text-xs text-slate-400 font-normal whitespace-nowrap">${priceUnit}</span>` : ''}
+          <!-- Ô VIỀN BAO QUÁT NỔI BẬT GIÁ TIỀN & GIỜ HOẠT ĐỘNG (1 KHỐI ĐỒNG NHẤT, SANG TRỌNG) -->
+          <div class="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-2.5 mb-3 shadow-2xs">
+            <!-- Hàng 1: Giá tiền nổi bật -->
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <i class="fa-solid fa-receipt text-rose-500 text-xs flex-shrink-0"></i>
+                <span class="text-xs sm:text-[13px] font-black text-slate-900 tracking-tight truncate">${cleanPrice}</span>
+                ${priceUnit ? `<span class="text-[11px] text-slate-400 font-medium whitespace-nowrap">${priceUnit}</span>` : ''}
+              </div>
+              ${distanceHTML}
             </div>
-            ${distanceHTML}
-          </div>
 
-          <!-- Dòng thông tin phụ: Khung giờ & Khu vực (Quận) thanh mảnh, tinh tế -->
-          <div class="flex items-center gap-2 text-xs text-slate-500 font-medium mb-3 truncate">
-            <span class="flex items-center gap-1.5 truncate text-slate-600">
-              <i class="fa-regular fa-clock text-slate-400 text-[11px] flex-shrink-0"></i>
-              <span class="truncate">${displayHours}</span>
-            </span>
-            <span class="text-slate-300 font-normal flex-shrink-0">•</span>
-            <span class="flex items-center gap-1 text-slate-600 whitespace-nowrap flex-shrink-0">
-              <i class="fa-solid fa-location-dot text-rose-500 text-[10px]"></i>
-              <span class="font-semibold">${p.district || 'TP.HCM'}</span>
-            </span>
+            <!-- Vạch phân cách siêu mỏng -->
+            <div class="border-t border-slate-200/60 my-1.5"></div>
+
+            <!-- Hàng 2: Giờ mở cửa / Giờ cao điểm & Quận -->
+            <div class="flex items-center justify-between text-[11px] text-slate-600 font-semibold gap-1.5 truncate">
+              <span class="flex items-center gap-1.5 truncate">
+                <i class="fa-regular fa-clock text-amber-500 text-[11px] flex-shrink-0"></i>
+                <span class="truncate">${displayHours}</span>
+              </span>
+              <span class="text-slate-400 font-medium flex items-center gap-1 whitespace-nowrap flex-shrink-0">
+                <i class="fa-solid fa-location-dot text-rose-500/70 text-[9px]"></i>
+                <span>${p.district || 'TP.HCM'}</span>
+              </span>
+            </div>
           </div>
         </div>
 

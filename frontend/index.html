@@ -1166,42 +1166,27 @@
           <input type="hidden" id="formTags" value="" />
         </div>
 
-        <!-- KHỐI 6: ĐÁNH GIÁ & LƯU Ý THỰC TẾ TỪ GOOGLE MAPS (RỘNG RÃI & THOÁNG MẮT) -->
-        <div class="bg-slate-50/80 border border-slate-200/90 rounded-2xl p-5 space-y-4">
-          <div class="flex items-center justify-between pb-2 border-b border-slate-200/70">
-            <div class="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
-              <i class="fa-brands fa-google text-[#4285F4] text-sm"></i> 6. Đánh Giá & Lưu Ý Thực Tế Từ Google Maps
-            </div>
-            <span class="text-[11px] text-slate-500 font-medium">Trích xuất trực tiếp từ nhận xét khách hàng</span>
+        <!-- KHỐI 6: ĐÁNH GIÁ & LƯU Ý THỰC TẾ (TINH GỌN, SẠCH CHỮ THỪA) -->
+        <div class="bg-slate-50/80 border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-3">
+          <div class="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2 pb-2 border-b border-slate-200/70">
+            <i class="fa-solid fa-comments text-amber-600"></i> 6. Đánh Giá & Lưu Ý Thực Tế
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Cột trái: Đánh giá tiêu biểu 5 sao -->
-            <div class="bg-white border border-emerald-200 rounded-2xl p-4 shadow-2xs flex flex-col justify-between">
-              <div>
-                <label class="block font-bold text-slate-800 mb-1 flex items-center justify-between">
-                  <span class="flex items-center gap-1.5 text-emerald-800">
-                    <i class="fa-solid fa-star text-amber-400"></i> Đánh giá 5★ tiêu biểu
-                  </span>
-                  <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">Google Maps 5★</span>
-                </label>
-                <p class="text-[11px] text-slate-500 mb-2">Nhận xét khen ngợi nổi bật về hương vị, dịch vụ hoặc không gian</p>
-                <textarea id="formBestReview" rows="5" class="w-full p-3 bg-slate-50/60 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100 transition resize-y leading-relaxed" placeholder="Dán nhận xét 5 sao thực tế từ Google Maps..."></textarea>
-              </div>
+            <div class="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-2xs">
+              <label class="block font-bold text-slate-800 mb-2 flex items-center gap-1.5 text-xs">
+                <i class="fa-solid fa-star text-amber-500"></i> Đánh giá 5★ tiêu biểu
+              </label>
+              <textarea id="formBestReview" rows="5" class="w-full p-3 bg-slate-50/60 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#E11D48] focus:bg-white focus:ring-2 focus:ring-rose-100 transition resize-y leading-relaxed" placeholder="Nhận xét 5 sao thực tế..."></textarea>
             </div>
 
             <!-- Cột phải: Lưu ý / Góp ý thực tế -->
-            <div class="bg-white border border-rose-200 rounded-2xl p-4 shadow-2xs flex flex-col justify-between">
-              <div>
-                <label class="block font-bold text-slate-800 mb-1 flex items-center justify-between">
-                  <span class="flex items-center gap-1.5 text-rose-800">
-                    <i class="fa-solid fa-circle-exclamation text-rose-500"></i> Lưu ý & Góp ý thực tế
-                  </span>
-                  <span class="text-[10px] bg-rose-50 text-rose-700 font-bold px-2 py-0.5 rounded-full border border-rose-200">Kinh nghiệm thực tế</span>
-                </label>
-                <p class="text-[11px] text-slate-500 mb-2">Thông tin giờ cao điểm, chỗ để xe, thời gian chờ hoặc góp ý của khách</p>
-                <textarea id="formWorstReview" rows="5" class="w-full p-3 bg-slate-50/60 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-rose-500 focus:bg-white focus:ring-2 focus:ring-rose-100 transition resize-y leading-relaxed" placeholder="Dán lưu ý thực tế về gửi xe, giờ đông, xếp hàng..."></textarea>
-              </div>
+            <div class="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-2xs">
+              <label class="block font-bold text-slate-800 mb-2 flex items-center gap-1.5 text-xs">
+                <i class="fa-solid fa-circle-exclamation text-amber-600"></i> Lưu ý & Góp ý thực tế
+              </label>
+              <textarea id="formWorstReview" rows="5" class="w-full p-3 bg-slate-50/60 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#E11D48] focus:bg-white focus:ring-2 focus:ring-rose-100 transition resize-y leading-relaxed" placeholder="Lưu ý về gửi xe, giờ đông, xếp hàng..."></textarea>
             </div>
           </div>
         </div>
